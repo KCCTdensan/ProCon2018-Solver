@@ -1,3 +1,7 @@
+from Panel import *
+from Agent import *
+from Window import *
+
 class Game:
 	_turn: int #最終ターン数
 	_1Pscore: int #1Pの得点
@@ -16,7 +20,8 @@ class Game:
 
 	def main(self):
 		#for turn in _turn:
-			#エージェントの移動orパネル操作の意思表示
+			#Windowからエージェントの移動orパネル操作の意思を入力
 			#移動orパネル操作
 			#得点計算
+			#盤面の情報をWindowに渡す
 		pass
