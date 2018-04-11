@@ -1,22 +1,22 @@
 class Game:
-	_turn: int #ÅIƒ^[ƒ“”
-	_1Pscore: int #1P‚Ì“¾“_
-	_2Pscore: int #2P‚Ì“¾“_
-	_Panels: list #ƒXƒe[ƒW‚ğ\¬‚·‚éƒpƒlƒ‹‚ÌƒŠƒXƒg
-	_Agents: list #ƒXƒe[ƒW‚É‘¶İ‚·‚éƒG[ƒWƒFƒ“ƒg‚ÌƒŠƒXƒg
+	_turn: int #æœ€çµ‚ã‚¿ãƒ¼ãƒ³æ•°
+	_1Pscore: int #1Pã®å¾—ç‚¹
+	_2Pscore: int #2Pã®å¾—ç‚¹
+	_Panels: list #ã‚¹ãƒ†ãƒ¼ã‚¸ã‚’æ§‹æˆã™ã‚‹ãƒ‘ãƒãƒ«ã®ãƒªã‚¹ãƒˆ
+	_Agents: list #ã‚¹ãƒ†ãƒ¼ã‚¸ã«å­˜åœ¨ã™ã‚‹ã‚¨ãƒ¼ã‚¸ã‚§ãƒ³ãƒˆã®ãƒªã‚¹ãƒˆ
 
-	def __init__(self): #ƒXƒe[ƒW¶¬
+	def __init__(self): #ã‚¹ãƒ†ãƒ¼ã‚¸ç”Ÿæˆ
 		pass
 
-	def new(): #ƒRƒ“ƒXƒgƒ‰ƒNƒ^ŒÄ‚Ño‚µ
+	def new(): #ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿å‘¼ã³å‡ºã—
 		return Game()
 
-	def score(self): #“¾“_ŒvZ
+	def score(self): #å¾—ç‚¹è¨ˆç®—
 		pass
 
 	def main(self):
 		#for turn in _turn:
-			#ƒG[ƒWƒFƒ“ƒg‚ÌˆÚ“®orƒpƒlƒ‹‘€ì‚ÌˆÓv•\¦
-			#ˆÚ“®orƒpƒlƒ‹‘€ì
-			#“¾“_ŒvZ
+			#ã‚¨ãƒ¼ã‚¸ã‚§ãƒ³ãƒˆã®ç§»å‹•orãƒ‘ãƒãƒ«æ“ä½œã®æ„æ€è¡¨ç¤º
+			#ç§»å‹•orãƒ‘ãƒãƒ«æ“ä½œ
+			#å¾—ç‚¹è¨ˆç®—
 		pass

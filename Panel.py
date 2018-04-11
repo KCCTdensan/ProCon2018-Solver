@@ -1,15 +1,15 @@
 class Panel:
-	_score: int #ƒpƒlƒ‹‚ª‚Â“_”
-	_state: int #ƒpƒlƒ‹‚Ìó‘Ô
+	_score: int #ãƒ‘ãƒãƒ«ãŒæŒã¤ç‚¹æ•°
+	_state: int #ãƒ‘ãƒãƒ«ã®çŠ¶æ…‹
 	
-	def __init__(self, score): #ƒpƒlƒ‹¶¬
+	def __init__(self, score): #ãƒ‘ãƒãƒ«ç”Ÿæˆ
 		pass
 	
-	def new(score): #ƒRƒ“ƒXƒgƒ‰ƒNƒ^ŒÄ‚Ño‚µ
+	def new(score): #ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿å‘¼ã³å‡ºã—
 		return Panel(score)
 
-	def mkcard(self, team): #ƒpƒlƒ‹‚ÉƒJ[ƒh‚ğ’u‚­(team:ƒ`[ƒ€)
+	def mkcard(self, team): #ãƒ‘ãƒãƒ«ã«ã‚«ãƒ¼ãƒ‰ã‚’ç½®ã(team:ãƒãƒ¼ãƒ )
 		pass
 
-	def rmcard(self): #ƒpƒlƒ‹‚É’u‚¢‚Ä‚¢‚éƒJ[ƒh‚ğœ‹‚·‚é
+	def rmcard(self): #ãƒ‘ãƒãƒ«ã«ç½®ã„ã¦ã„ã‚‹ã‚«ãƒ¼ãƒ‰ã‚’é™¤å»ã™ã‚‹
 		pass

@@ -1,12 +1,12 @@
 class Agent:
-	_point: (int, int) #À•W
-	_team: int #Š‘®ƒ`[ƒ€
+	_point: (int, int) #åº§æ¨™
+	_team: int #æ‰€å±ãƒãƒ¼ãƒ 
 
-	def __init__(self,point,team): #ƒG[ƒWƒFƒ“ƒg¶¬(point:À•W,team:ƒ`[ƒ€)
+	def __init__(self, point, team): #ã‚¨ãƒ¼ã‚¸ã‚§ãƒ³ãƒˆç”Ÿæˆ(point:åº§æ¨™,team:ãƒãƒ¼ãƒ )
 		pass
-	
-	def new(point,team): #ƒRƒ“ƒXƒgƒ‰ƒNƒ^ŒÄ‚Ño‚µ(point:À•W,team:ƒ`[ƒ€)
+
+	def new(point,team): #ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿å‘¼ã³å‡ºã—(point:åº§æ¨™,team:ãƒãƒ¼ãƒ )
 		return Agent(point,team)
 
-	def move(self,vector): #ƒG[ƒWƒFƒ“ƒg‚ğ“®‚©‚·(vector:•ûŒü)
+	def move(self,vector): #ã‚¨ãƒ¼ã‚¸ã‚§ãƒ³ãƒˆã‚’å‹•ã‹ã™(vector:æ–¹å‘)
 		pass
