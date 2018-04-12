@@ -19,8 +19,8 @@ class Game:
 	def score(self): #得点計算
 		_1Pscore = 0
 		_2Pscore = 0
-		for x in range(_Panels):
-			for y in range(_Panels[x]):
+		for x in range(len(_Panels)):
+			for y in range(len(_Panels[x])):
 				p = _Panels[x][y]
 				if p.getState() == 1:
 					_1Pscore += p.getScore()
