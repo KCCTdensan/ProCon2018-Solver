@@ -19,9 +19,9 @@ class Game:
 		pass
 
 	def main(self):
-		#for turn in _turn:
+		#エージェント(4人)の意思([int, int])を保存する変数のリスト
+		for turn in range(_turn):
 			#Windowからエージェントの移動orパネル操作の意思を入力
 			#移動orパネル操作
-			#得点計算
+			self.score() #得点計算
 			#盤面の情報をWindowに渡す
-		pass
