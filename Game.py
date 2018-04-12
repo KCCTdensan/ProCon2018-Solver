@@ -1,3 +1,4 @@
+import numpy as np
 from Panel import *
 from Agent import *
 from Window import *
@@ -6,7 +7,7 @@ class Game:
 	_turn: int #最終ターン数
 	_1Pscore: int #1Pの得点
 	_2Pscore: int #2Pの得点
-	_Panels: list #ステージを構成するパネルのリスト
+	_Panels: np.array #ステージを構成するパネルのリスト
 	_Agents: list #ステージに存在するエージェントのリスト
 
 	def __init__(self): #ステージ生成
@@ -16,7 +17,15 @@ class Game:
 		return Game()
 
 	def score(self): #得点計算
-		pass
+		_1Pscore = 0
+		_2Pscore = 0
+		for x in range(_Panels):
+			for y in range(_Panels[x]):
+				p = _Panels[x][y]
+				if p.getState() == 1:
+					_1Pscore += p.getScore()
+				elif p.getState() == 2:
+					_2Pscore += p.getScore()
 
 	def main(self):
 		#for turn in _turn:
