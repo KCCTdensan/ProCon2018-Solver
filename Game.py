@@ -13,7 +13,7 @@ class Game:
 	_Agents: list #ステージに存在するエージェントのリスト
 
 	def __init__(self): #ステージ生成
-		_turn = 120
+		_turn = Ran.randint(60,120)
 		_xLen = Ran.randint(3,12)
 		_yLen = Ran.randint(3,12)
 		_Panels = Np.zeros(_yLen,_xLen)
