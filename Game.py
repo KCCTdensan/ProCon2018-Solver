@@ -20,16 +20,15 @@ class Game:
 		for x in range(math.ceil(_xLen/2)):
 			for y in range(math.ceil(_yLen/2)):
 				_Panels[y,x] = Ran.randint(-5,5)
-				_Panels[_yLen - y,x] = _Panels[y,x]
-				_Panels[y,_xLen - x] = _Panels[y,x]
-				_Panels[_yLen - y,_xLen - x] = _Panels[y,x]
+				_Panels[_yLen - 1 - y,x] = _Panels[y,x]
+				_Panels[y,_xLen - 1 - x] = _Panels[y,x]
+				_Panels[_yLen - 1 - y,_xLen - 1 - x] = _Panels[y,x]
 		Agentx = Ran.randint(0,math.floor(_yLen/2))
 		Agenty = Ran.randint(0,math.floor(_xLen/2))
 		_Panels[Agenty,Agentx] = 0
-		_Panels[_yLen - Agenty,Agentx] = 0
-		_Panels[Agenty,_xLen - Agentx] = 0
-		_Panels[_yLen - Agenty,_xLen - Agentx] = 0
-
+		_Panels[_yLen - 1 - Agenty,Agentx] = 0
+		_Panels[Agenty,_xLen - 1 - Agentx] = 0
+		_Panels[_yLen - 1 - Agenty,_xLen - 1 - Agentx] = 0
 
 	def new(): #コンストラクタ呼び出し
 		return Game()
