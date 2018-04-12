@@ -16,7 +16,7 @@ class Game:
 		_turn = Ran.randint(60,120)
 		_xLen = Ran.randint(3,12)
 		_yLen = Ran.randint(3,12)
-		_Panels = Np.zeros(_yLen,_xLen)
+		_Panels = Np.zeros([_yLen,_xLen])
 		for x in range(math.ceil(_xLen/2)):
 			for y in range(math.ceil(_yLen/2)):
 				_Panels[y,x] = Ran.randint(-5,5)
