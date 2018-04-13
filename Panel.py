@@ -10,7 +10,7 @@ class Panel:
 		self._state = 0
 
 	def getScore():
-		return _score
+		return self._score
 
 	def getState():
-		return _state
+		return self._state
