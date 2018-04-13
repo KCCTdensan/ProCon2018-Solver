@@ -9,7 +9,7 @@ class Game:
 	_turn: int #最終ターン数
 	_1Pscore: int #1Pの得点
 	_2Pscore: int #2Pの得点
-	_Panels: list #ステージを構成するパネルのリスト(numpy定義)
+	_Panels: list #ステージを構成するパネルのリスト
 	_1PAgents: list
 	_2PAgents: list #ステージに存在する2Pのエージェントのリスト
 	_1PIntention: [[int, int]]*2
