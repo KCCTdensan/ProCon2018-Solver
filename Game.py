@@ -6,26 +6,21 @@ from Agent import *
 from Window import *
 
 class Game:
-	_turn: int #最終ターン数
-	_1Pscore: int #1Pの得点
-	_2Pscore: int #2Pの得点
-	_Panels: list #ステージを構成するパネルのリスト
-	_1PAgents: list
-	_2PAgents: list #ステージに存在する2Pのエージェントのリスト
 	_1PIntention: [[int, int]]*2
 	_2PIntention: [[int, int]]*2 #エージェント(4人)の意思([int, int])を保存する変数のリスト
 
 	def __init__(self): #ステージ生成
-		_turn = Ran.randint(60,120)
-		_1Pscore = 0
-		_2Pscore = 0
+		self._turn = Ran.randint(60,120) #最終ターン数
+		self._1Pscore = 0 #1Pの得点
+		self._2Pscore = 0 #2Pの得点
+		self._1PAgents = [[Agenty,Agentx],[_yLen - 1 - y,_xLen - 1 - x]] #ステージに存在する1Pのエージェントのリスト
+		self._2PAgents = [[_yLen - 1 - y,x],[y,_xLen - 1 - x]] #ステージに存在する2Pのエージェントのリスト
+		self._Panels = np.zeros([_yLen,_xLen]) #ステージを構成するパネルのリスト
+
 		_xLen = Ran.randint(3,12)
 		_yLen = Ran.randint(3,12)
 		Agentx = Ran.randint(0,math.floor(_yLen/2))
 		Agenty = Ran.randint(0,math.floor(_xLen/2))
-		1PAgents = [[Agenty,Agentx],[_yLen - 1 - y,_xLen - 1 - x]]
-		2PAgents = [[_yLen - 1 - y,x],[y,_xLen - 1 - x]]
-		_Panels = np.zeros([_yLen,_xLen])
 		for x in range(math.ceil(_xLen/2)):
 			for y in range(math.ceil(_yLen/2)):
 				_Panels[y,x] = Ran.randint(-5,5)
@@ -36,9 +31,6 @@ class Game:
 		_Panels[_yLen - 1 - Agenty,Agentx] = 0
 		_Panels[Agenty,_xLen - 1 - Agentx] = 0
 		_Panels[_yLen - 1 - Agenty,_xLen - 1 - Agentx] = 0
-
-	def new(): #コンストラクタ呼び出し
-		return Game()
 
 	def score(self): #得点計算
 		panelPoint1 = 0
