@@ -1,6 +1,9 @@
 from Panel import *
 from Agent import *
 from Window import *
+import random as Ran
+import numpy as Np
+import math
 
 class Game:
 	_turn: int #最終ターン数
@@ -13,7 +16,26 @@ class Game:
 	_2PIntention: [[int, int]]*2 #エージェント(4人)の意思([int, int])を保存する変数のリスト
 
 	def __init__(self): #ステージ生成
-		pass
+		_turn = Ran.randint(60,120)
+		_1Pscore = 0
+		_2Pscore = 0
+		_xLen = Ran.randint(3,12)
+		_yLen = Ran.randint(3,12)
+		Agentx = Ran.randint(0,math.floor(_yLen/2))
+		Agenty = Ran.randint(0,math.floor(_xLen/2))
+		1PAgents = [[Agenty,Agentx],[_yLen - 1 - y,_xLen - 1 - x]]
+		2PAgents = [[_yLen - 1 - y,x],[y,_xLen - 1 - x]]
+		_Panels = Np.zeros([_yLen,_xLen])
+		for x in range(math.ceil(_xLen/2)):
+			for y in range(math.ceil(_yLen/2)):
+				_Panels[y,x] = Ran.randint(-5,5)
+				_Panels[_yLen - 1 - y,x] = _Panels[y,x]
+				_Panels[y,_xLen - 1 - x] = _Panels[y,x]
+				_Panels[_yLen - 1 - y,_xLen - 1 - x] = _Panels[y,x]
+		_Panels[Agenty,Agentx] = 0
+		_Panels[_yLen - 1 - Agenty,Agentx] = 0
+		_Panels[Agenty,_xLen - 1 - Agentx] = 0
+		_Panels[_yLen - 1 - Agenty,_xLen - 1 - Agentx] = 0
 
 	def new(): #コンストラクタ呼び出し
 		return Game()
