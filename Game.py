@@ -9,12 +9,11 @@ class Game:
 	_turn: int #最終ターン数
 	_1Pscore: int #1Pの得点
 	_2Pscore: int #2Pの得点
-	_Panels: list#ステージを構成するパネルのリスト(numpy定義)
+	_Panels: list #ステージを構成するパネルのリスト(numpy定義)
 	_1PAgents: list
 	_2PAgents: list #ステージに存在する2Pのエージェントのリスト
 	_1PIntention: [[int, int]]*2
 	_2PIntention: [[int, int]]*2 #エージェント(4人)の意思([int, int])を保存する変数のリスト
-
 
 	def __init__(self): #ステージ生成
 		_turn = Ran.randint(60,120)
