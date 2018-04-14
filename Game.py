@@ -13,14 +13,15 @@ class Game:
 		self._turn = Ran.randint(60, 120) #最終ターン数
 		self._1Pscore = 0 #1Pの得点
 		self._2Pscore = 0 #2Pの得点
-		self._1PAgents = [[Agenty, Agentx],[_yLen - 1 - y, _xLen - 1 - x]] #ステージに存在する1Pのエージェントのリスト
-		self._2PAgents = [[_yLen - 1 - y, x],[y, _xLen - 1 - x]] #ステージに存在する2Pのエージェントのリスト
-		self._Panels = np.zeros([_yLen, _xLen]) #ステージを構成するパネルのリスト
 
 		_xLen = Ran.randint(3, 12)
 		_yLen = Ran.randint(3, 12)
 		Agentx = Ran.randint(0, math.floor(_yLen / 2))
 		Agenty = Ran.randint(0, math.floor(_xLen / 2))
+		self._1PAgents = [[Agenty, Agentx],[_yLen - 1 - y, _xLen - 1 - x]] #ステージに存在する1Pのエージェントのリスト
+		self._2PAgents = [[_yLen - 1 - y, x],[y, _xLen - 1 - x]] #ステージに存在する2Pのエージェントのリスト
+
+		self._Panels = np.zeros([_yLen, _xLen]) #ステージを構成するパネルのリスト
 		for x in range(math.ceil(_xLen / 2)):
 			for y in range(math.ceil(_yLen / 2)):
 				self._Panels[y, x] = Ran.randint(-5, 5)
