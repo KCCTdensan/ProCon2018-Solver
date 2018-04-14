@@ -6,31 +6,36 @@ from Agent import *
 from Window import *
 
 class Game:
-	_1PIntention: [[int, int]]*2
-	_2PIntention: [[int, int]]*2 #エージェント(4人)の意思([int, int])を保存する変数のリスト
+	_1PIntention = np.array([[1,1],[-1,-1]])#: [[int, int]]*2
+	_2PIntention = np.array([[0,1],[1,0]])#: [[int, int]]*2 #エージェント(4人)の意思([int, int])を保存する変数のリスト
 
 	def __init__(self): #ステージ生成
 		self._turn = Ran.randint(60,120) #最終ターン数
 		self._1Pscore = 0 #1Pの得点
 		self._2Pscore = 0 #2Pの得点
-		self._1PAgents = [[Agenty,Agentx],[_yLen - 1 - y,_xLen - 1 - x]] #ステージに存在する1Pのエージェントのリスト
-		self._2PAgents = [[_yLen - 1 - y,x],[y,_xLen - 1 - x]] #ステージに存在する2Pのエージェントのリスト
-		self._Panels = np.zeros([_yLen,_xLen]) #ステージを構成するパネルのリスト
-
+		
 		_xLen = Ran.randint(3,12)
 		_yLen = Ran.randint(3,12)
+		
+		self._Panels = np.zeros([_yLen,_xLen]) #ステージを構成するパネルのリスト
+		
 		Agentx = Ran.randint(0,math.floor(_yLen/2))
 		Agenty = Ran.randint(0,math.floor(_xLen/2))
+
 		for x in range(math.ceil(_xLen/2)):
 			for y in range(math.ceil(_yLen/2)):
-				_Panels[y,x] = Ran.randint(-5,5)
-				_Panels[_yLen - 1 - y,x] = _Panels[y,x]
-				_Panels[y,_xLen - 1 - x] = _Panels[y,x]
-				_Panels[_yLen - 1 - y,_xLen - 1 - x] = _Panels[y,x]
-		_Panels[Agenty,Agentx] = 0
-		_Panels[_yLen - 1 - Agenty,Agentx] = 0
-		_Panels[Agenty,_xLen - 1 - Agentx] = 0
-		_Panels[_yLen - 1 - Agenty,_xLen - 1 - Agentx] = 0
+				self._Panels[y,x] = Ran.randint(-5,5)
+				self._Panels[_yLen - 1 - y,x] = self._Panels[y,x]
+				self._Panels[y,_xLen - 1 - x] = self._Panels[y,x]
+				self._Panels[_yLen - 1 - y,_xLen - 1 - x] = self._Panels[y,x]
+		
+		self._1PAgents = [[Agenty,Agentx],[_yLen - 1 - y,_xLen - 1 - x]] #ステージに存在する1Pのエージェントのリスト
+		self._2PAgents = [[_yLen - 1 - y,x],[y,_xLen - 1 - x]] #ステージに存在する2Pのエージェントのリスト
+
+		self._Panels[Agenty,Agentx] = 0
+		self._Panels[_yLen - 1 - Agenty,Agentx] = 0
+		self._Panels[Agenty,_xLen - 1 - Agentx] = 0
+		self._Panels[_yLen - 1 - Agenty,_xLen - 1 - Agentx] = 0
 
 	def score(self): #得点計算
 		panelPoint1 = 0
@@ -93,7 +98,30 @@ class Game:
 						break
 
 	def action(self): #エージェントの意思をみて，実際に移動orパネル操作
-		pass
+		
+		for i in range(2):
+			Agent_vertex=self._1PAgents[i]+self._1PIntention[i]
+			print(self._1PAgents[i])
+			print(self._1PIntention[i])
+			print(Agent_vertex)
+
+			if self._Panels[Agent_vertex[0],Agent_vertex[1]].getState() == 0 or self._Panels[Agent_vertex[0],Agent_vertex[1]].getState() == 1:
+				_1PAgents[i].move(_1PIntention[i])
+			elif self._Panels[Agent_vertex[0],Agent_vertex[1]].getState() == 2:
+				_Panels[Agent_vertex[0],Agent_vertex[1]].rmcard()
+			print()
+
+		for i in range(2):
+			Agent_vertex=self._2PAgents[i]+self._2PIntention[i]
+			print(self._2PAgents[i])
+			print(self._2PIntention[i])
+			print(Agent_vertex)
+
+			if self._Panels[Agent_vertex[0],Agent_vertex[1]].getState() == 0 or self._Panels[Agent_vertex[0],Agent_vertex[1]].getState() == 2:
+				_2PAgents[i].move(_2PIntention[i])
+			elif self._Panels[Agent_vertex[0],Agent_vertex[1]].getState() == 1:
+				_Panels[Agent_vertex[0],Agent_vertex[1]].rmcard()
+			print()
 
 	def main(self):
 		for turn in range(_turn):
