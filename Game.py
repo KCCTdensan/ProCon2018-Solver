@@ -6,13 +6,13 @@ from Agent import *
 from Window import *
 
 class Game:
-	_1PIntention: [[int, int]] * 2
-	_2PIntention: [[int, int]] * 2 #エージェント(4人)の意思([int, int])を保存する変数のリスト
 
 	def __init__(self): #ステージ生成
 		self._turn = Ran.randint(60, 120) #最終ターン数
 		self._1Pscore = 0 #1Pの得点
 		self._2Pscore = 0 #2Pの得点
+		self._1PIntention: [[int, int]] * 2
+		self._2PIntention: [[int, int]] * 2 #エージェント(4人)の意思([int, int])を保存する変数のリスト
 
 		_xLen = Ran.randint(3, 12)
 		_yLen = Ran.randint(3, 12)
