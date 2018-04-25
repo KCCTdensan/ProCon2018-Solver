@@ -93,10 +93,3 @@ class Game:
 
 	def action(self): #エージェントの意思をみて，実際に移動orパネル操作
 		pass
-
-	def main(self):
-		for turn in range(_turn):
-			#Windowからエージェントの移動orパネル操作の意思を入力
-			self.action() #エージェントの意思をみて，実際に移動orパネル操作
-			self.score() #得点計算
-			#盤面の情報をWindowに渡す
