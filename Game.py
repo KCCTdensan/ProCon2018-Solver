@@ -28,10 +28,10 @@ class Game:
 				self._Panels[_yLen - 1 - y, x] = self._Panels[y, x]
 				self._Panels[y, _xLen - 1 - x] = self._Panels[y, x]
 				self._Panels[_yLen - 1 - y, _xLen - 1 - x] = self._Panels[y, x]
-		self._Panels[Agenty, Agentx] = 0
-		self._Panels[_yLen - 1 - Agenty, Agentx] = 0
-		self._Panels[Agenty, _xLen - 1 - Agentx] = 0
-		self._Panels[_yLen - 1 - Agenty, _xLen - 1 - Agentx] = 0
+		self._Panels[Agenty, Agentx] = Panel(0)
+		self._Panels[_yLen - 1 - Agenty, Agentx] = Panel(0)
+		self._Panels[Agenty, _xLen - 1 - Agentx] = Panel(0)
+		self._Panels[_yLen - 1 - Agenty, _xLen - 1 - Agentx] = Panel(0)
 
 	def score(self): #得点計算
 		regionPoint1 = 0
