@@ -18,13 +18,13 @@ class Game:
 		_yLen = Ran.randint(3, 12)
 		Agentx = Ran.randint(0, math.floor(_yLen / 2))
 		Agenty = Ran.randint(0, math.floor(_xLen / 2))
-		self._1PAgents = [[Agenty, Agentx],[_yLen - 1 - y, _xLen - 1 - x]] #ステージに存在する1Pのエージェントのリスト
-		self._2PAgents = [[_yLen - 1 - y, x],[y, _xLen - 1 - x]] #ステージに存在する2Pのエージェントのリスト
+		self._1PAgents = [Agent([Agenty, Agentx],1),Agent([_yLen - 1 - y, _xLen - 1 - x],1)] #ステージに存在する1Pのエージェントのリスト
+		self._2PAgents = [Agent([_yLen - 1 - y, x],2),Agent([y, _xLen - 1 - x],2)] #ステージに存在する2Pのエージェントのリスト
 
 		self._Panels = np.zeros([_yLen, _xLen]) #ステージを構成するパネルのリスト
 		for x in range(math.ceil(_xLen / 2)):
 			for y in range(math.ceil(_yLen / 2)):
-				self._Panels[y, x] = Ran.randint(-5, 5)
+				self._Panels[y, x] = Panel(Ran.randint(-5, 5))
 				self._Panels[_yLen - 1 - y, x] = self._Panels[y, x]
 				self._Panels[y, _xLen - 1 - x] = self._Panels[y, x]
 				self._Panels[_yLen - 1 - y, _xLen - 1 - x] = self._Panels[y, x]
