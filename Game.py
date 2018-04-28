@@ -97,31 +97,40 @@ class Game:
 					if regionPoint >= 0:
 						break
 
-	def action(self): #エージェントの意思をみて，実際に移動orパネル操作
+	def action(self,P1Intentions:list, P2Intentions:list): #エージェントの意思をみて，実際に移動orパネル操作
+		#引数 P1Intensions:[[x,y],[x,y]]、P2Intentions:[[x,y],[x,y]]
 		
+		#[[y,x],[y,x]]の形にするために中身をひっくり返す
+		_1PIntention[0][0],_1PIntention[0][1] = P1Intentions[0][1],P1Intentions[0][0]
+		_1PIntention[1][0],_1PIntention[1][1] = P1Intentions[1][1],P1Intentions[1][0]
+		_2PIntention[0][0],_2PIntention[0][1] = P2Intentions[0][1],P2Intentions[0][0]
+		_2PIntention[1][0],_2PIntention[1][1] = P2Intentions[1][1],P2Intentions[1][0]
+		
+		#1Pサイドの処理
 		for i in range(2):
-			Agent_vertex=self._1PAgents[i]+self._1PIntention[i]
-			print(self._1PAgents[i])
-			print(self._1PIntention[i])
-			print(Agent_vertex)
+			Agent_Current_Vertex = self._1PAgents[i]._point
+			Agent_Moving_Vertex=Agent_Current_Vertex+self._1PIntention[i]
+			Operated_panel = self._Panels[Agent_Moving_Vertex[0],Agent_Moving_Vertex[1]]
 
-			if self._Panels[Agent_vertex[0],Agent_vertex[1]].getState() == 0 or self._Panels[Agent_vertex[0],Agent_vertex[1]].getState() == 1:
+			if Operated_panel.getState() == 0 or Operated_panel.getState() == 1:
 				_1PAgents[i].move(_1PIntention[i])
-			elif self._Panels[Agent_vertex[0],Agent_vertex[1]].getState() == 2:
-				_Panels[Agent_vertex[0],Agent_vertex[1]].rmcard()
-			print()
+				if Operated_panel.getState()==0:
+					Operated_panel.mkcard(1)
+			elif Operated_panel.getState() == 2:
+				Operated_panel.rmcard()
 
+		#2Pサイドの処理
 		for i in range(2):
-			Agent_vertex=self._2PAgents[i]+self._2PIntention[i]
-			print(self._2PAgents[i])
-			print(self._2PIntention[i])
-			print(Agent_vertex)
+			Agent_Current_Vertex = self._2PAgents[i]._point
+			Agent_Moving_Vertex=Agent_Current_Vertex+self._2PIntention[i]
+			Operated_panel = self._Panels[Agent_Moving_Vertex[0],Agent_Moving_Vertex[1]]
 
-			if self._Panels[Agent_vertex[0],Agent_vertex[1]].getState() == 0 or self._Panels[Agent_vertex[0],Agent_vertex[1]].getState() == 2:
+			if Operated_panel.getState() == 0 or Operated_panel.getState() == 2:
 				_2PAgents[i].move(_2PIntention[i])
-			elif self._Panels[Agent_vertex[0],Agent_vertex[1]].getState() == 1:
-				_Panels[Agent_vertex[0],Agent_vertex[1]].rmcard()
-			print()
+				if Operated_panel.getState()==0:
+					Operated_panel.mkcard(2)
+			elif Operated_panel.getState() == 1:
+				Operated_panel.rmcard()
 
 	def main(self):
 		for turn in range(_turn):
