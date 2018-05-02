@@ -153,3 +153,6 @@ class Game:
 					Operated_panel.mkcard(2)
 			elif Operated_panel.getState() == 1:
 				Operated_panel.rmcard()
+
+	def getPanels(self):
+		return self._Panels

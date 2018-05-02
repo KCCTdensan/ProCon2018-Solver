@@ -17,11 +17,10 @@ class Window(ttk.Frame):
 		self.frame = tk.LabelFrame(self, bd = 2, relief = "ridge", text = "stage")
 		self.frame.pack(fill = "x")
 		color = {0:"black", 1:"red", 2:"blue"}
-		for i in range(12):
-			for j in range(12):
-				#Panel = self._Game.getPanels[i][j]
-				#label = tk.Label(frame, text = Panel.getScore(), fg = color[Panel.getState()] relief = tk.RIDGE, bd = 2)
-				label = tk.Label(self.frame, text ="1", fg = color[0], relief = tk.RIDGE, bd = 2)
+		Panels = self._Game.getPanels()
+		for i in range(len(Panels)):
+			for j in range(len(Panels[0])):
+				label = tk.Label(self.frame, text = str(Panels[i][j].getScore()), fg = color[Panels[i][j].getState()], relief = tk.RIDGE, bd = 2)
 				label.grid(row = i, column = j)
 
 		#意思表示入力ボックス
