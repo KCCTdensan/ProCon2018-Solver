@@ -22,8 +22,8 @@ class Game:
 		self._2PAgents = [Agent([_yLen - 1 - Agenty, Agentx],2),Agent([Agenty, _xLen - 1 - Agentx],2)] #ステージに存在する2Pのエージェントのリスト
 		self._Panels = [[Panel(0) for i in range(_xLen)]for j in range(_yLen)]
 
-		for y in range(math.ceil(_yLen / 2)):
-			for x in range(math.ceil(_xLen / 2)):
+		for y in range(_yLen//2):
+			for x in range(_xLen//2):
 				PanelsScore = Ran.randint(-5, 5)
 				self._Panels[y][x] = Panel(PanelsScore)
 				self._Panels[_yLen - 1 - y][x] = self._Panels[y][x]
