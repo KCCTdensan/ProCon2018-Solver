@@ -9,7 +9,7 @@ class Panel:
 	def rmcard(self): #パネルに置いているカードを除去する
 		self._state = 0
 
-	def getScore():
+	def getScore(self):
 		return self._score
 
 	def getState():
