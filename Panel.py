@@ -12,5 +12,5 @@ class Panel:
 	def getScore(self):
 		return self._score
 
-	def getState():
+	def getState(self):
 		return self._state
