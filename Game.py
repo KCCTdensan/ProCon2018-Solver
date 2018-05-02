@@ -16,8 +16,6 @@ class Game:
 		#配列yの中に配列xが入る構造。定義時に行の中に列が入り込む、numpy.Zerosの仕様に基づく。
 		_xLen = Ran.randint(3, 12)
 		_yLen = Ran.randint(3, 12)
-		print(_xLen)
-		print(_yLen)
 		Agentx = Ran.randint(0, math.floor(_yLen / 2))
 		Agenty = Ran.randint(0, math.floor(_xLen / 2))
 		self._1PAgents = [Agent([Agenty, Agentx],1),Agent([_yLen - 1 - Agenty, _xLen - 1 - Agentx],1)] #ステージに存在する1Pのエージェントのリスト
@@ -27,7 +25,6 @@ class Game:
 		self._Panels = [[Panel(0) for i in range(_xLen)]for j in range(_yLen)]
 		for y in range(math.ceil(_yLen / 2)):
 			for x in range(math.ceil(_xLen / 2)):
-				print(x,",",y)
 				PanelsScore = Ran.randint(-5, 5)
 				self._Panels[y][x] = Panel(PanelsScore)
 				self._Panels[_yLen - 1 - y][x] = self._Panels[y][x]
