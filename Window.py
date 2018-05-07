@@ -18,10 +18,12 @@ class Window(ttk.Frame):
 		self.frame.pack(fill = "x")
 		color = {0:"black", 1:"red", 2:"blue"}
 		Panels = self._Game.getPanels()
+		self.label = [[0 for j in range(len(Panels[0]))] for i in range(len(Panels))]#self.label[i][j]
 		for i in range(len(Panels)):
 			for j in range(len(Panels[0])):
-				label = tk.Label(self.frame, text = str(Panels[i][j].getScore()), fg = color[Panels[i][j].getState()], relief = tk.RIDGE, bd = 2)
-				label.grid(row = i, column = j)
+				self.label[i][j] = tk.Label(self.frame, relief = tk.RIDGE, bd = 2)
+				self.label[i][j].grid(row = i, column = j)
+		self.update()
 
 		#意思表示入力ボックス
 		self.frame2 = tk.LabelFrame(self, bd = 2, relief = "ridge", text="1P-1,1P-2,2P-1,2P-2")
@@ -44,8 +46,16 @@ class Window(ttk.Frame):
 		print(self.entry4.get())
         #self._Game.action(self.entry1.get(), self.entry2.get(), self.entry3.get(), self.entry4.get())
 		#self._Game.score()
-		#GUIの更新
+		self.update()
 		self.entry1.delete(0, tk.END)
 		self.entry2.delete(0, tk.END)
 		self.entry3.delete(0, tk.END)
 		self.entry4.delete(0, tk.END)
+
+	def update(self): #GUIの更新
+		color = {0:"black", 1:"red", 2:"blue"}
+		Panels = self._Game.getPanels()
+		for i in range(len(Panels)):
+			for j in range(len(Panels[0])):
+				self.label[i][j]["text"] = str(Panels[i][j].getScore())
+				self.label[i][j]["fg"] = color[Panels[i][j].getState()]
