@@ -28,30 +28,24 @@ class Window(ttk.Frame):
 		#意思表示入力ボックス
 		self.frame2 = tk.LabelFrame(self, bd = 2, relief = "ridge", text="1P-1,1P-2,2P-1,2P-2")
 		self.frame2.pack(fill = "x")
-		self.entry1 = tk.Entry(self.frame2, font = ("",12), justify = "left", width = 20)
-		self.entry1.pack()
-		self.entry2 = tk.Entry(self.frame2, font = ("",12), justify = "left", width = 20)
-		self.entry2.pack()
-		self.entry3 = tk.Entry(self.frame2, font = ("",12), justify = "left", width = 20)
-		self.entry3.pack()
-		self.entry4 = tk.Entry(self.frame2, font = ("",12), justify = "left", width = 20)
-		self.entry4.pack()
-		self.button = tk.Button(self.frame2, text = "決定", font = ("", 12), width = 5, bg = "gray", command = self.push)
+		self.entry = [[0 for j in range(2)]for i in range(4)]#self.entry[4][2]
+		for i in range(4):
+			for j in range(2):
+				self.entry[i][j] = tk.Entry(self.frame2, font = ("",12), justify = "left", width = 20)
+				self.entry[i][j].grid(row = i, column = j)
+
+		self.button = tk.Button(self, text = "決定", font = ("", 12), width = 5, bg = "gray", command = self.push)
 		self.button.pack()
 
 	def push(self): #ボタンが押された際，エージェントの意思をGameに渡す
-		print(self.entry1.get())
-		print(self.entry2.get())
-		print(self.entry3.get())
-		print(self.entry4.get())
-        #self._Game.action(self.entry1.get(), self.entry2.get(), self.entry3.get(), self.entry4.get())
+		print(self.entry[0][0].get())
+		#self._Game.action([self.entry[0][0].get(), self.entry[0][1].get()], [self.entry[1][0].get(), self.entry[1][1].get()], [self.entry[2][0].get(), self.entry[2][1].get()], [self.entry[3][0].get(), self.entry[3][1].get()])
 		#self._Game.score()
 		self.update()
-		self.entry1.delete(0, tk.END)
-		self.entry2.delete(0, tk.END)
-		self.entry3.delete(0, tk.END)
-		self.entry4.delete(0, tk.END)
-
+		for i in range(4):
+			for j in range(2):
+				self.entry[i][j].delete(0, tk.END)
+		
 	def update(self): #GUIの更新
 		color = {0:"black", 1:"red", 2:"blue"}
 		Panels = self._Game.getPanels()
