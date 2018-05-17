@@ -1,9 +1,11 @@
 import numpy as np
 import random as Ran
 import math
+import copy
 from Panel import *
 from Agent import *
 from Window import *
+
 
 class Game:
 
@@ -26,9 +28,9 @@ class Game:
 			for x in range(_xLen//2):
 				PanelsScore = Ran.randint(-5, 5)
 				self._Panels[y][x] = Panel(PanelsScore)
-				self._Panels[_yLen - 1 - y][x] = self._Panels[y][x]
-				self._Panels[y][_xLen - 1 - x] = self._Panels[y][x]
-				self._Panels[_yLen - 1 - y][ _xLen - 1 - x] = self._Panels[y][x]
+				self._Panels[_yLen - 1 - y][x] = copy.copy(self._Panels[y][x])
+				self._Panels[y][_xLen - 1 - x] = copy.copy(self._Panels[y][x])
+				self._Panels[_yLen - 1 - y][ _xLen - 1 - x] = copy.copy(self._Panels[y][x])
 		self._Panels[Agenty][Agentx] = Panel(0)
 		self._Panels[_yLen - 1 - Agenty][Agentx] = Panel(0)
 		self._Panels[Agenty][_xLen - 1 - Agentx] = Panel(0)
