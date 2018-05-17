@@ -23,19 +23,33 @@ class Game:
 		self._1PAgents = [Agent([Agenty, Agentx],1),Agent([_yLen - 1 - Agenty, _xLen - 1 - Agentx],1)] #ステージに存在する1Pのエージェントのリスト
 		self._2PAgents = [Agent([_yLen - 1 - Agenty, Agentx],2),Agent([Agenty, _xLen - 1 - Agentx],2)] #ステージに存在する2Pのエージェントのリスト
 		self._Panels = [[Panel(0) for i in range(_xLen)]for j in range(_yLen)]
-
-		for y in range(_yLen//2):
-			for x in range(_xLen//2):
-				PanelsScore = Ran.randint(-5, 5)
-				self._Panels[y][x] = Panel(PanelsScore)
-				self._Panels[_yLen - 1 - y][x] = copy.copy(self._Panels[y][x])
-				self._Panels[y][_xLen - 1 - x] = copy.copy(self._Panels[y][x])
-				self._Panels[_yLen - 1 - y][ _xLen - 1 - x] = copy.copy(self._Panels[y][x])
+		self.randtype = Ran.randint(0,2);
+		
+		if (self.randtype==0)
+			for y in range(_yLen//2):
+				for x in range(_xLen//2):
+					PanelsScore = Ran.randint(-5, 5)
+					self._Panels[y][x] = Panel(PanelsScore)
+					self._Panels[_yLen - 1 - y][x] = copy.copy(self._Panels[y][x])
+					self._Panels[y][_xLen - 1 - x] = copy.copy(self._Panels[y][x])
+					self._Panels[_yLen - 1 - y][ _xLen - 1 - x] = copy.copy(self._Panels[y][x])
+		else if(self.randtype==1)
+			for y in range(_yLen):
+				for x in range(_xLen//2):
+					PanelsScore = Ran.randint(-5, 5)
+					self._Panels[y][x] = Panel(PanelsScore)
+					self._Panels[y][_xLen - 1 - x] = copy.copy(self._Panels[y][x])
+		else if(self.randtype==2)
+			for y in range(_yLen//2):
+				for x in range(_xLen):
+					PanelsScore = Ran.randint(-5, 5)
+					self._Panels[y][x] = Panel(PanelsScore)
+					self._Panels[_yLen - y - 1][x] = copy.copy(self._Panels[y][x])
 		self._Panels[Agenty][Agentx] = Panel(0)
 		self._Panels[_yLen - 1 - Agenty][Agentx] = Panel(0)
 		self._Panels[Agenty][_xLen - 1 - Agentx] = Panel(0)
 		self._Panels[_yLen - 1 - Agenty][_xLen - 1 - Agentx] = Panel(0)
-
+			
 	def score(self): #得点計算
 		regionPoint1 = 0
 		regionPoint2 = 0
