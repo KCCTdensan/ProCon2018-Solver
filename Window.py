@@ -27,8 +27,9 @@ class WindowFrame(wx.Frame):
 				super().__init__(Parent, wx.ID_ANY, size=(40, 40))
 				self.sizerPanel = wx.BoxSizer(wx.VERTICAL)
 				font = wx.Font(30, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL)
-				self.text = wx.StaticText(self, wx.ID_ANY, str(StagePanel.getScore()), style=wx.TE_CENTER)
+				self.text = wx.StaticText(self, wx.ID_ANY, str(StagePanel.getScore()))
 				self.text.SetFont(font)
+				self.text.Center()
 				self.sizerPanel.Add(self.text, flag=wx.GROW)
 				self.SetSizer(self.sizerPanel)
 
@@ -41,7 +42,7 @@ class WindowFrame(wx.Frame):
 				self.listPanelPanel.append([])
 				for ix in range(len(Panels[0])):
 					self.listPanelPanel[iy].append(self.PanelPanel(self, Panels[iy][ix]))
-					self.sizerStage.Add(self.listPanelPanel[iy][ix], 0, wx.GROW|wx.ALL, border=5)
+					self.sizerStage.Add(self.listPanelPanel[iy][ix], 0, wx.ALL, border=5)
 			self.SetSizer(self.sizerStage)
 
 		def Update(self, Agents):
