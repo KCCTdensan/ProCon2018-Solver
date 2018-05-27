@@ -1,14 +1,11 @@
-import tkinter as tk
-
-from Game import *
+import wx
 from Window import *
 
 def main():
-	g = Game()
-	root = tk.Tk()
-	Window(master = root, Game = g)
-
-	root.mainloop()
+	app = wx.App(False)
+	frame = WindowFrame()
+	frame.Show()
+	app.MainLoop()
 
 if __name__ == '__main__':
 	main()
