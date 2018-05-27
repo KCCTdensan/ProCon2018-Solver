@@ -13,8 +13,6 @@ class Game:
 		self._turn = Ran.randint(60, 120) #最終ターン数
 		self._1Pscore = 0 #1Pの得点
 		self._2Pscore = 0 #2Pの得点
-		#self._1PIntention: [[int, int]] * 2
-		#self._2PIntention: [[int, int]] * 2 #エージェント(4人)の意思([int, int])を保存する変数のリスト
 		#配列yの中に配列xが入る構造。定義時に行の中に列が入り込む、numpy.Zerosの仕様に基づく。
 		_xLen = Ran.randint(3, 12)
 		_yLen = Ran.randint(3, 12)
@@ -122,18 +120,18 @@ class Game:
 				NextPositions[i].append(CurrentPositions[i][j] + Intentions[i][j])
 		CanMove = [True, True, True, True]
 		Team = [1, 1, 2, 2]
-		Agents = [_1PAgents[0], _1PAgents[1], _2PAgents[0], _2PAgents[1]]		
+		Agents = [self._1PAgents[0], self._1PAgents[1], self._2PAgents[0], self._2PAgents[1]]		
 		NumY = len(self._Panels)
 		NumX = len(self._Panels[0])
 
 		#アクション可能か判定
+		for i in range(3):
+			for j in range(i + 1, 4):
+				CanMove[i] = CanMove[j] = not np.allclose(NextPositions[i], NextPositions[j])
 		for i in range(4):
 			py = NextPositions[i][0]
 			px = NextPositions[i][1]
 			CanMove[i] = (0 <= py)and(py < NumY)and(0 <= px)and(px < NumX)
-		for i in range(3):
-			for j in range(i + 1, 4):
-				CanMove[i] = CanMove[j] = not np.allclose(NextPositions[i], NextPositions[j])
 
 		#移動またはパネルを返す
 		for i in range(4):
@@ -141,71 +139,11 @@ class Game:
 				continue
 			OperatedPanel = self._Panels[NextPositions[i][0]][NextPositions[i][1]]
 			State = OperatedPanel.getState()
-			if State == 0:
+			if State == 0 or State == Team[i]:
 				OperatedPanel.mkcard(Team[i])
-				Agents[i].move(Intentions[i])
-			if State == Team[i]:
 				Agents[i].move(Intentions[i])
 			else:
 				OperatedPanel.rmcard()
 		
-		#[[y,x],[y,x]]の形にするために中身をひっくり返して代入
-		#_1PIntention[0][0], _1PIntention[0][1] = P1Intentions[0][1], P1Intentions[0][0]
-		#_1PIntention[1][0], _1PIntention[1][1] = P1Intentions[1][1], P1Intentions[1][0]
-		#_2PIntention[0][0], _2PIntention[0][1] = P2Intentions[0][1], P2Intentions[0][0]
-		#_2PIntention[1][0], _2PIntention[1][1] = P2Intentions[1][1], P2Intentions[1][0]
-		
-		#各エージェントの現在位置取得+行動先取得
-		#エージェント関係のリストは基本的に[[1P_1],[1P_2]]のような形です
-		#Agent1P_Current_Positions = [self._1PAgents[0]._point , self._1PAgents[1]._point]
-		#Agent1P_Next_Positions = [Agent1P_Current_Positions[0] + _1PIntention[0] , Agent1P_Current_Positions[1] + _1PIntention[1]]
-		#Agent2P_Current_Positions = [self._2PAgents[0]._point , self._2PAgents[1]._point]
-		#Agent2P_Next_Positions = [Agent2P_Current_Positions[0] + _2PIntention[0] , Agent2P_Current_Positions[1] + _2PIntention[1]]
-
-
-		#メモ　味方同士で移動・パネル除去先がダブる→両者何もできないのでそのプレイヤーサイドの処理はすっ飛ばす
-		#　　　敵と味方で移動先がダブる→各プレイヤーかたっぽのエージェントは動ける可能性がある
-		#　　　タイル除去しようとしたが、停留されている→これもおそらくMoving_Vertexがかぶるから上の処理と同じかな
-		
-		#Can_Agent1P_Move = [True, True]
-		#Can_Agent2P_Move = [True, True]
-
-		#if np.allclose(Agent1P_Next_Positions[0] , Agent1P_Next_Positions[1]):
-		#	Can_Agent1P_Move[False, False]
-
-		#if np.allclose(Agent2P_Next_Positions[0] , Agent2P_Next_Positions[1]):
-		#	Can_Agent2P_Move[False, False]
-
-		#for i in range(2):
-		#	for k in range(2):
-		#		Can_Agent1P_Move[i] = not np.allclose(Agent1P_Next_Positions[i] , Agent2P_Next_Positions[k])
-		#		Can_Agent2P_Move[k] = Can_Agent1P_Move[i]
-
-		#1Pサイドの処理
-		#for i in range(2):
-		#	if not Can_Agent1P_Move[i]:
-		#		continue
-		#	Operated_panel = self._Panels[Agent1P_Next_Positions[i][0] , Agent2P_Next_Positions[i][1]]
-
-		#	if Operated_panel.getState() == 0 or Operated_panel.getState() == 1:
-		#		_1PAgents[i].move(_1PIntention[i])
-		#		if Operated_panel.getState()==0:
-		#			Operated_panel.mkcard(1)
-		#	elif Operated_panel.getState() == 2:
-		#		Operated_panel.rmcard()
-		
-		#2Pサイドの処理
-		#for i in range(2):
-		#	if not Can_Agent2P_Move[i]:
-		#		continue
-		#	Operated_panel = self._Panels[Agent2P_Next_Positions[i][0] , Agent2P_Next_Positions[i][1]]
-
-		#	if Operated_panel.getState() == 0 or Operated_panel.getState() == 2:
-		#		_2PAgents[i].move(_2PIntention[i])
-		#		if Operated_panel.getState()==0:
-		#			Operated_panel.mkcard(2)
-		#	elif Operated_panel.getState() == 1:
-		#		Operated_panel.rmcard()
-
 	def getPanels(self):
 		return self._Panels
