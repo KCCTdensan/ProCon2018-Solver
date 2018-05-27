@@ -25,7 +25,7 @@ class Game:
 		self._Panels = [[Panel(0) for i in range(_xLen)]for j in range(_yLen)]
 		self.randtype = Ran.randint(0,2);
 		
-		if (self.randtype==0)
+		if self.randtype == 0:
 			for y in range(_yLen//2):
 				for x in range(_xLen//2):
 					PanelsScore = Ran.randint(-5, 5)
@@ -33,13 +33,13 @@ class Game:
 					self._Panels[_yLen - 1 - y][x] = copy.copy(self._Panels[y][x])
 					self._Panels[y][_xLen - 1 - x] = copy.copy(self._Panels[y][x])
 					self._Panels[_yLen - 1 - y][ _xLen - 1 - x] = copy.copy(self._Panels[y][x])
-		else if(self.randtype==1)
+		elif self.randtype == 1:
 			for y in range(_yLen):
 				for x in range(_xLen//2):
 					PanelsScore = Ran.randint(-5, 5)
 					self._Panels[y][x] = Panel(PanelsScore)
 					self._Panels[y][_xLen - 1 - x] = copy.copy(self._Panels[y][x])
-		else if(self.randtype==2)
+		elif self.randtype == 2:
 			for y in range(_yLen//2):
 				for x in range(_xLen):
 					PanelsScore = Ran.randint(-5, 5)
@@ -53,9 +53,11 @@ class Game:
 	def score(self): #得点計算
 		regionPoint1 = 0
 		regionPoint2 = 0
-		NumY = len(_Panels)
-		NumX = len(_Panels[0])
-		searchedPanels = np.zeros_like(_Panels, dtype = np.bool)
+		NumY = len(self._Panels)
+		NumX = len(self._Panels[0])
+		searchedPanels = np.zeros_like(self._Panels, dtype = np.bool)
+		self._1Pscore = 0
+		self._2Pscore = 0
 
 		def regionPoint(self, x:int, y:int, player:int)->int:
 			if searchedPanels[y][x]:
@@ -95,18 +97,18 @@ class Game:
 					self._1Pscore += p.getScore()
 				elif state == 2:
 					self._2Pscore += p.getScore()
-		for y in range(NumY):
-			for x in range(NumX):
-				if not searchedPanels[y][x]:
-					regionPoint1 = regionPoint(self, x, y, 1)
-					if regionPoint >= 0:
-						self._1Pscore += regionPoint1
-		for y in range(NumY):
-			for x in range(NumX):
-				if not searchedPanels[y][x]:
-					regionPoint2 = regionPoint(self, x, y, 2)
-					if regionPoint >= 0:
-						self._2Pscore += regionPoint2
+		#for y in range(NumY):
+		#	for x in range(NumX):
+		#		if not searchedPanels[y][x]:
+		#			regionPoint1 = regionPoint(self, x, y, 1)
+		#			if regionPoint1 >= 0:
+		#				self._1Pscore += regionPoint1
+		#for y in range(NumY):
+		#	for x in range(NumX):
+		#		if not searchedPanels[y][x]:
+		#			regionPoint2 = regionPoint(self, x, y, 2)
+		#			if regionPoint2 >= 0:
+		#				self._2Pscore += regionPoint2
 
 	def action(self,P1Intentions:list, P2Intentions:list): #エージェントの意思をみて，実際に移動orパネル操作
 		#引数 P1Intensions:[[x,y],[x,y]]、P2Intentions:[[x,y],[x,y]]
