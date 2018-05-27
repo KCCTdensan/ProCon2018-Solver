@@ -114,10 +114,10 @@ class Game:
 		#引数 P1Intensions:[[x,y],[x,y]]、P2Intentions:[[x,y],[x,y]]
 		
 		#[[y,x],[y,x]]の形にするために中身をひっくり返して代入
-		_1PIntention[0][0],_1PIntention[0][1] = P1Intentions[0][1],P1Intentions[0][0]
-		_1PIntention[1][0],_1PIntention[1][1] = P1Intentions[1][1],P1Intentions[1][0]
-		_2PIntention[0][0],_2PIntention[0][1] = P2Intentions[0][1],P2Intentions[0][0]
-		_2PIntention[1][0],_2PIntention[1][1] = P2Intentions[1][1],P2Intentions[1][0]
+		self._1PIntention[0][0], self._1PIntention[0][1] = P1Intentions[0][1], P1Intentions[0][0]
+		self._1PIntention[1][0], self._1PIntention[1][1] = P1Intentions[1][1], P1Intentions[1][0]
+		self._2PIntention[0][0], self._2PIntention[0][1] = P2Intentions[0][1], P2Intentions[0][0]
+		self._2PIntention[1][0], self._2PIntention[1][1] = P2Intentions[1][1], P2Intentions[1][0]
 		
 		#各エージェントの現在位置取得+行動先取得
 		#エージェント関係のリストは基本的に[[1P_1],[1P_2]]のような形です
