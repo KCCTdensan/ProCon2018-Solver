@@ -127,8 +127,12 @@ class Game:
 		#アクション可能か判定
 		for i in range(3):
 			for j in range(i + 1, 4):
-				CanMove[i] = CanMove[j] = not np.allclose(NextPositions[i], NextPositions[j])
+				tmp = not np.allclose(NextPositions[i], NextPositions[j])
+				CanMove[i] = CanMove[i]and tmp
+				CanMove[j] = CanMove[j]and tmp
 		for i in range(4):
+			if not CanMove[i]:
+				continue
 			py = NextPositions[i][0]
 			px = NextPositions[i][1]
 			CanMove[i] = (0 <= py)and(py < NumY)and(0 <= px)and(px < NumX)
