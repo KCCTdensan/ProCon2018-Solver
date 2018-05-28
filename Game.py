@@ -8,7 +8,6 @@ from Window import *
 
 
 class Game:
-
 	def __init__(self): #ステージ生成
 		self._turn = Ran.randint(60, 120) #最終ターン数
 		self._1Pscore = 0 #1Pの得点
@@ -57,30 +56,30 @@ class Game:
 		self._1Pscore = 0
 		self._2Pscore = 0
 
-		def regionPoint(self, x:int, y:int, player:int)->int:
+		def regionPoint(self, x:int, y:int, Team)->int:
 			if searchedPanels[y][x]:
 				return 0
 			searchedPanels[y][x] = True
 			if (y == 0)or(y == NumY - 1)or(x == 0)or(x == NumX - 1):
 				return -1
-			if self._Panels[y][x].getState() == player:
+			if self._Panels[y][x].getState() == Team:
 				return -2
-			l = regionPoint(self, x - 1, y, player)
+			l = regionPoint(self, x - 1, y, Team)
 			if l == -1:
 				return -1
 			elif l == -2:
 				return abs(self._Panels[y][x].getScore())
-			t = regionPoint(self, x, y - 1, player)
+			t = regionPoint(self, x, y - 1, Team)
 			if t == -1:
 				return -1
 			elif l == -2:
 				return abs(self._Panels[y][x].getScore())
-			r = regionPoint(self, x + 1, y, player)
+			r = regionPoint(self, x + 1, y, Team)
 			if r == -1:
 				return -1
 			elif l == -2:
 				return abs(self._Panels[y][x].getScore())
-			b = regionPoint(self, x, y + 1, player)
+			b = regionPoint(self, x, y + 1, Team)
 			if b == -1:
 				return -1
 			elif l == -2:
