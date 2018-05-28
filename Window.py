@@ -1,18 +1,20 @@
 import wx
-from Game import *
-import Panel
+from Game import Game
+from Panel import Panel
 
 class PlayerInfo:
-	def __init__(self, Label:str, Color:str):
+	def __init__(self, Label:str, Color:str, SelectColor:str):
 		self.Label = Label
 		self.Color = Color
+		self.SelectColor = SelectColor
 		
 ID_BUTTON = []
 ID_GO:int
 ColorPanelBkgnd = "#5f5f5f"
 Color1PRegion = "#8e2f2f"
 Color2PRegion = "#2f5f8e"
-PlayerInfos = (PlayerInfo("1P-1", "#ed1c24"), PlayerInfo("1P-2", "#ff7f27"), PlayerInfo("2P-1", "#22b14c"), PlayerInfo("2P-2", "#00a2e8"))
+PlayerInfos = (PlayerInfo("1P-1", "#ed1c24", "#f78e94"), PlayerInfo("1P-2", "#ff7f27", "#ffbe93"), PlayerInfo("2P-1", "#22b14c", "#82e8a0"), PlayerInfo("2P-2", "#00a2e8", "#75d6ff"))
+NumPlayers = len(PlayerInfos)
 
 class WindowFrame(wx.Frame):
 	"""
@@ -26,7 +28,7 @@ class WindowFrame(wx.Frame):
 			"""
 			パネル・パネル
 			"""
-			def __init__(self, Parent:wx.Panel, StagePanel:Panel.Panel):
+			def __init__(self, Parent:wx.Panel, StagePanel:Panel):
 				super().__init__(Parent, wx.ID_ANY, size=(40, 40))
 				self.sizerPanel = wx.BoxSizer(wx.VERTICAL)
 
@@ -39,31 +41,24 @@ class WindowFrame(wx.Frame):
 
 				self.SetSizer(self.sizerPanel)
 
-		def __init__(self, Parent:wx.Panel, Stage:Game):
+		def __init__(self, Parent:wx.Panel, Panels:list):
 			super().__init__(Parent, wx.ID_ANY)
-			self.Stage = Stage
-			self.sizerStage = wx.GridSizer(rows=len(self.Stage._Panels), cols=len(self.Stage._Panels[0]), gap=(0, 0))
+			self.sizerStage = wx.GridSizer(rows=len(Panels), cols=len(Panels[0]), gap=(0, 0))
 
 			#それぞれのプレイヤーの現在位置を示す枠パネルを作成
 			self.listPanelPosition = []
-			for ip in range(len(PlayerInfos)):
+			for ip in range(NumPlayers):
 				self.listPanelPosition.append(wx.Panel(self, wx.ID_ANY, size=(50, 50)))
 				self.listPanelPosition[ip].SetBackgroundColour(PlayerInfos[ip].Color)
 				
 			#パネル・パネルを作成
 			self.listPanelPanel = []
-			for iy in range(len(self.Stage._Panels)):
+			for iy in range(len(Panels)):
 				self.listPanelPanel.append([])
-				for ix in range(len(self.Stage._Panels[0])):
-					self.listPanelPanel[iy].append(self.PanelPanel(self, self.Stage._Panels[iy][ix]))
+				for ix in range(len(Panels[0])):
+					self.listPanelPanel[iy].append(self.PanelPanel(self, Panels[iy][ix]))
 					self.listPanelPanel[iy][ix].text.SetForegroundColour("#ffffff")
 					self.sizerStage.Add(self.listPanelPanel[iy][ix], 0, wx.ALL, border=5)
-					
-			#枠パネルを現在位置のところに移動
-			Agents = [self.Stage._1PAgents[0], self.Stage._1PAgents[1], self.Stage._2PAgents[0], self.Stage._2PAgents[1]]
-			for ip in range(len(PlayerInfos)):
-				Point = Agents[ip]._point
-				self.listPanelPosition[ip].SetPosition(self.PanelPosition(Point[1], Point[0]))
 
 			self.SetSizer(self.sizerStage)
 			self.Fit()
@@ -72,17 +67,16 @@ class WindowFrame(wx.Frame):
 			PanelPos = list(self.listPanelPanel[y][x].GetPosition())
 			return (PanelPos[0] - 5, PanelPos[1] - 5)
 
-		def Update(self):
-			Agents = [self.Stage._1PAgents[0], self.Stage._1PAgents[1], self.Stage._2PAgents[0], self.Stage._2PAgents[1]]
+		def Update(self, Agents:list, Panels:list):
 			#現在位置を示す枠パネルの更新
-			for ip in range(len(PlayerInfos)):
+			for ip in range(NumPlayers):
 				Point = Agents[ip]._point
 				self.listPanelPosition[ip].SetPosition(self.PanelPosition(Point[1], Point[0]))
 
 			#ステージのパネルの更新
-			for iy in range(len(self.Stage._Panels)):
-				for ix in range(len(self.Stage._Panels[0])):
-					State = self.Stage._Panels[iy][ix].getState()
+			for iy in range(len(Panels)):
+				for ix in range(len(Panels[0])):
+					State = Panels[iy][ix].getState()
 					if State == 0:
 						self.listPanelPanel[iy][ix].SetBackgroundColour(ColorPanelBkgnd)
 					elif State == 1:						
@@ -102,11 +96,12 @@ class WindowFrame(wx.Frame):
 				"""
 				ボタン・パネル
 				"""
-				def __init__(self, Parent:wx.Panel, SelectColor:str, ID:list):
+				def __init__(self, Parent:wx.Panel, Color:str, SelectColor:str, ID:list):
 					super().__init__(Parent, wx.ID_ANY)
 					self.sizerButton = wx.GridSizer(rows=3, cols=3, gap=(0, 0))
 					self.Intention = [0, 0]
 					self.listButton = []
+					self.Color = Color
 					self.SelectColor = SelectColor
 
 					#それぞれのボタンを作成
@@ -114,7 +109,7 @@ class WindowFrame(wx.Frame):
 					for i in range(len(ButtonCollection)):
 						ID.append(wx.NewId())
 						self.listButton.append(wx.Button(self, ID[i], ButtonCollection[i], size=(50, 50)))
-						self.listButton[i].SetBackgroundColour(SelectColor)
+						self.listButton[i].SetBackgroundColour(Color)
 						self.listButton[i].SetForegroundColour("#ffffff")
 						self.sizerButton.Add(self.listButton[i], 0, wx.GROW)
 						self.Bind(wx.EVT_BUTTON, self.OnButton, id=ID[i])
@@ -129,17 +124,16 @@ class WindowFrame(wx.Frame):
 						for iAction in range(len(Player)):
 							if Player[iAction] == ID:
 								self.Intention = [iAction % 3 - 1, iAction // 3 - 1]
-					Button.SetForegroundColour(self.SelectColor)
+					Button.SetBackgroundColour(self.SelectColor)
 
 				def GetIntention(self)->list:
-					return self.Intention
+					return self.Intention.copy()
 
-				def ResetIntention(self):				
+				def ResetIntention(self):
+					self.listButton[self.Intention[0] + 1 + (self.Intention[1] + 1) * 3].SetBackgroundColour(self.Color)
 					self.Intention = [0, 0]
-					for b in self.listButton:
-						b.SetForegroundColour("#ffffff")
 					
-			def __init__(self, Parent:wx.Panel, Label:str, SelectColor:str, ButtonID:list):
+			def __init__(self, Parent:wx.Panel, Label:str, Color:str, SelectColor:str, ButtonID:list):
 				super().__init__(Parent, wx.ID_ANY)
 				self.sizerPlayer = wx.BoxSizer(wx.VERTICAL)
 
@@ -149,7 +143,7 @@ class WindowFrame(wx.Frame):
 				self.sizerPlayer.Add(self.textPlayer, 0, wx.GROW|wx.BOTTOM, border=10)
 
 				#ボタン・パネルを作成
-				self.panelButton = self.ButtonPanel(self, SelectColor, ButtonID)
+				self.panelButton = self.ButtonPanel(self, Color, SelectColor, ButtonID)
 				self.sizerPlayer.Add(self.panelButton)
 
 				self.SetSizer(self.sizerPlayer)
@@ -166,9 +160,9 @@ class WindowFrame(wx.Frame):
 
 			#プレイヤー数分のコントローラ・パネルを作成
 			self.listPanel = []
-			for i in range(len(PlayerInfos)):
+			for i in range(NumPlayers):
 				ID_BUTTON.append([])
-				self.listPanel.append(self.PlayerPanel(self, PlayerInfos[i].Label, PlayerInfos[i].Color, ID_BUTTON[i]))
+				self.listPanel.append(self.PlayerPanel(self, PlayerInfos[i].Label, PlayerInfos[i].Color, PlayerInfos[i].SelectColor, ID_BUTTON[i]))
 				self.sizerController.Add(self.listPanel[i], 0, flag=wx.GROW|wx.ALL|wx.ALIGN_CENTER, border=20)
 
 			self.SetSizer(self.sizerController)
@@ -193,7 +187,7 @@ class WindowFrame(wx.Frame):
 		self.rootLayout = wx.BoxSizer(wx.VERTICAL)
 
 		#ステージ・パネルを作成
-		self.panelStage = self.StagePanel(self.rootPanel, self.game)
+		self.panelStage = self.StagePanel(self.rootPanel, self.game.getPanels())
 		self.rootLayout.Add(self.panelStage, 0, wx.ALIGN_CENTER|wx.TOP, border=50)
 
 		#コントローラ・パネルを作成
@@ -218,5 +212,5 @@ class WindowFrame(wx.Frame):
 		self.panelController.ResetIntentions()
 
 	def Update(self):
-		self.panelStage.Update()
+		self.panelStage.Update([self.game._1PAgents[0], self.game._1PAgents[1], self.game._2PAgents[0], self.game._2PAgents[1]], self.game.getPanels())
 		self.Refresh()
