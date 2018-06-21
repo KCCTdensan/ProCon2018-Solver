@@ -25,7 +25,10 @@ class Game:
 		if self.randtype == 0:
 			for y in range(_yLen//2):
 				for x in range(_xLen//2):
-					PanelsScore = Ran.randint(-5, 5)
+					PanelsScore = Ran.randint(0,16)
+					IsNegative = Ran.randint(0,9)
+					if IsNegative == 0:
+						PanelsScore = -PanelsScore
 					self._Panels[y][x] = Panel(PanelsScore)
 					self._Panels[_yLen - 1 - y][x] = copy.copy(self._Panels[y][x])
 					self._Panels[y][_xLen - 1 - x] = copy.copy(self._Panels[y][x])
@@ -33,13 +36,19 @@ class Game:
 		elif self.randtype == 1:
 			for y in range(_yLen):
 				for x in range(_xLen//2):
-					PanelsScore = Ran.randint(-5, 5)
+					PanelsScore = Ran.randint(0,16)
+					IsNegative = Ran.randint(0,9)
+					if IsNegative == 0:
+						PanelsScore = -PanelsScore
 					self._Panels[y][x] = Panel(PanelsScore)
 					self._Panels[y][_xLen - 1 - x] = copy.copy(self._Panels[y][x])
 		elif self.randtype == 2:
 			for y in range(_yLen//2):
 				for x in range(_xLen):
-					PanelsScore = Ran.randint(-5, 5)
+					PanelsScore = Ran.randint(0,16)
+					IsNegative = Ran.randint(0,9)
+					if IsNegative == 0:
+						PanelsScore = -PanelsScore
 					self._Panels[y][x] = Panel(PanelsScore)
 					self._Panels[_yLen - y - 1][x] = copy.copy(self._Panels[y][x])
 		self._Panels[Agenty][Agentx] = Panel(0)
