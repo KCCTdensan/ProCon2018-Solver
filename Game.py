@@ -59,70 +59,76 @@ class Game:
 	def UpdatePanelSurrounded(self):
 		NumY = len(self._Panels)
 		NumX = len(self._Panels[0])
-		checkedPanel = np.zeros(NumY, NumX)
+		checkedPanel = np.zeros((2, NumY, NumX), dtype = int)
 
-		def set(x:int, y:int, surrounded:int):
-			if (checkedPanel[y][x] == 2) or (self._Panels[y][x].getState() != 0):
+		def set(x:int, y:int, team:int, surrounded:bool):
+			if self._Panels[y][x].getState() != 0:
+				self._Panels[y][x].setSurrounded(team, False)
 				return
-			self._Panels[y][x].setSurrounded(surrounded)
-			checkedPanel[y][x] = 2
+			if checkedPanel[team][y][x] == 2:
+				return
+
+			checkedPanel[team][y][x] = 2
+			
+			self._Panels[y][x].setSurrounded(team, surrounded)
+
 			if x > 0:
-				set(x - 1, y)
+				set(x - 1, y, team, surrounded)
 			if y > 0:
-				set(x, y - 1)
+				set(x, y - 1, team, surrounded)
 			if x < NumX - 1:
-				set(x + 1, y)
+				set(x + 1, y, team, surrounded)
 			if y < NumY - 1:
-				set(x, y + 1)
+				set(x, y + 1, team, surrounded)
 
-		def check(x, y)->int:
-			if checkedPanel[y][x] != 0:
-				return -1
-
-			checkedPanel[y][x] = 1
+		def check(x:int, y:int, team:int)->int:
 			panelState = self._Panels[y][x].getState()
-			if panelState != 0:
-				return panelState
+			if panelState == team + 1:
+				return 1
+			if checkedPanel[team][y][x] != 0:
+				return -1
+			
+			checkedPanel[team][y][x] = 1
 
 			if (x == 0) or (x == NumX - 1) or (y == 0) or (y == NumY - 1):
-				set(x, y, 0)
+				set(x, y, team, False)
 				return 0
-
-			t = check(x, y + 1)
-			if t == 0:
-				return 0
-			r = check(x + 1, y)
-			if r == 0:
-				return 0
-			b = check(x, y - 1)
-			if b == 0:
-				return 0
-			l = check(x - 1, y)
+			
+			l = check(x - 1, y, team)
 			if l == 0:
 				return 0
-			if (t == r) and (t == b) and (t == l):
-				return t
-			else:
-				set(x, y, 0)
+			t = check(x, y + 1, team)
+			if t == 0:
+				return 0
+			r = check(x + 1, y, team)
+			if r == 0:
+				return 0
+			b = check(x, y - 1, team)
+			if b == 0:
 				return 0
 
-		for y in range(NumY):
-			for x in range(NumX):
-				if checkedPanel[y][x] == 0:
-					ret = check(x, y)
-					if ret != 0:
-						set(x, y, ret)
+			if (l == -1) and (t == -1) and (r == -1) and (b == -1):
+				return -1
+			else:
+				return 1
+
+		for t in range(2):
+			for y in range(NumY):
+				for x in range(NumX):
+					if checkedPanel[t][y][x] == 0:
+						ret = check(x, y, t)
+						if ret == 1:
+							set(x, y, t, True)
 			
 	def score(self): #得点計算
 		regionPoint1 = 0
 		regionPoint2 = 0
 		NumY = len(self._Panels)
 		NumX = len(self._Panels[0])
-		searchedPanels = np.zeros_like(self._Panels, dtype = np.bool)
 		self._1Pscore = 0
 		self._2Pscore = 0
 
-		UpdatePanelSurrounded()
+		self.UpdatePanelSurrounded()
 
 		for y in range(NumY):
 			for x in range(NumX):
@@ -131,9 +137,9 @@ class Game:
 				panelScore = panel.getScore()
 				panelSurrounded = panel.getSurrounded()
 				if panelState == 0:
-					if panelSurrounded == 1:
+					if panelSurrounded[0]:
 						self._1Pscore += abs(panelScore)
-					elif panelSurrounded == 2:
+					if panelSurrounded[1]:
 						self._2Pscore += abs(panelScore)
 				elif panelState == 1:
 					self._1Pscore += panelScore

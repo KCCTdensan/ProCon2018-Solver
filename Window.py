@@ -11,8 +11,11 @@ class PlayerInfo:
 ID_BUTTON = []
 ID_GO:int
 ColorPanelBkgnd = "#5f5f5f"
-Color1PRegion = "#8e2f2f"
-Color2PRegion = "#2f5f8e"
+ColorPanel1PRegion = "#af5f5f"
+ColorPanel2PRegion = "#5f8faf"
+ColorPanel1P2PRegion = "#a349a4"
+ColorPanel1PTile = "#8e2f2f"
+ColorPanel2PTile = "#2f5f8e"
 PlayerInfos = (PlayerInfo("1P-1", "#ed1c24", "#f78e94"), PlayerInfo("1P-2", "#ff7f27", "#ffbe93"), PlayerInfo("2P-1", "#22b14c", "#82e8a0"), PlayerInfo("2P-2", "#00a2e8", "#75d6ff"))
 NumPlayers = len(PlayerInfos)
 
@@ -78,11 +81,19 @@ class WindowFrame(wx.Frame):
 				for ix in range(len(Panels[0])):
 					State = Panels[iy][ix].getState()
 					if State == 0:
-						self.listPanelPanel[iy][ix].SetBackgroundColour(ColorPanelBkgnd)
+						Surrounded = Panels[iy][ix].getSurrounded()
+						if not Surrounded[0] and not Surrounded[1]:
+							self.listPanelPanel[iy][ix].SetBackgroundColour(ColorPanelBkgnd)
+						elif Surrounded[0] and not Surrounded[1]:
+							self.listPanelPanel[iy][ix].SetBackgroundColour(ColorPanel1PRegion)
+						elif not Surrounded[0] and Surrounded[1]:
+							self.listPanelPanel[iy][ix].SetBackgroundColour(ColorPanel2PRegion)
+						elif Surrounded[0] and Surrounded[1]:							
+							self.listPanelPanel[iy][ix].SetBackgroundColour(ColorPanel1P2PRegion)
 					elif State == 1:						
-						self.listPanelPanel[iy][ix].SetBackgroundColour(Color1PRegion)
+						self.listPanelPanel[iy][ix].SetBackgroundColour(ColorPanel1PTile)
 					elif State == 2:						
-						self.listPanelPanel[iy][ix].SetBackgroundColour(Color2PRegion)
+						self.listPanelPanel[iy][ix].SetBackgroundColour(ColorPanel2PTile)
 
 	class ControllerPanel(wx.Panel):
 		"""
