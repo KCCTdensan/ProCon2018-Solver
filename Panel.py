@@ -1,15 +1,23 @@
 class Panel:
-	_score: int #パネルが持つ点数
-	_state: int #パネルの状態
+	def __init__(self, score:int): #パネル生成
+		self._score = score #パネルが持つ点数
+		self._state = 0 #パネルの状態(0:中立，1:1P，2:2P)
+		self._surrounded = [False, False] #パネルが囲まれているか(False:囲まれていない, True:パネルに囲まれている)
 	
-	def __init__(self, score): #パネル生成
-		pass
-	
-	def new(score): #コンストラクタ呼び出し
-		return Panel(score)
-
-	def mkcard(self, team): #パネルにカードを置く(team:チーム)
-		pass
+	def mkcard(self, team:int): #パネルにカードを置く(team:チーム)
+		self._state = team
 
 	def rmcard(self): #パネルに置いているカードを除去する
-		pass
+		self._state = 0
+
+	def getScore(self):
+		return self._score
+
+	def getState(self):
+		return self._state
+
+	def getSurrounded(self)->list:
+		return self._surrounded
+
+	def setSurrounded(self, team:int, surrounded:bool):
+		self._surrounded[team] = surrounded
