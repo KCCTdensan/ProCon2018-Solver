@@ -36,10 +36,11 @@ class WindowFrame(wx.Frame):
 				self.sizerPanel = wx.BoxSizer(wx.VERTICAL)
 
 				#パネルに点数を表示
-				font = wx.Font(30, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL)
+				font = wx.Font(20, wx.FONTFAMILY_TELETYPE, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_LIGHT)
 				self.text = wx.StaticText(self, wx.ID_ANY, str(StagePanel.getScore()))
 				self.text.SetFont(font)
 				self.text.Center()
+				self.text.SetForegroundColour("#ffffff")
 				self.sizerPanel.Add(self.text, flag=wx.GROW)
 
 				self.SetSizer(self.sizerPanel)
@@ -60,7 +61,6 @@ class WindowFrame(wx.Frame):
 				self.listPanelPanel.append([])
 				for ix in range(len(Panels[0])):
 					self.listPanelPanel[iy].append(self.PanelPanel(self, Panels[iy][ix]))
-					self.listPanelPanel[iy][ix].text.SetForegroundColour("#ffffff")
 					self.sizerStage.Add(self.listPanelPanel[iy][ix], 0, wx.ALL, border=5)
 
 			self.SetSizer(self.sizerStage)
@@ -94,6 +94,41 @@ class WindowFrame(wx.Frame):
 						self.listPanelPanel[iy][ix].SetBackgroundColour(ColorPanel1PTile)
 					elif State == 2:						
 						self.listPanelPanel[iy][ix].SetBackgroundColour(ColorPanel2PTile)
+
+	class PointPanel(wx.Panel):
+		"""
+		ポイント・パネル
+		"""
+		def __init__(self, Parent:wx.Panel):
+			super().__init__(Parent, wx.ID_ANY)
+			
+			font = wx.Font(15, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_LIGHT)
+			self.sizerPoint = wx.BoxSizer(wx.VERTICAL)
+			self.text1PTilePoint = wx.StaticText(self, wx.ID_ANY, "1P Tile Point : 000")
+			self.text1PTilePoint.SetForegroundColour("#ffffff")
+			self.text1PTilePoint.SetFont(font)
+			self.text1PRegionPoint = wx.StaticText(self, wx.ID_ANY, "1P Region Point : 000")
+			self.text1PRegionPoint.SetForegroundColour("#ffffff")
+			self.text1PRegionPoint.SetFont(font)
+			self.text2PTilePoint = wx.StaticText(self, wx.ID_ANY, "2P Tile Point : 000")
+			self.text2PTilePoint.SetForegroundColour("#ffffff")
+			self.text2PTilePoint.SetFont(font)
+			self.text2PRegionPoint = wx.StaticText(self, wx.ID_ANY, "2P Region Point : 000")
+			self.text2PRegionPoint.SetForegroundColour("#ffffff")
+			self.text2PRegionPoint.SetFont(font)
+
+			self.sizerPoint.Add(self.text1PTilePoint, flag = wx.GROW)
+			self.sizerPoint.Add(self.text1PRegionPoint, flag = wx.GROW)
+			self.sizerPoint.Add(self.text2PTilePoint, flag = wx.GROW)
+			self.sizerPoint.Add(self.text2PRegionPoint, flag = wx.GROW)
+
+			self.SetSizer(self.sizerPoint)
+
+		def Update(self, Points:list):
+			self.text1PTilePoint.SetLabelText("1P Tile Point : " + str(Points[0]))
+			self.text1PRegionPoint.SetLabelText("1P Region Point : " + str(Points[1]))
+			self.text2PTilePoint.SetLabelText("2P Tile Point : " + str(Points[2]))
+			self.text2PRegionPoint.SetLabelText("2P Region Point : " + str(Points[3]))
 
 	class ControllerPanel(wx.Panel):
 		"""
@@ -190,7 +225,7 @@ class WindowFrame(wx.Frame):
 		self.game = Game()
 		gamePanels = self.game.getPanels()
 
-		self.SetSize((780, len(gamePanels)*50 + 380))
+		self.SetSize((780, len(gamePanels)*50 + 440))
 
 		self.rootPanel = wx.Panel(self, wx.ID_ANY)
 		self.rootPanel.SetBackgroundColour("#1f1f1f")
@@ -199,19 +234,25 @@ class WindowFrame(wx.Frame):
 
 		#ステージ・パネルを作成
 		self.panelStage = self.StagePanel(self.rootPanel, self.game.getPanels())
-		self.rootLayout.Add(self.panelStage, 0, wx.ALIGN_CENTER|wx.TOP, border=50)
+		self.rootLayout.Add(self.panelStage, 0, wx.ALIGN_CENTER|wx.ALL, border=15)
+
+		#ポイント・パネルを作成
+		self.panelPoint = self.PointPanel(self.rootPanel)
+		self.rootLayout.Add(self.panelPoint, 0, wx.GROW|wx.LEFT, border=50)
 
 		#コントローラ・パネルを作成
 		self.panelController = self.ControllerPanel(self.rootPanel)
-		self.rootLayout.Add(self.panelController, 0, wx.ALIGN_CENTER)
+		self.rootLayout.Add(self.panelController, 0, wx.ALIGN_CENTER|wx.BOTTOM, border=15)
 		
 		#実行ボタンを作成
 		ID_GO = wx.NewId()
 		self.buttonAction = wx.Button(self.rootPanel, ID_GO, "実行", size=(80, 40))
-		self.rootLayout.Add(self.buttonAction, 0, wx.ALIGN_CENTER|wx.BOTTOM, border=30)
+		self.rootLayout.Add(self.buttonAction, 0, wx.ALIGN_CENTER|wx.BOTTOM, border=15)
 		self.Bind(wx.EVT_BUTTON, self.OnButton, id=ID_GO)
 
 		self.rootPanel.SetSizer(self.rootLayout)
+
+		#self.SetSize((self.rootPanel.GetMaxWidth(), self.rootPanel.GetMaxHeight()))
 
 		self.Update()
 
@@ -224,4 +265,5 @@ class WindowFrame(wx.Frame):
 
 	def Update(self):
 		self.panelStage.Update([self.game._1PAgents[0], self.game._1PAgents[1], self.game._2PAgents[0], self.game._2PAgents[1]], self.game.getPanels())
+		self.panelPoint.Update(self.game.getPoints())
 		self.Refresh()
