@@ -10,8 +10,10 @@ from Window import *
 class Game:
 	def __init__(self): #ステージ生成
 		self._turn = Ran.randint(60, 120) #最終ターン数
-		self._1Pscore = 0 #1Pの得点
-		self._2Pscore = 0 #2Pの得点
+		self._1PTileScore = 0 #1Pのタイルポイント
+		self._2PTileScore = 0 #2Pのタイルポイント
+		self._1PRegionScore = 0 #1Pの領域ポイント
+		self._2PRegionScore = 0 #1Pの領域ポイント
 		#配列yの中に配列xが入る構造。定義時に行の中に列が入り込む、numpy.Zerosの仕様に基づく。
 		_xLen = Ran.randint(3, 12)
 		_yLen = Ran.randint(3, 12)
@@ -125,8 +127,10 @@ class Game:
 		regionPoint2 = 0
 		NumY = len(self._Panels)
 		NumX = len(self._Panels[0])
-		self._1Pscore = 0
-		self._2Pscore = 0
+		self._1PTileScore = 0
+		self._2PTileScore = 0
+		self._1PRegionScore = 0
+		self._2PRegionScore = 0
 
 		self.UpdatePanelSurrounded()
 
@@ -138,13 +142,13 @@ class Game:
 				panelSurrounded = panel.getSurrounded()
 				if panelState == 0:
 					if panelSurrounded[0]:
-						self._1Pscore += abs(panelScore)
+						self._1PRegionScore += abs(panelScore)
 					if panelSurrounded[1]:
-						self._2Pscore += abs(panelScore)
+						self._2PRegionScore += abs(panelScore)
 				elif panelState == 1:
-					self._1Pscore += panelScore
+					self._1PTileScore += panelScore
 				elif panelState == 2:
-					self._2Pscore += panelScore
+					self._2PTileScore += panelScore
 
 	def action(self, P1Intentions:list, P2Intentions:list): #エージェントの意思をみて，実際に移動orパネル操作
 		#引数 P1Intensions:[[x, y], [x, y]]、P2Intentions:[[x, y], [x, y]]
@@ -189,3 +193,6 @@ class Game:
 		
 	def getPanels(self):
 		return self._Panels
+
+	def getPoints(self)->list:
+		return [self._1PTileScore, self._1PRegionScore, self._2PTileScore, self._2PRegionScore]
