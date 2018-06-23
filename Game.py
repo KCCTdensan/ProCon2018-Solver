@@ -62,7 +62,7 @@ class Game:
 		checkedPanel = np.zeros((2, NumY, NumX), dtype = int)
 
 		def set(x:int, y:int, team:int, surrounded:bool):
-			if self._Panels[y][x].getState() != 0:
+			if self._Panels[y][x].getState() == team + 1:
 				self._Panels[y][x].setSurrounded(team, False)
 				return
 			if checkedPanel[team][y][x] == 2:
