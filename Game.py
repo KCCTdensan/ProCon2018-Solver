@@ -150,12 +150,10 @@ class Game:
 				elif panelState == 2:
 					self._2PTileScore += panelScore
 
-	def action(self, PlayerIntentions:list,PlayerChoices:list): #エージェントの意思をみて，実際に移動orパネル操作
-		#引数 PlayerIntentions[[x,y],[x,y],[x,y],[x,y]] Player1:前2つ Player2:後2つ
-		#     PlayerChoices[P1_1,P1_2,P2_1,P2_2] P1_1,P1_2,P2_1,P2_2は0か1が入る 0:移動 1:パネル除去
+	def action(self, PlayerIntentions:list): #エージェントの意思をみて，実際に移動orパネル操作
+		#引数 PlayerIntentions[[x,y,z],[x,y,z],[x,y,z],[x,y,z]] Player1:前2つ Player2:後2つ x,y:座標 z:0で移動 1でパネル除去
 
-		Intentions = [[PlayerIntentions[0][1], PlayerIntentions[0][0]], [PlayerIntentions[1][1], PlayerIntentions[1][0]], [PlayerIntentions[0][1], PlayerIntentions[0][0]], [PlayerIntentions[1][1], PlayerIntentions[1][0]]]
-		Choices = [PlayerChoices[0],PlayerChoices[1],PlayerChoices[2],PlayerChoices[3]]
+		Intentions = [[PlayerIntentions[0][1], PlayerIntentions[0][0],PlayerIntentions[0][2]], [PlayerIntentions[1][1], PlayerIntentions[1][0],PlayerIntentions[1][2]], [PlayerIntentions[2][1], PlayerIntentions[2][0],PlayerIntentions[2][2]], [PlayerIntentions[3][1], PlayerIntentions[3][0],PlayerIntentions[3][2]]]
 		CurrentPositions = [self._1PAgents[0]._point, self._1PAgents[1]._point, self._2PAgents[0]._point, self._2PAgents[1]._point]
 		NextPositions = []
 		for i in range(4):
@@ -187,7 +185,7 @@ class Game:
 				continue
 			OperatedPanel = self._Panels[NextPositions[i][0]][NextPositions[i][1]]
 			State = OperatedPanel.getState()
-			if Choices[i] == 0:
+			if Intentions[i][2] == 0:
 				if (State == 0) or (State == Team[i]):
 					OperatedPanel.mkcard(Team[i])
 					Agents[i].move(Intentions[i])
