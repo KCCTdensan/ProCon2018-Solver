@@ -63,9 +63,9 @@ class Game:
 					if IsNegative == 0:
 						PanelsScore = -PanelsScore
 					self._Panels[y][x] = Panel(PanelsScore)
-					self._Panels[_yLen - 1 - y][x] = copy.deepcopy(self._Panels[y][x])
-					self._Panels[y][_xLen - 1 - x] = copy.deepcopy(self._Panels[y][x])
-					self._Panels[_yLen - 1 - y][ _xLen - 1 - x] = copy.deepcopy(self._Panels[y][x])
+					self._Panels[_yLen - 1 - y][x] = Panel(PanelsScore)
+					self._Panels[y][_xLen - 1 - x] = Panel(PanelsScore)
+					self._Panels[_yLen - 1 - y][ _xLen - 1 - x] = Panel(PanelsScore)
 		elif self.randtype == 1:
 			for y in range(_yLen):
 				for x in range(_xLen2):
@@ -74,7 +74,7 @@ class Game:
 					if IsNegative == 0:
 						PanelsScore = -PanelsScore
 					self._Panels[y][x] = Panel(PanelsScore)
-					self._Panels[y][_xLen - 1 - x] = copy.deepcopy(self._Panels[y][x])
+					self._Panels[y][_xLen - 1 - x] = Panel(PanelsScore)
 		elif self.randtype == 2:
 			for y in range(_yLen2):
 				for x in range(_xLen):
@@ -83,11 +83,7 @@ class Game:
 					if IsNegative == 0:
 						PanelsScore = -PanelsScore
 					self._Panels[y][x] = Panel(PanelsScore)
-					self._Panels[_yLen - y - 1][x] = copy.deepcopy(self._Panels[y][x])
-		self._Panels[Agenty][Agentx] = Panel(0)
-		self._Panels[_yLen - 1 - Agenty][Agentx] = Panel(0)
-		self._Panels[Agenty][_xLen - 1 - Agentx] = Panel(0)
-		self._Panels[_yLen - 1 - Agenty][_xLen - 1 - Agentx] = Panel(0)
+					self._Panels[_yLen - y - 1][x] = Panel(PanelsScore)
 
 	def UpdatePanelSurrounded(self):
 		NumY = len(self._Panels)
