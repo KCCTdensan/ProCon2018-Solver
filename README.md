@@ -5,7 +5,7 @@
 ## 依存
 - wxPython
 - NumPy
-(QRコード読み取り用↓)
+- (QRコード読み取り用↓)
 - pyzbar
 - pillow
 - ZBarを以下よりダウンロード、インストール
