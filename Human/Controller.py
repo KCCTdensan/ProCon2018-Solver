@@ -64,8 +64,8 @@ class ControllerFrame(wx.Frame):
 			#ボタン・パネルを作成
 			self.__panelButton = self.ButtonPanel(self, Color, SelectColor, ButtonID)
 			self.__sizerPlayer.Add(self.__panelButton)
-			self.SetBackgroundColour("#1f1f1f")
 			self.SetSizer(self.__sizerPlayer)
+			self.SetBackgroundColour("#1f1f1f")
 
 		def GetIntention(self)->list:
 			return self.__panelButton.GetIntention()
@@ -83,10 +83,10 @@ class ControllerFrame(wx.Frame):
 		for i in range(2):
 			self.__ID_BUTTON.append([])
 			self.__listPanel.append(self.PlayerPanel(self, PlayerInfos[i].Label, PlayerInfos[i].Color, PlayerInfos[i].SelectColor, self.__ID_BUTTON[i]))
-			self.__sizerRoot.Add(self.__listPanel[i], 0, wx.GROW|wx.ALL, border=100)
-		self.SetSizer(self.__sizerRoot)
-		#self.__panelRoot.SetBackgroundColour("#1f1f1f")
+			self.__sizerRoot.Add(self.__listPanel[i], 0, wx.GROW|wx.ALL, border=20)
 		self.__panelRoot.SetSizer(self.__sizerRoot)
+		self.__panelRoot.SetBackgroundColour("#1f1f1f")
+		self.__panelRoot.Fit()
 		self.Fit()
 
 	def GetIntentions(self)->list:
