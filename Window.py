@@ -11,7 +11,7 @@ ColorPanel2PRegion = "#5f8faf"
 ColorPanel1P2PRegion = "#a349a4"
 ColorPanel1PTile = "#8e2f2f"
 ColorPanel2PTile = "#2f5f8e"
-NumPlayers = len(PlayerInfos)
+NumPlayers = 4
 
 class WindowFrame(wx.Frame):
 	"""

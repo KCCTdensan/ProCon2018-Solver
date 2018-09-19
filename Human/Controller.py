@@ -58,12 +58,13 @@ class ControllerFrame(wx.Frame):
 			super().__init__(Parent, wx.ID_ANY)
 			self.__sizerPlayer = wx.BoxSizer(wx.VERTICAL)
 			#コントローラのラベルを作成
-			#self.__textPlayer = wx.StaticText(self, wx.ID_ANY, Label, style=wx.TE_CENTER)
-			#self.__textPlayer.SetForegroundColour("#ffffff")
-			#self.__sizerPlayer.Add(self.__textPlayer, 0)
+			self.__textPlayer = wx.StaticText(self, wx.ID_ANY, Label, style=wx.TE_CENTER)
+			self.__textPlayer.SetForegroundColour("#ffffff")
+			self.__sizerPlayer.Add(self.__textPlayer, 0, wx.GROW|wx.BOTTOM, border=10)
 			#ボタン・パネルを作成
 			self.__panelButton = self.ButtonPanel(self, Color, SelectColor, ButtonID)
 			self.__sizerPlayer.Add(self.__panelButton)
+			self.SetBackgroundColour("#1f1f1f")
 			self.SetSizer(self.__sizerPlayer)
 
 		def GetIntention(self)->list:
@@ -82,9 +83,9 @@ class ControllerFrame(wx.Frame):
 		for i in range(2):
 			self.__ID_BUTTON.append([])
 			self.__listPanel.append(self.PlayerPanel(self, PlayerInfos[i].Label, PlayerInfos[i].Color, PlayerInfos[i].SelectColor, self.__ID_BUTTON[i]))
-			self.__sizerRoot.Add(self.__listPanel[i], 0, wx.ALL, border=10)
-			self.SetSizer(self.__sizerRoot)
-		self.__panelRoot.SetBackgroundColour("#1f1f1f")
+			self.__sizerRoot.Add(self.__listPanel[i], 0, wx.GROW|wx.ALL, border=100)
+		self.SetSizer(self.__sizerRoot)
+		#self.__panelRoot.SetBackgroundColour("#1f1f1f")
 		self.__panelRoot.SetSizer(self.__sizerRoot)
 		self.Fit()
 
