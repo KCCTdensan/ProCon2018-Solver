@@ -130,6 +130,20 @@ class WindowFrame(wx.Frame):
 			self.text2PTilePoint.SetLabelText("2P Tile Point : " + str(Points[2]))
 			self.text2PRegionPoint.SetLabelText("2P Region Point : " + str(Points[3]))
 
+	class AIPanel(wx.Panel):
+		def __init__(self,Parent:wx.Panel,id):
+			super().__init__(Parent,wx.ID_ANY)
+			font = wx.Font(15, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_LIGHT)
+			self.sizerAI = wx.BoxSizer(wx.VERTICAL)
+			self.textAI = wx.StaticText(self,wx.ID_ANY,'AI:')
+			self.textAI.SetForegroundColour("#ffffff")
+			self.textAI.SetFont(font)
+			self.sizerAI.Add(self.textAI,flag=wx.GROW)
+			self.SetSizer(self.sizer)
+
+		def Update(self, Points:list):
+			self.textAI.SetLabelText("AI:")
+
 	class ControllerPanel(wx.Panel):
 		"""
 		コントローラ・パネル
@@ -138,6 +152,7 @@ class WindowFrame(wx.Frame):
 			"""
 			プレイヤー・パネル
 			"""
+
 			class ButtonPanel(wx.Panel):
 				"""
 				ボタン・パネル
