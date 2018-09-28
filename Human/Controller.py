@@ -33,18 +33,18 @@ class ControllerFrame(wx.Frame):
 					self.__listButton.append(wx.Button(self, ID[i], ButtonCollection[i], size=ButtonSize))
 					self.__listButton[i].SetBackgroundColour(Color)
 					self.__listButton[i].SetForegroundColour("#ffffff")
-					self.__sizerButton.Add(self.__listButton[i], 0)
-					self.Bind(wx.EVT_BUTTON, self.OnButton, id=ID[i])
-					self.SetSizer(self.__sizerButton)
+					self.__sizerButton.Add(self.__listButton[i])
+					self.Bind(wx.EVT_BUTTON, self.__OnButton, id=ID[i])
+				self.SetSizer(self.__sizerButton)
 
-			def OnButton(self, e:wx.Event):
+			def __OnButton(self, e:wx.Event):
 				ID = e.GetId()
 				Button = e.GetEventObject()
 				self.ResetIntention()
 				for Player in ID_BUTTON:
 					for iAction in range(len(Player)):
 						if Player[iAction] == ID:
-							self.__Intention = [iAction % 3 - 1, iAction // 3 - 1]
+							self.__Intention = [iAction % 3 - 1, iAction // 3 - 1, 0]
 				Button.SetBackgroundColour(self.__SelectColor)
 
 			def GetIntention(self)->list:
@@ -88,6 +88,7 @@ class ControllerFrame(wx.Frame):
 		self.__panelRoot.SetBackgroundColour("#1f1f1f")
 		self.__panelRoot.Fit()
 		self.Fit()
+		self.Update()
 
 	def GetIntentions(self)->list:
 		return [self.__listPanel[0].GetIntention(), self.__listPanel[1].GetIntention()]

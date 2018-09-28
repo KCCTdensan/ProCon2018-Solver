@@ -18,7 +18,7 @@ class Player_Human():
 		self.__Window.Show()
 
 #TEST
-app = wx.App()
+app = wx.App(False)
 h = Player_Human()
 h.showWindow()
 app.MainLoop()
