@@ -1,7 +1,12 @@
-import wx
+﻿import wx
 from Game import Game
 from Panel import Panel
 
+class PlayerInfo:
+	def __init__(self, Label:str, Color:str, SelectColor:str):
+		self.Label = Label
+		self.Color = Color
+		self.SelectColor = SelectColor
 		
 ID_BUTTON = []
 ID_GO:int
@@ -11,7 +16,8 @@ ColorPanel2PRegion = "#5f8faf"
 ColorPanel1P2PRegion = "#a349a4"
 ColorPanel1PTile = "#8e2f2f"
 ColorPanel2PTile = "#2f5f8e"
-NumPlayers = 4
+PlayerInfos = (PlayerInfo("1P-1", "#ed1c24", "#f78e94"), PlayerInfo("1P-2", "#ff7f27", "#ffbe93"), PlayerInfo("2P-1", "#22b14c", "#82e8a0"), PlayerInfo("2P-2", "#00a2e8", "#75d6ff"))
+NumPlayers = len(PlayerInfos)
 
 class WindowFrame(wx.Frame):
 	"""
@@ -124,47 +130,46 @@ class WindowFrame(wx.Frame):
 			self.text2PTilePoint.SetLabelText("2P Tile Point : " + str(Points[2]))
 			self.text2PRegionPoint.SetLabelText("2P Region Point : " + str(Points[3]))
 
-
 	def __init__(self):
 		super().__init__(None, wx.ID_ANY, "Procon", pos=(100, 50))
-		self.game = Game()
-		gamePanels = self.game.getPanels()
+		self.__game = Game()
+		gamePanels = self.__game.getPanels()
 
 		self.SetSize((780, len(gamePanels)*50 + 440))
 
-		self.rootPanel = wx.Panel(self, wx.ID_ANY)
-		self.rootPanel.SetBackgroundColour("#1f1f1f")
+		self.__panelRoot = wx.Panel(self, wx.ID_ANY)
+		self.__panelRoot.SetBackgroundColour("#1f1f1f")
 
-		self.rootLayout = wx.BoxSizer(wx.VERTICAL)
+		self.__sizerRoot = wx.BoxSizer(wx.VERTICAL)
 
 		#ステージ・パネルを作成
-		self.panelStage = self.StagePanel(self.rootPanel, self.game.getPanels())
-		self.rootLayout.Add(self.panelStage, 0, wx.ALIGN_CENTER|wx.ALL, border=15)
+		self.__panelStage = self.StagePanel(self.__panelRoot, gamePanels)
+		self.__sizerRoot.Add(self.__panelStage, 0, wx.ALIGN_CENTER|wx.ALL, border=15)
 
 		#ポイント・パネルを作成
-		self.panelPoint = self.PointPanel(self.rootPanel)
-		self.rootLayout.Add(self.panelPoint, 0, wx.GROW|wx.LEFT, border=50)
-
+		self.__panelPoint = self.PointPanel(self.__panelRoot)
+		self.__sizerRoot.Add(self.__panelPoint, 0, wx.GROW|wx.LEFT, border=50)
+				
 		#実行ボタンを作成
 		ID_GO = wx.NewId()
-		self.buttonAction = wx.Button(self.rootPanel, ID_GO, "実行", size=(80, 40))
-		self.rootLayout.Add(self.buttonAction, 0, wx.ALIGN_CENTER|wx.BOTTOM, border=15)
+		self.__buttonAction = wx.Button(self.__panelRoot, ID_GO, "実行", size=(80, 40))
+		self.__sizerRoot.Add(self.__buttonAction, 0, wx.ALIGN_CENTER|wx.BOTTOM, border=15)
 		self.Bind(wx.EVT_BUTTON, self.OnButton, id=ID_GO)
 
-		self.rootPanel.SetSizer(self.rootLayout)
+		self.__panelRoot.SetSizer(self.__sizerRoot)
+		self.__panelRoot.Fit()
 
-		#self.SetSize((self.rootPanel.GetMaxWidth(), self.rootPanel.GetMaxHeight()))
-
+		self.Fit()
 		self.Update()
 
 	def OnButton(self, e):
-		Intentions = self.panelController.GetIntentions()
-		self.game.action([Intentions[0], Intentions[1]], [Intentions[2], Intentions[3]])
-		self.game.score()
+		Intentions =[[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]#self.__panelController.GetIntentions()
+		self.__game.action(Intentions)
+		self.__game.score()
 		self.Update()
-		self.panelController.ResetIntentions()
+		self.__panelController.ResetIntentions()
 
 	def Update(self):
-		self.panelStage.Update([self.game._1PAgents[0], self.game._1PAgents[1], self.game._2PAgents[0], self.game._2PAgents[1]], self.game.getPanels())
-		self.panelPoint.Update(self.game.getPoints())
+		self.__panelStage.Update([self.__game._1PAgents[0], self.__game._1PAgents[1], self.__game._2PAgents[0], self.__game._2PAgents[1]], self.__game.getPanels())
+		self.__panelPoint.Update(self.__game.getPoints())
 		self.Refresh()

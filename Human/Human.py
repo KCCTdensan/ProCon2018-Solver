@@ -18,11 +18,11 @@ class Player_Human():
 		self.__Window.Show()
 
 #TEST
-def Test():
-	app = wx.App(False)
-	h = Player_Human()
-	h.showWindow()
-	app.MainLoop()
-
-if __name__=="__main__":
-	Test()
+#def Test():
+#	app = wx.App(False)
+#	h = Player_Human()
+#	h.showWindow()
+#	app.MainLoop()
+#
+#if __name__=="__main__":
+#	Test()
