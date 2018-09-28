@@ -34,10 +34,10 @@ class ControllerFrame(wx.Frame):
 					self.__listButton[i].SetBackgroundColour(Color)
 					self.__listButton[i].SetForegroundColour("#ffffff")
 					self.__sizerButton.Add(self.__listButton[i])
-					self.Bind(wx.EVT_BUTTON, self.__OnButton, id=ID[i])
+					self.Bind(wx.EVT_BUTTON, self.OnButton, id=ID[i])
 				self.SetSizer(self.__sizerButton)
 
-			def __OnButton(self, e:wx.Event):
+			def OnButton(self, e:wx.Event):
 				ID = e.GetId()
 				Button = e.GetEventObject()
 				self.ResetIntention()
@@ -79,16 +79,15 @@ class ControllerFrame(wx.Frame):
 		self.__sizerRoot = wx.BoxSizer(wx.HORIZONTAL)
 		#プレイヤー数分のコントローラ・パネルを作成
 		self.__listPanel = []
-		self.__ID_BUTTON = []
+		self.__IDButton = []
 		for i in range(2):
-			self.__ID_BUTTON.append([])
-			self.__listPanel.append(self.PlayerPanel(self, PlayerInfos[i].Label, PlayerInfos[i].Color, PlayerInfos[i].SelectColor, self.__ID_BUTTON[i]))
+			self.__IDButton.append([])
+			self.__listPanel.append(self.PlayerPanel(self, PlayerInfos[i].Label, PlayerInfos[i].Color, PlayerInfos[i].SelectColor, self.__IDButton[i]))
 			self.__sizerRoot.Add(self.__listPanel[i], 0, wx.GROW|wx.ALL, border=20)
 		self.__panelRoot.SetSizer(self.__sizerRoot)
 		self.__panelRoot.SetBackgroundColour("#1f1f1f")
 		self.__panelRoot.Fit()
 		self.Fit()
-		self.Update()
 
 	def GetIntentions(self)->list:
 		return [self.__listPanel[0].GetIntention(), self.__listPanel[1].GetIntention()]
