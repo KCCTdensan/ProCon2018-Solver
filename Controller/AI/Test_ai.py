@@ -1,5 +1,4 @@
 import random
-import cupy
 
 class AI(Player):
     def intention(self,Game:Game):#盤面の情報を渡してAgentの動かし方を返す
