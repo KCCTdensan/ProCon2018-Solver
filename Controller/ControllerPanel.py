@@ -55,10 +55,10 @@ class PlayerPanel(wx.Panel):
 		#コントローラのラベルを作成
 		self.__LabelText = wx.StaticText(self, wx.ID_ANY, Label, style=wx.TE_CENTER)
 		self.__LabelText.SetForegroundColour("#ffffff")
-		self.__Sizer.Add(self.__LabelText, 0, wx.GROW|wx.BOTTOM, border=10)
+		self.__Sizer.Add(self.__LabelText, 0, wx.GROW|wx.TOP|wx.BOTTOM, border=10)
 
 		#ボタン・パネルを作成
-		self.__IntentionKeysPanel = self.IntentionKeysPanel(self, Color, SelectColor)
+		self.__IntentionKeysPanel = IntentionKeysPanel(self, Color, SelectColor)
 		self.__Sizer.Add(self.__IntentionKeysPanel)
 		
 		self.SetSizer(self.__Sizer)
@@ -80,11 +80,11 @@ class ControllerPanel(wx.Panel):
 
 		#プレイヤー1のパネルを作成
 		self.__Player1Panel = PlayerPanel(self, Player1Info.Label, Player1Info.Color, Player1Info.SelectColor)
-		self.__Sizer.Add(self.__Player1Panel, wx.GROW|wx.ALL, border=20)
+		self.__Sizer.Add(self.__Player1Panel, 0, wx.GROW|wx.ALL, border=20)
 
 		#プレイヤー2のパネルを作成
 		self.__Player2Panel = PlayerPanel(self, Player2Info.Label, Player2Info.Color, Player2Info.SelectColor)
-		self.__Sizer.Add(self.__Player2Panel, wx.GROW|wx.ALL, border=20)	
+		self.__Sizer.Add(self.__Player2Panel, 0, wx.GROW|wx.ALL, border=20)	
 
 		self.SetSizer(self.__Sizer)
 		self.Fit()
