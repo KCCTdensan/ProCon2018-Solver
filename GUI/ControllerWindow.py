@@ -1,14 +1,12 @@
 ﻿import wx
 from .AIEvaluationPanel import AIEvaluationPanel
-from .ControllerPanel import PlayerInfo
 from .ControllerPanel import ControllerPanel
-from .Player import Player
 
-class GUIWindow(wx.Frame):
+class ControllerFrame(wx.Frame):
 	"""
 	GUIウィンドウ
 	"""
-	def __init__(self, Player1Info:PlayerInfo, Player2Info:PlayerInfo, AI:Player):
+	def __init__(self, Player1Info, Player2Info, AI):
 		super().__init__(None, wx.ID_ANY, "Controller")
 		self.__RootPanel = wx.Panel(self, wx.ID_ANY)
 		self.__RootPanel.SetBackgroundColour("#1f1f1f")

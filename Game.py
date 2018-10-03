@@ -4,8 +4,8 @@ import subprocess
 import random as Ran
 import math
 import copy
-from pyzbar.pyzbar import decode
-from PIL import Image
+#from pyzbar.pyzbar import decode
+#from PIL import Image
 from Panel import *
 from Agent import *
 from Window import *
@@ -138,8 +138,7 @@ class Game:
 
 			if (l == -1) and (t == -1) and (r == -1) and (b == -1):
 				return -1
-			else:
-				return 1
+			return 1
 
 		for t in range(2):
 			for y in range(NumY):

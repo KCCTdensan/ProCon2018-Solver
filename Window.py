@@ -1,7 +1,8 @@
 import wx
 from Game import Game
 from Panel import Panel
-from Controller import Human
+from GUI.ControllerWindow import ControllerFrame
+from Engine.Test_ai import AI
 
 class PlayerInfo:
 	def __init__(self, Label:str, Color:str, SelectColor:str):
@@ -9,8 +10,8 @@ class PlayerInfo:
 		self.Color = Color
 		self.SelectColor = SelectColor
 		
-ID_BUTTON = []
-ID_GO:int
+#ID_BUTTON = []
+#ID_GO:int
 ColorPanelBkgnd = "#5f5f5f"
 ColorPanel1PRegion = "#af5f5f"
 ColorPanel2PRegion = "#5f8faf"
@@ -137,15 +138,12 @@ class WindowFrame(wx.Frame):
 		self.__Game = Game()
 		gamePanels = self.__Game.getPanels()
 
-		#プラグインのインスタンス生成
-		self.__Human1 = Human.Player_Human(None)
-		self.__Human1.showWindow()
-		self.__Human2 = Human.Player_Human(None)
-		self.__Human2.showWindow()
+		#コントローラのインスタンス生成
+		self.__Human1 = ControllerFrame(PlayerInfo("1P-1", "#ed1c24", "#f78e94"), PlayerInfo("1P-2", "#ff7f27", "#ffbe93"), AI())
+		self.__Human2 = ControllerFrame(PlayerInfo("2P-1", "#22b14c", "#82e8a0"), PlayerInfo("2P-2", "#00a2e8", "#75d6ff"), AI())
 
 		self.__RootPanel = wx.Panel(self, wx.ID_ANY)
 		self.__RootPanel.SetBackgroundColour("#1f1f1f")
-
 		self.__Sizer = wx.BoxSizer(wx.VERTICAL)
 
 		#ステージ・パネルを作成
@@ -164,13 +162,19 @@ class WindowFrame(wx.Frame):
 
 		self.__RootPanel.SetSizer(self.__Sizer)
 		self.__RootPanel.Fit()
-
 		self.Update()
 		self.Fit()
+				
+		self.__Human1.Show()
+		self.__Human2.Show()
+
+		#TEST
+		self.__Human1.UpdateAIEvaluation()
+		self.__Human2.UpdateAIEvaluation()
 
 	def OnButton(self, e):
-		Intentions1 = self.__Human1.intention()
-		Intentions2 = self.__Human2.intention()
+		Intentions1 = self.__Human1.GetIntentions()
+		Intentions2 = self.__Human2.GetIntentions()
 		self.__Game.action([Intentions1[0], Intentions1[1], Intentions2[0], Intentions2[1]])
 		self.__Game.score()
 		self.Update()
