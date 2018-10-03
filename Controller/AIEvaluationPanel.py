@@ -7,11 +7,12 @@ class AIEvaluationPanel(wx.Panel):
 	def __init__(self, Parent:wx.Panel, AI):
 		super().__init__(Parent, wx.ID_ANY)
 		self.__Sizer = wx.BoxSizer(wx.VERTICAL)
-		self.__IntentionText = wx.StaticText(self, wx.ID_ANY, style=wx.TE_CENTER)
-		self.__IntentionText.SetForegroundColour("#ffffff")
-		self.__Sizer.Add(self.__IntentionText)
+		self.__IntentionText = wx.StaticText(self, wx.ID_ANY)
+		self.__IntentionText.SetForegroundColour("#000000")
+		self.__Sizer.Add(self.__IntentionText, 0, wx.GROW|wx.CENTER|wx.ALL, border=20)
 		self.SetBackgroundColour("#ffffff")
 		self.SetSizer(self.__Sizer)
+		self.Fit()
 
 		self.__AI = AI
 
