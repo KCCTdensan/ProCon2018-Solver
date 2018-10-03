@@ -26,11 +26,11 @@ class Player_Human():
 		self.Think()
 
 #TEST
-def Test():
-	app = wx.App(False)
-	h = Player_Human(None)
-	h.showWindow()
-	app.MainLoop()
-
-if __name__=="__main__":
-	Test()
+#def Test():
+#	app = wx.App(False)
+#	h = Player_Human(None)
+#	h.showWindow()
+#	app.MainLoop()
+#
+#if __name__=="__main__":
+#	Test()
