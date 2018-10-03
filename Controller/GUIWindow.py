@@ -13,8 +13,11 @@ class GUIWindow(wx.Frame):
 		self.__RootPanel = wx.Panel(self, wx.ID_ANY)
 		self.__RootPanel.SetBackgroundColour("#1f1f1f")
 		self.__RootSizer = wx.BoxSizer(wx.VERTICAL)
-		self.__AIEvaluationPanel = AIEvaluationPanel(self.__RootPanel, AI)
-		self.__RootSizer.Add(self.__AIEvaluationPanel, 0, wx.GROW)
+		if AI != None:
+			self.__AIEvaluationPanel = AIEvaluationPanel(self.__RootPanel, AI)
+			self.__RootSizer.Add(self.__AIEvaluationPanel, 0, wx.GROW)
+		else:
+			self.__AIEvaluationPanel = None
 		self.__ControllerPanel = ControllerPanel(self.__RootPanel, Player1Info, Player2Info)
 		self.__RootSizer.Add(self.__ControllerPanel, 0, wx.GROW)
 		self.__RootPanel.SetSizer(self.__RootSizer)
@@ -22,7 +25,8 @@ class GUIWindow(wx.Frame):
 		self.Fit()
 
 	def UpdateAIEvaluation(self):
-		self.__AIEvaluationPanel.UpdateEvaluation()
+		if self.__AIEvaluationPanel != None:
+			self.__AIEvaluationPanel.UpdateEvaluation()
 
 	def GetIntentions(self):
 		return self.__ControllerPanel.GetIntentions()

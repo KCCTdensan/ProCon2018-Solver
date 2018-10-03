@@ -28,7 +28,7 @@ class Player_Human():
 #TEST
 def Test():
 	app = wx.App(False)
-	h = Player_Human(Test_ai.AI())
+	h = Player_Human(None)
 	h.showWindow()
 	app.MainLoop()
 
