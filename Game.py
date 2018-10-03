@@ -10,7 +10,6 @@ from Panel import *
 from Agent import *
 from Window import *
 
-
 class Game:
 	#zbarのインストールが必要 URL: http://zbar.sourceforge.net/download.html
 
@@ -84,6 +83,7 @@ class Game:
 						PanelsScore = -PanelsScore
 					self._Panels[y][x] = Panel(PanelsScore)
 					self._Panels[_yLen - y - 1][x] = Panel(PanelsScore)
+
 
 	def UpdatePanelSurrounded(self):
 		NumY = len(self._Panels)

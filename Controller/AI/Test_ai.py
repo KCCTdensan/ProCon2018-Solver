@@ -1,5 +1,5 @@
 import random
-from Player import Player
+from ..Player import Player
 
 class AI(Player):
     def intention(self,Game):#盤面の情報を渡してAgentの動かし方を返す

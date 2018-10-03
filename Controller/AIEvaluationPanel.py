@@ -29,7 +29,7 @@ class AIEvaluationPanel(wx.Panel):
 		elif Intention[1] == 1:
 			Ret += "下"
 		if Intention[2] == 0:
-			Ret += "進"
+			Ret += "動"
 		else:
 			Ret += "返"
 		return Ret

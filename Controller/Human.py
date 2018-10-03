@@ -1,10 +1,10 @@
 ﻿import wx
-from ControllerPanel import PlayerInfo
-from GUIWindow import GUIWindow
-from Player import Player
-from AI import Test_ai
+from .ControllerPanel import PlayerInfo
+from .GUIWindow import GUIWindow
+from .Player import Player
+from .AI.Test_ai import AI
 
-class Player_Human():
+class Player_Human(Player):
 	def __init__(self, AI:Player):
 		self.__Intention = [[int, int, int], [int, int, int]]
 		#PlayerInfo("2P-1", "#22b14c", "#82e8a0"), PlayerInfo("2P-2", "#00a2e8", "#75d6ff"))
@@ -28,7 +28,7 @@ class Player_Human():
 #TEST
 #def Test():
 #	app = wx.App(False)
-#	h = Player_Human(None)
+#	h = Player_Human(AI())
 #	h.showWindow()
 #	app.MainLoop()
 #

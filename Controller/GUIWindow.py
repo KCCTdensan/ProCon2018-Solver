@@ -1,8 +1,8 @@
 ﻿import wx
-from AIEvaluationPanel import AIEvaluationPanel
-from ControllerPanel import PlayerInfo
-from ControllerPanel import ControllerPanel
-from Player import Player
+from .AIEvaluationPanel import AIEvaluationPanel
+from .ControllerPanel import PlayerInfo
+from .ControllerPanel import ControllerPanel
+from .Player import Player
 
 class GUIWindow(wx.Frame):
 	"""
