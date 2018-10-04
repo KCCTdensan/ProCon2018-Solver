@@ -214,7 +214,7 @@ class Game:
 			if Intentions[i][2] == 0:
 				if (State == 0) or (State == Team[i]):
 					OperatedPanel.mkcard(Team[i])
-					Agents[i].move(Intentions[i])
+					Agents[i].move([Intentions[i][0],Intentions[i][1]])
 			else:
 				if not State == 0:
 					OperatedPanel.rmcard()
