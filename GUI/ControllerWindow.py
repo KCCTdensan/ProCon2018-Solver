@@ -28,3 +28,6 @@ class ControllerFrame(wx.Frame):
 
 	def GetIntentions(self):
 		return self.__ControllerPanel.GetIntentions()
+
+	def ResetIntentions(self):
+		self.__ControllerPanel.ResetIntentions()
