@@ -50,5 +50,5 @@ def train(model, x_train, y_train, val_dataflow, max_epochs, patience):
         validation_data=(val_x, val_y),
         callbacks=[cb_mc, cb_es, cb_tb])
 
-def Evaluate(self, img, Intention): #行動の評価値を算出
-    return predict([img, Intention], verbose=1)
+def Evaluate(self, model, img, Intention): #行動の評価値を算出
+    return model.predict([img, Intention], verbose=1)
