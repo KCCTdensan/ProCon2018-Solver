@@ -1,7 +1,7 @@
 import random
 import numpy as np
-from Player import Player
-from kerasDQN_model import(
+from .Player import Player
+from .kerasDQN_model import(
     buildModel, train, Evaluate  
 )
 
@@ -16,7 +16,7 @@ class kerasDQNPlayer(Player):
     def intention(self, Game):#盤面の情報を渡してAgentの動かし方を返す
         self._intentions = searchIntentions(Game) #可能な行動を全て探す
         self._GameImg = getGameImg(Game) #盤面を画像データに
-        self._Intention = [[0, 0, 0],[0 ,0 ,0]]
+        self._Intention = np.zeros((2, 3), int) 
 
         if(random.random() < self._EPSILON):
             #ランダムに行動を選択
@@ -38,14 +38,14 @@ class kerasDQNPlayer(Player):
         intensions = []
         return intentions
 
-    def getGameImg(self, Game): #盤面を画像に
-        GameImg = np.zeros((14, 14, 2))
+    def getGameImg(Game): #盤面を画像に
+        GameImg = np.zeros((12, 12, 2), int)
         Panels = Game.getPanels()
         for i in range(len(Panels)):
             for j in range(len(Panels[0])):
                 Panel = Panels[i][j]
                 GameImg[i][j][0] = Panel.getScore()
-                if(Panel.getstate != 0):
+                if(Panel.getState() != 0):
                     GameImg[i][j][1] = Panel.getState()*Panel.getSurrounded()[Panel.getstate()-1]
         return GameImg
 

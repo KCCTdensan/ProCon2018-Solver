@@ -7,15 +7,15 @@ from keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping
 from keras.losses import mean_squared_error
 
 def buildModel():
-    board_input = Input(shape = [14, 14, 2])
+    board_input = Input(shape = [12, 12, 2])
     action_input = Input(shape = [3,2])
-    x = Conv2D(14, 2)(board_input)
+    x = Conv2D(12, 2)(board_input)
     x = Activation("relu")(x)
-    x = Conv2D(14, 2)(board_input)
+    x = Conv2D(12, 2)(board_input)
     x = Activation("relu")(x)
     x = MaxPooling2D(pool_size=(2,2))(x)
 
-    x = Conv2D(28, 3)(board_input)
+    x = Conv2D(24, 3)(board_input)
     x = Activation("relu")(x)
     x = MaxPooling2D(pool_size=(2,2))(x)
 
@@ -52,5 +52,5 @@ def train(model, x_train, y_train, val_x, val_y, max_epochs):
         validation_data=(val_x, val_y),
         callbacks=[cb_mc, cb_tb])
 
-def Evaluate(self, model, img, Intention): #行動の評価値を算出
+def Evaluate(model, img, Intention): #行動の評価値を算出
     return model.predict([img, Intention], verbose=1)
