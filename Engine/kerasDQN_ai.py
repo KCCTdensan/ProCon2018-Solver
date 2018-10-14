@@ -1,4 +1,5 @@
 import random
+import numpy as np
 from Player import Player
 from kerasDQN_model import(
     buildModel, train, Evaluate  
@@ -38,7 +39,14 @@ class kerasDQNPlayer(Player):
         return intentions
 
     def getGameImg(self, Game): #盤面を画像に
-        GameImg = []
+        GameImg = np.zeros((14, 14, 2))
+        Panels = Game.getPanels()
+        for i in range(len(Panels)):
+            for j in range(len(Panels[0])):
+                Panel = Panels[i][j]
+                GameImg[i][j][0] = Panel.getScore()
+                if(Panel.getstate != 0):
+                    GameImg[i][j][1] = Panel.getState()*Panel.getSurrounded()[Panel.getstate()-1]
         return GameImg
 
     def learn(self, reword):#対戦データを学習
