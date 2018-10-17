@@ -175,49 +175,77 @@ class Game:
 					self._1PTileScore += panelScore
 				elif panelState == 2:
 					self._2PTileScore += panelScore
+		
+	def canAction(self, Intention, AgentNum):#アクション可能か判定
+		Agents = [self._1PAgents[0], self._1PAgents[1], self._2PAgents[0], self._2PAgents[1]]
+		Agent = Agents[AgentNum]
+		CurrentPosition = np.append(Agent.getPoint(), 0)
+		action = Intention[2]
+		actionPosition = CurrentPosition + Intention
+
+		#map内かどうかを確認
+		py = actionPosition[0]
+		px = actionPosition[1]
+		NumY = len(self._Panels)
+		NumX = len(self._Panels[0])
+		if not ((0 <= py) and (py < NumY) and (0 <= px) and (px < NumX)):return False
+
+		OperatedPanel = self._Panels[actionPosition[0]][actionPosition[1]]
+		if action == 0:#移動の場合、敵パネルがないかどうか
+			if OperatedPanel.getState() + Agent.getTeam()==3: return False
+		elif action == 1:#除去の場合、パネルがあるかどうか
+			if OperatedPanel.getState()==0: return False
+		return True
 
 	def action(self, PlayerIntentions:list): #エージェントの意思をみて，実際に移動orパネル操作
 		#引数 PlayerIntentions[[x,y,z],[x,y,z],[x,y,z],[x,y,z]] Player1:前2つ Player2:後2つ x,y:座標 z:0で移動 1でパネル除去
 
 		Intentions = [[PlayerIntentions[0][1], PlayerIntentions[0][0],PlayerIntentions[0][2]], [PlayerIntentions[1][1], PlayerIntentions[1][0],PlayerIntentions[1][2]], [PlayerIntentions[2][1], PlayerIntentions[2][0],PlayerIntentions[2][2]], [PlayerIntentions[3][1], PlayerIntentions[3][0],PlayerIntentions[3][2]]]
-		CurrentPositions = [self._1PAgents[0]._point, self._1PAgents[1]._point, self._2PAgents[0]._point, self._2PAgents[1]._point]
-		NextPositions = []
-		for i in range(4):
-			NextPositions.append([])
-			for j in range(2):
-				NextPositions[i].append(CurrentPositions[i][j] + Intentions[i][j])
-		CanMove = [True, True, True, True]
-		Team = [1, 1, 2, 2]
-		Agents = [self._1PAgents[0], self._1PAgents[1], self._2PAgents[0], self._2PAgents[1]]		
-		NumY = len(self._Panels)
-		NumX = len(self._Panels[0])
 
-		#アクション可能か判定
-		for i in range(3):
-			for j in range(i + 1, 4):
-				tmp = not np.allclose(NextPositions[i], NextPositions[j])
-				CanMove[i] = CanMove[i] and tmp
-				CanMove[j] = CanMove[j] and tmp
-		for i in range(4):
-			if not CanMove[i]:
-				continue
-			py = NextPositions[i][0]
-			px = NextPositions[i][1]
-			CanMove[i] = (0 <= py) and (py < NumY) and (0 <= px) and (px < NumX)
+		for i in range(len(Intentions)):
+			if(not self.canAction(Intentions[i], i)):Intentions[i]=[0,0,0]
+
+		def clearOverlap(PlayerIntentions):#action先の重複をなくす
+			CurrentPositions = [self._1PAgents[0]._point, self._1PAgents[1]._point, self._2PAgents[0]._point, self._2PAgents[1]._point]
+			
+			#action先の座標を出す
+			actionPositions = []
+			for i in range(4):
+				actionPositions.append([])
+				for j in range(2):
+					actionPositions[i].append(CurrentPositions[i][j] + PlayerIntentions[i][j])
+			
+			Overlap = False
+			for i in range(3): #移動後のAgent同士の座標被りを調べる
+				for j in range(i + 1, 4):
+					if(np.allclose(actionPositions[i], actionPositions[j])):
+						PlayerIntentions[i]=[0,0,0]
+						PlayerIntentions[j]=[0,0,0]#行動が被っているAgentのIntentionを[0,0,0]に
+						Overlap = True
+			if(not Overlap):return PlayerIntentions #action先の被りがなかった場合、return PlayerIntentions)
+			return clearOverlap(PlayerIntentions)
+		
+		Intentions = clearOverlap(Intentions)
 
 		#移動またはパネルを返す
+		
+		CurrentPositions = [self._1PAgents[0]._point, self._1PAgents[1]._point, self._2PAgents[0]._point, self._2PAgents[1]._point]
+		Agents = [self._1PAgents[0], self._1PAgents[1], self._2PAgents[0], self._2PAgents[1]]
+
+		#action先の座標を出す
+		actionPositions = []
 		for i in range(4):
-			if not CanMove[i]:
-				continue
-			OperatedPanel = self._Panels[NextPositions[i][0]][NextPositions[i][1]]
-			State = OperatedPanel.getState()
-			if Intentions[i][2] == 0:
-				if (State == 0) or (State == Team[i]):
-					OperatedPanel.mkcard(Team[i])
-					Agents[i].move([Intentions[i][0],Intentions[i][1]])
-			else:
-				if not State == 0:
-					OperatedPanel.rmcard()
+			actionPositions.append([])
+			for j in range(2):
+				actionPositions[i].append(CurrentPositions[i][j] + Intentions[i][j])
+
+		for i in range(4):
+			OperatedPanel = self._Panels[actionPositions[i][0]][actionPositions[i][1]]
+			if Intentions[i][2] == 0:#移動
+				OperatedPanel.mkcard(Agents[i].getTeam())
+				Agents[i].move([Intentions[i][0],Intentions[i][1]])
+			elif Intentions[i][2] == 1: #除去
+				OperatedPanel.rmcard()
 		
 	def getPanels(self):
 		return self._Panels

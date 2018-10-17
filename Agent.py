@@ -7,3 +7,9 @@ class Agent:
 
 	def move(self,vector:[int, int]): #エージェントを動かす(vector:方向)
 		self._point += np.array(vector)
+
+	def getPoint(self):
+		return self._point
+
+	def getTeam(self):
+		return self._team
