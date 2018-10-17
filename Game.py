@@ -33,7 +33,8 @@ class Game:
 				PanelScore = int(PanelsScores.split(' ')[x])
 				self._Panels[y][x] = Panel(PanelScore)
 		"""
-		self._turn = Ran.randint(60, 120) #最終ターン数
+		self._turn = 0 #ターン数
+		self._lastTurn = Ran.randint(60, 120) #最終ターン数
 		self._1PTileScore = 0 #1Pのタイルポイント
 		self._2PTileScore = 0 #2Pのタイルポイント
 		self._1PRegionScore = 0 #1Pの領域ポイント
@@ -218,9 +219,21 @@ class Game:
 			else:
 				if not State == 0:
 					OperatedPanel.rmcard()
+		self._turn+=1 #ターン経過
 		
 	def getPanels(self):
 		return self._Panels
 
 	def getPoints(self)->list:
 		return [self._1PTileScore, self._1PRegionScore, self._2PTileScore, self._2PRegionScore]
+
+	def endGame(self):
+		if self._turn==self._lastTurn: return True
+		else: return False
+
+	def getWinner(self):
+		Player1Score = self._1PTileScore + self._1PRegionScore
+		Player2Score = self._2PTileScore + self._2PRegionScore
+		if Player1Score == Player2Score: return 0
+		elif Player1Score > Player2Score: return 1
+		elif Player1Score < Player2Score: return 2
