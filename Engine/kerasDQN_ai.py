@@ -6,7 +6,8 @@ from .kerasDQN_model import(
 )
 
 class kerasDQNPlayer(Player):
-    def __init__(self):
+    def __init__(self, team):
+        self._team = team
         self._model = buildModel()
         self._GAMMA = 0.01
         self._EPSILON = 0.3
@@ -14,28 +15,42 @@ class kerasDQNPlayer(Player):
         self._GameIntentionLog = [] #行動の記録保存先
 
     def intention(self, Game):#盤面の情報を渡してAgentの動かし方を返す
-        self._intentions = searchIntentions(Game) #可能な行動を全て探す
-        self._GameImg = getGameImg(Game) #盤面を画像データに
-        self._Intention = np.zeros((2, 3), int) 
+        intentions = searchIntentions(Game) #可能な行動を全て探す
+        GameImg = getGameImg(Game) #盤面を画像データに
+        goodIntention = np.zeros((2, 3), int) 
 
         if(random.random() < self._EPSILON):
             #ランダムに行動を選択
-            self._Intention = self._intentions[random.randint(0,len(self._intentions))]
+            goodIntention = intentions[random.randint(0,len(intentions))]
         else:
             #評価値が一番高い行動を選択
-            self._maxEvalue = -1
-            for intention in self._intentions: 
-                self.Evalue = Evaluate(self._model, self._GameImg, intention) #行動の評価値計算
-                if(self._maxEvalue < self.Evalue):
-                    self._maxEvalue = self.Evalue
-                    self._Intention = intention
+            maxEvalue = -1
+            for intention in intentions: 
+                Evalue = Evaluate(self._model, GameImg, intention) #行動の評価値計算
+                if(maxEvalue < Evalue):
+                    maxEvalue = Evalue
+                    goodIntention = intention
 
-        self._GameImgLog += self._GameImg #盤面と行動を記録
-        self._GameIntentionLog += self._Intention
-        return self._Intention
+        self._GameImgLog += GameImg #盤面と行動を記録
+        self._GameIntentionLog += goodIntention
+        return goodIntention
 
-    def searchIntention(Game): #可能な行動を全て探す
-        intensions = []
+    def searchIntention(self, Game): #可能な行動を全て探す
+        intentions = []
+        for i in range(-1, 1):
+            for j in range(-1, 1):
+                intentions.append([i,j,0])
+                intentions.append([i,j,1])
+
+        pairintentions = []
+        for i in intentions:
+            for j in intentions:
+                pairintentions.append([i, j])
+        return pairintentions
+
+        for pairintention in pairintentions:
+            Game.canAction(pairintention[0], self._team-1)
+            Game.canAction(pairintention[1], self._team)
         return intentions
 
     def getGameImg(Game): #盤面を画像に
