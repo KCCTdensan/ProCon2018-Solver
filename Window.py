@@ -1,4 +1,5 @@
 import wx
+import sys
 from Game import Game
 from Panel import Panel
 from GUI.ControllerWindow import ControllerFrame
@@ -177,6 +178,14 @@ class WindowFrame(wx.Frame):
 		Intentions2 = self.__Human2.GetIntentions()
 		self.__Game.action([Intentions1[0], Intentions1[1], Intentions2[0], Intentions2[1]])
 		self.__Game.score()
+		if self.__Game.endGame():
+		    Scores = self.__Game.getPoints()
+		    print("1PTileScore : "+str(Scores[0]))
+		    print("1PRegionScore : "+str(Scores[1]))
+		    print("2PTileScore : "+str(Scores[2]))
+		    print("2PRegionScore : "+str(Scores[3]))
+		    print("Winner : "+str(self.__Game.getWinner()))
+		    sys.exit()
 		self.Update()
 		self.__Human1.ResetIntentions()
 		self.__Human2.ResetIntentions()
