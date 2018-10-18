@@ -1,4 +1,5 @@
 import random
+import os
 import numpy as np
 from .Player import Player
 from .kerasDQN_model import(
@@ -21,7 +22,7 @@ class kerasDQNPlayer(Player):
 
         if(random.random() < self._EPSILON):
             #ランダムに行動を選択
-            goodIntention = intentions[random.randint(0,len(intentions)-1)]
+            goodIntention = intentions[random.randint(0,len(intentions))]
         else:
             #評価値が一番高い行動を選択
             maxEvalue = -1
@@ -37,8 +38,8 @@ class kerasDQNPlayer(Player):
 
     def searchIntentions(self, Game): #可能な行動を全て探す
         intentions = []
-        for i in range(-1, 1):
-            for j in range(-1, 1):
+        for i in range(-1, 2):
+            for j in range(-1, 2):
                 intentions.append([i,j,0])
                 intentions.append([i,j,1])
 
@@ -67,7 +68,7 @@ class kerasDQNPlayer(Player):
     def learn(self, reword):#対戦データを学習
         Qs = [reword]
         for i in range(len(self._GameImgLog)-1):
-            Q.insert(0, self._GAMMA*Q[i])
+            Qs.insert(0, self._GAMMA*Qs[i])
 
         model = buildModel()
         model.compile(
@@ -80,8 +81,7 @@ class kerasDQNPlayer(Player):
 
         train(
             model,
-            self._GameImgLog,
-            self._GameIntentionLog,
+            [self._GameImgLog, self._GameIntentionLog],
             self._GameImgLog[0],
             self._GameIntentionLog[0],
             Qs,

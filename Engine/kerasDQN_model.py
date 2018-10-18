@@ -8,7 +8,7 @@ from keras.losses import mean_squared_error
 
 def buildModel():
     board_input = Input(shape = [12, 12, 2])
-    action_input = Input(shape = [3,2])
+    action_input = Input(shape = [2,3])
     x = Conv2D(12, 2)(board_input)
     x = Activation("relu")(x)
     x = Conv2D(12, 2)(board_input)
@@ -21,7 +21,8 @@ def buildModel():
 
     x = Flatten()(x)
     x = Dense(1024, activation="relu")(x)
-    y = Dense(1024, activation="relu")(action_input)
+    y = Flatten()(action_input)
+    y = Dense(1024, activation="relu")(y)
     x = Multiply()([x, y])
     x = Dropout(2.0)(x)
     
