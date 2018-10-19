@@ -66,9 +66,10 @@ class kerasDQNPlayer(Player):
         return GameImg
 
     def learn(self, reword):#対戦データを学習
-        Qs = np.array([reword])
+        Qs = [[reword]]
         for i in range(len(self._GameImgLog)-1):
-            Qs.insert(0, self._GAMMA*Qs[i])
+            Qs.insert(0, [self._GAMMA*Qs[i][0]])
+        Qs = np.array(Qs)
 
         model = buildModel()
         model.compile(
@@ -78,13 +79,16 @@ class kerasDQNPlayer(Player):
         if(os.path.isfile("./checkpoint/model_params")):
             model.load_weights("./checkpoint/model_params")
         model.summary()
+        print(np.array(self._GameImgLog).shape)
+        print(np.array(self._GameIntentionLog).shape)
+        print(np.array(Qs)[:,np.newaxis].shape)
 
         train(
             model,
-            [self._GameImgLog, self._GameIntentionLog],
+            [np.array(self._GameImgLog), np.array(self._GameIntentionLog)],
             self._GameImgLog[0],
             self._GameIntentionLog[0],
-            Qs,
+            np.array(Qs)[:,np.newaxis],
             10000,
             )
 
