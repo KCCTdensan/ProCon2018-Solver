@@ -254,11 +254,40 @@ class Game:
 				OperatedPanel.rmcard()
 		
 		logfile = open("./Log/log"+str(self._gamecount)+".pickle","ab") #ログファイル出力準備
-
 		pickle.dump(self,logfile) #gameobjectバイナリ出力
+		pickle.dump(Intentions,logfile) #Intentionsバイナリ出力
+		logfile.close
 
 		self._turn+=1 #ターン経過
-		
+	
+	def readGameObject(self,num): #指定された試合のログを呼び出す
+		logfile = open("./Log/log"+str(num)+".pickle","rb") #ログファイル入力準備
+		try:
+			bin = pickle.load(logfile)
+		except EOFError:
+			print("EOFerror log"+str(num)+".pickleのログがないです")
+			logfile.close
+			return
+
+		game_logs =[]
+		intention_logs = []
+		result = 0
+
+		while not type(bin) is int:
+			try:
+				game_logs.append(bin)
+				bin = pickle.load(logfile)
+				intention_logs.append(bin)
+				bin = pickle.load(logfile)
+			except EOFError:
+				print("EOFerror log"+str(num)+".pickleのログが最後まで取れていない可能性があります")
+				logfile.close
+				return
+
+		result = bin
+		logfile.close
+		return game_logs,intention_logs,result
+
 	def getPanels(self):
 		return self._Panels
 
@@ -266,22 +295,16 @@ class Game:
 		return [self._1PTileScore, self._1PRegionScore, self._2PTileScore, self._2PRegionScore]
 
 	def endGame(self):
-		if self._turn==self._lastTurn: return True
+		logfile = open("./Log/log"+str(self._gamecount)+".pickle","ab") #ログファイル出力準備
+		if self._turn==self._lastTurn:
+			pickle.dump(self.getWinner(),logfile)
+			logfile.close
+			return True
 		else: return False
 
 	def getWinner(self):
-		logfile = open("./Log/log"+str(self._gamecount)+".pickle","ab") #ログファイル出力準備
 		Player1Score = self._1PTileScore + self._1PRegionScore
 		Player2Score = self._2PTileScore + self._2PRegionScore
-		if Player1Score == Player2Score:
-			pickle.dump(0,logfile)#試合結果バイナリ出力
-			logfile.close
-			return 0
-		elif Player1Score > Player2Score:
-			pickle.dump(1,logfile)#試合結果バイナリ出力
-			logfile.close
-			return 1
-		elif Player1Score < Player2Score:
-			pickle.dump(2,logfile)#試合結果バイナリ出力
-			logfile.close
-			return 2
+		if Player1Score == Player2Score: return 0
+		elif Player1Score > Player2Score: return 1
+		elif Player1Score < Player2Score: return 2
