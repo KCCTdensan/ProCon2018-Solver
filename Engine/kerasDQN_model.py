@@ -2,14 +2,15 @@
 import datetime
 import numpy as np
 from keras.models import Model
-from keras.layers import Input, Dense, Dropout, Conv2D, MaxPooling2D, Activation, Flatten, Multiply
+from keras.layers import Input, Dense, Dropout, Conv2D, MaxPooling2D, Activation, Flatten, Concatenate, BatchNormalization 
 from keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping
 from keras.losses import mean_squared_error
 
 def buildModel():
-    board_input = Input(shape = [12, 12, 2])
-    action_input = Input(shape = [2,3])
-    x = Conv2D(12, 2)(board_input)
+    board_input = Input((12, 12, 2))
+    action_input = Input((2,3))
+
+    x = Conv2D(12, 2, input_shape=(12, 12, 2))(board_input)
     x = Activation("relu")(x)
     x = Conv2D(12, 2)(board_input)
     x = Activation("relu")(x)
@@ -23,10 +24,14 @@ def buildModel():
     x = Dense(1024, activation="relu")(x)
     y = Flatten()(action_input)
     y = Dense(1024, activation="relu")(y)
-    x = Multiply()([x, y])
+    x = Concatenate(-1)([x, y])
+    x = Dense(512, activation="relu")(x)
+    x = BatchNormalization()(x)
+    x = Dense(128, activation="relu")(x)
+    x = BatchNormalization()(x)
     x = Dropout(2.0)(x)
     
-    output = Dense(6, activation="softmax")(x)
+    output = Dense(1, activation="tanh")(x)
     
     model = Model(inputs=[board_input,action_input],outputs=output)
     return model

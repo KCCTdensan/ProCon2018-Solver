@@ -22,7 +22,7 @@ class kerasDQNPlayer(Player):
 
         if(random.random() < self._EPSILON):
             #ランダムに行動を選択
-            goodIntention = intentions[random.randint(0,len(intentions))]
+            goodIntention = intentions[random.randint(0,len(intentions)-1)]
         else:
             #評価値が一番高い行動を選択
             maxEvalue = -1
@@ -66,7 +66,7 @@ class kerasDQNPlayer(Player):
         return GameImg
 
     def learn(self, reword):#対戦データを学習
-        Qs = [reword]
+        Qs = np.array([reword])
         for i in range(len(self._GameImgLog)-1):
             Qs.insert(0, self._GAMMA*Qs[i])
 
