@@ -4,6 +4,7 @@ import subprocess
 import random as Ran
 import math
 import copy
+import pickle
 #from pyzbar.pyzbar import decode
 #from PIL import Image
 from Panel import *
@@ -33,6 +34,10 @@ class Game:
 				PanelScore = int(PanelsScores.split(' ')[x])
 				self._Panels[y][x] = Panel(PanelScore)
 		"""
+		self._gamecount=1 #試合回数（ファイル番号）
+		while os.path.isfile("./Log/log"+str(self._gamecount)+".pickle"): #もうすでにその試合回数（ファイル番号）のログが存在すれば
+			self._gamecount+=1 #試合回数（ファイル番号） = 試合回数（ファイル番号） + 1
+
 		self._turn = 0 #ターン数
 		self._lastTurn = Ran.randint(60, 120) #最終ターン数
 		self._1PTileScore = 0 #1Pのタイルポイント
@@ -247,6 +252,11 @@ class Game:
 				Agents[i].move([Intentions[i][0],Intentions[i][1]])
 			elif Intentions[i][2] == 1: #除去
 				OperatedPanel.rmcard()
+		
+		logfile = open("./Log/log"+str(self._gamecount)+".pickle","ab") #ログファイル出力準備
+
+		pickle.dump(self,logfile) #gameobjectバイナリ出力
+
 		self._turn+=1 #ターン経過
 		
 	def getPanels(self):
@@ -260,8 +270,18 @@ class Game:
 		else: return False
 
 	def getWinner(self):
+		logfile = open("./Log/log"+str(self._gamecount)+".pickle","ab") #ログファイル出力準備
 		Player1Score = self._1PTileScore + self._1PRegionScore
 		Player2Score = self._2PTileScore + self._2PRegionScore
-		if Player1Score == Player2Score: return 0
-		elif Player1Score > Player2Score: return 1
-		elif Player1Score < Player2Score: return 2
+		if Player1Score == Player2Score:
+			pickle.dump(0,logfile)#試合結果バイナリ出力
+			logfile.close
+			return 0
+		elif Player1Score > Player2Score:
+			pickle.dump(1,logfile)#試合結果バイナリ出力
+			logfile.close
+			return 1
+		elif Player1Score < Player2Score:
+			pickle.dump(2,logfile)#試合結果バイナリ出力
+			logfile.close
+			return 2
