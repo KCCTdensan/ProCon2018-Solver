@@ -252,7 +252,7 @@ class Game:
 				Agents[i].move([Intentions[i][0],Intentions[i][1]])
 			elif Intentions[i][2] == 1: #除去
 				OperatedPanel.rmcard()
-		
+
 		logfile = open("./Log/log"+str(self._gamecount)+".pickle","ab") #ログファイル出力準備
 		pickle.dump(self,logfile) #gameobjectバイナリ出力
 		pickle.dump(Intentions,logfile) #Intentionsバイナリ出力
@@ -260,7 +260,10 @@ class Game:
 
 		self._turn+=1 #ターン経過
 	
-	def readGameObject(self,num): #指定された試合のログを呼び出す
+	def readMatchLog(self,num): #指定された試合のログを呼び出す
+
+		self.printMatchLog(num)
+
 		logfile = open("./Log/log"+str(num)+".pickle","rb") #ログファイル入力準備
 		try:
 			bin = pickle.load(logfile)
@@ -287,6 +290,43 @@ class Game:
 		result = bin
 		logfile.close
 		return game_logs,intention_logs,result
+
+	def printMatchLog(self,num): #指定された試合のログをprintする 
+		logfile = open("./Log/log"+str(num)+".pickle","rb") #ログファイル入力準備
+		try:
+			bin = pickle.load(logfile)
+		except EOFError:
+			print("EOFerror log"+str(num)+".pickleのログがないです")
+			logfile.close
+			return
+
+		turncount = 1
+
+		while not type(bin) is int:
+			try:
+				print(str(turncount)+"ターン目")
+				print("Game")
+				print(bin)
+				bin = pickle.load(logfile)
+				print("Intentions")
+				print(bin)
+				bin = pickle.load(logfile)
+				turncount+=1
+			except EOFError:
+				print("EOFerror log"+str(num)+".pickleのログが最後まで取れていない可能性があります")
+				logfile.close
+				return
+		
+		print("試合結果")
+		print(bin)
+		if bin == 0:
+			print("引き分け")
+		elif bin == 1:
+			print("1Pチーム勝利")
+		elif bin == 2:
+			print("2Pチーム勝利")
+
+		logfile.close
 
 	def getPanels(self):
 		return self._Panels
