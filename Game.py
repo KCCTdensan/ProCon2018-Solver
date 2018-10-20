@@ -32,6 +32,11 @@ class Game:
 			for x in range(_xLen):
 				PanelScore = int(PanelsScores.split(' ')[x])
 				self._Panels[y][x] = Panel(PanelScore)
+		
+		data = list(QRtext);
+		with open('StageInfo.dat','wb') as f:
+			for d in data:
+				f.write(ord(d).to_bytes(1,'little'))
 		"""
 		self._turn = 0 #ターン数
 		self._lastTurn = Ran.randint(60, 120) #最終ターン数
