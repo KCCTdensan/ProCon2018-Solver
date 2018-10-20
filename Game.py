@@ -4,8 +4,8 @@ import subprocess
 import random as Ran
 import math
 import copy
-#from pyzbar.pyzbar import decode
-#from PIL import Image
+from pyzbar.pyzbar import decode
+from PIL import Image
 from Panel import *
 from Agent import *
 from Window import *
@@ -15,7 +15,7 @@ class Game:
 
 	def __init__(self):
 		#QRコード読み取りステージ生成部分
-		"""
+		
 		image = 'test.png' #QRコードの画像
 		data = decode(Image.open(image))	#QRコードのデータ全体
 		QRtext = str(data).split('\'')[1]	#QRコードのテキスト部分
@@ -34,17 +34,17 @@ class Game:
 				self._Panels[y][x] = Panel(PanelScore)
 		
 		data = list(QRtext);
-		with open('StageInfo.dat','wb') as f:
+		with open('StageInfo.bin','wb') as f:
 			for d in data:
 				f.write(ord(d).to_bytes(1,'little'))
-		"""
+		
 		self._turn = 0 #ターン数
 		self._lastTurn = Ran.randint(60, 120) #最終ターン数
 		self._1PTileScore = 0 #1Pのタイルポイント
 		self._2PTileScore = 0 #2Pのタイルポイント
 		self._1PRegionScore = 0 #1Pの領域ポイント
 		self._2PRegionScore = 0 #1Pの領域ポイント
-
+		"""
 		#ランダムステージ作成部分
 		#ステージの縦*横(_yLen*_xLen)
 		_xLen = Ran.randint(3, 12)
@@ -58,8 +58,11 @@ class Game:
 		self._2PAgents = [Agent([_yLen - 1 - Agenty, Agentx],2),Agent([Agenty, _xLen - 1 - Agentx],2)] #ステージに存在する2Pのエージェントのリスト
 		self.randtype = Ran.randint(0,2)	#左右対称、または上下対称、または上下左右対称
 		self._Panels = [[Panel(0) for i in range(_xLen)]for j in range(_yLen)]	#パネルの配列の作成
-
+		
+		
 		#パネルのスコア設定
+		"""
+		"""
 		if self.randtype == 0: 
 			for y in range(_yLen2): 
 				for x in range(_xLen2):
@@ -89,7 +92,7 @@ class Game:
 						PanelsScore = -PanelsScore
 					self._Panels[y][x] = Panel(PanelsScore)
 					self._Panels[_yLen - y - 1][x] = Panel(PanelsScore)
-
+		"""
 
 	def UpdatePanelSurrounded(self):
 		NumY = len(self._Panels)
