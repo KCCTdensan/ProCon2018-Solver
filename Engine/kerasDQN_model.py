@@ -36,14 +36,15 @@ def buildModel():
     model = Model(inputs=[board_input,action_input],outputs=output)
     return model
 
-def train(model, x_train1, x_train2, y_train, val_x1, val_x2, val_y, max_epochs):
+def train(model, x_train1, x_train2, y_train, val_x1, val_x2, val_y, epochs):
     timestamp = datetime.datetime.now()
 
     cp_dir = "./checkpoint".format(timestamp)
     if not os.path.exists(cp_dir):
         os.makedirs(cp_dir)
     cp_filepath = os.path.join(cp_dir, "model_params.h5")
-    cb_mc = ModelCheckpoint(filepath=cp_filepath, monitor="val_loss", period=1, save_best_only=True)
+    #cb_mc = ModelCheckpoint(filepath=cp_filepath, monitor="val_loss", period=1, save_best_only=True)
+    cb_mc = ModelCheckpoint(filepath=cp_filepath, period=1, save_best_only=True)
 
     #cb_es = EarlyStopping(monitor="val_loss", patience=patience)
 
@@ -57,16 +58,26 @@ def train(model, x_train1, x_train2, y_train, val_x1, val_x2, val_y, max_epochs)
     val_x1 = val_x1.reshape(-1, 12, 12, 2).astype("float32")/16.0
     val_x2 = val_x2.reshape(-1, 2, 3).astype("float32")
     val_y = val_y.reshape(-1, 1).astype("float32")
+    
+    Dataflow=trainDataGenerator(x_train1, x_train2, y_train)
 
-    model.fit(
-        x=[x_train1, x_train2],
-        y=y_train,
-        epochs=max_epochs,
-        verbose=2,
-        validation_data=([val_x1, val_x2], val_y),
-        callbacks=[cb_mc, cb_tb])
+    model.fit_generator(
+        Dataflow,
+        steps_per_epoch=16,
+        epochs=100,
+        callbacks=[cb_mc, cb_tb],
+        validation_data=None,
+        validation_steps=None,
+        shuffle=True
+        )
 
 def Evaluate(model, img, intention): #行動の評価値を算出
     img = np.array(img).reshape(-1,12,12,2).astype("float32")/16.0
     intention = np.array(intention).reshape(-1,2,3).astype("float32")
     return model.predict([img, intention], verbose=0)
+
+def trainDataGenerator(x_train1, x_train2, y_train):
+    while True:
+        nData = len(x_train1)
+        i = np.random.randint(nData)
+        yield [x_train1[i:i+1,:], x_train2[i:i+1,:]],y_train[i:i+1,:]
