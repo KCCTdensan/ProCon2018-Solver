@@ -4,6 +4,7 @@ import subprocess
 import random as Ran
 import math
 import copy
+import pickle
 #from pyzbar.pyzbar import decode
 #from PIL import Image
 from Panel import *
@@ -33,6 +34,10 @@ class Game:
 				PanelScore = int(PanelsScores.split(' ')[x])
 				self._Panels[y][x] = Panel(PanelScore)
 		"""
+		self._gamecount=1 #試合回数（ファイル番号）
+		while os.path.isfile("./Log/log"+str(self._gamecount)+".pickle"): #もうすでにその試合回数（ファイル番号）のログが存在すれば
+			self._gamecount+=1 #試合回数（ファイル番号） = 試合回数（ファイル番号） + 1
+
 		self._turn = 0 #ターン数
 		self._lastTurn = Ran.randint(60, 120) #最終ターン数
 		self._1PTileScore = 0 #1Pのタイルポイント
@@ -247,8 +252,82 @@ class Game:
 				Agents[i].move([Intentions[i][0],Intentions[i][1]])
 			elif Intentions[i][2] == 1: #除去
 				OperatedPanel.rmcard()
+
+		logfile = open("./Log/log"+str(self._gamecount)+".pickle","ab") #ログファイル出力準備
+		pickle.dump(self,logfile) #gameobjectバイナリ出力
+		pickle.dump(Intentions,logfile) #Intentionsバイナリ出力
+		logfile.close
+
 		self._turn+=1 #ターン経過
+	
+	def readMatchLog(self,num): #指定された試合のログを呼び出す
+
+		self.printMatchLog(num)
+
+		logfile = open("./Log/log"+str(num)+".pickle","rb") #ログファイル入力準備
+		try:
+			bin = pickle.load(logfile)
+		except EOFError:
+			print("EOFerror log"+str(num)+".pickleのログがないです")
+			logfile.close
+			return
+
+		game_logs =[]
+		intention_logs = []
+		result = 0
+
+		while not type(bin) is int:
+			try:
+				game_logs.append(bin)
+				bin = pickle.load(logfile)
+				intention_logs.append(bin)
+				bin = pickle.load(logfile)
+			except EOFError:
+				print("EOFerror log"+str(num)+".pickleのログが最後まで取れていない可能性があります")
+				logfile.close
+				return
+
+		result = bin
+		logfile.close
+		return game_logs,intention_logs,result
+
+	def printMatchLog(self,num): #指定された試合のログをprintする 
+		logfile = open("./Log/log"+str(num)+".pickle","rb") #ログファイル入力準備
+		try:
+			bin = pickle.load(logfile)
+		except EOFError:
+			print("EOFerror log"+str(num)+".pickleのログがないです")
+			logfile.close
+			return
+
+		turncount = 1
+
+		while not type(bin) is int:
+			try:
+				print(str(turncount)+"ターン目")
+				print("Game")
+				print(bin)
+				bin = pickle.load(logfile)
+				print("Intentions")
+				print(bin)
+				bin = pickle.load(logfile)
+				turncount+=1
+			except EOFError:
+				print("EOFerror log"+str(num)+".pickleのログが最後まで取れていない可能性があります")
+				logfile.close
+				return
 		
+		print("試合結果")
+		print(bin)
+		if bin == 0:
+			print("引き分け")
+		elif bin == 1:
+			print("1Pチーム勝利")
+		elif bin == 2:
+			print("2Pチーム勝利")
+
+		logfile.close
+
 	def getPanels(self):
 		return self._Panels
 
@@ -256,7 +335,11 @@ class Game:
 		return [self._1PTileScore, self._1PRegionScore, self._2PTileScore, self._2PRegionScore]
 
 	def endGame(self):
-		if self._turn==self._lastTurn: return True
+		logfile = open("./Log/log"+str(self._gamecount)+".pickle","ab") #ログファイル出力準備
+		if self._turn==self._lastTurn:
+			pickle.dump(self.getWinner(),logfile)
+			logfile.close
+			return True
 		else: return False
 
 	def getWinner(self):
