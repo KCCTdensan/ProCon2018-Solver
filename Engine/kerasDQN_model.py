@@ -58,5 +58,7 @@ def train(model, x_train, y_train, val_x, val_y, max_epochs):
         validation_data=(val_x, val_y),
         callbacks=[cb_mc, cb_tb])
 
-def Evaluate(model, img, Intention): #行動の評価値を算出
-    return model.predict([img, Intention], verbose=1)
+def Evaluate(model, img, intention): #行動の評価値を算出
+    img = np.array(img).reshape(-1,12,12,2)
+    intention = np.array(intention).reshape(-1,2,3)
+    return model.predict([img, intention], verbose=0)

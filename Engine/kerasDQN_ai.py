@@ -5,15 +5,22 @@ from .Player import Player
 from .kerasDQN_model import(
     buildModel, train, Evaluate  
 )
+import tensorflow as tf
+from keras.backend.tensorflow_backend import set_session
 
 class kerasDQNPlayer(Player):
     def __init__(self, team):
         self._team = team
         self._model = buildModel()
         self._GAMMA = 0.01
-        self._EPSILON = 1
+        self._EPSILON = 0.3 
         self._GameImgLog = [] #盤面の記録保存先
         self._GameIntentionLog = [] #行動の記録保存先
+
+        #GPU使用率決定
+        self._config = tf.ConfigProto()
+        self._config.gpu_options.per_process_gpu_memory_fraction = 0.6 #freememory/totalmemory
+        set_session(tf.Session(config=self._config))
 
     def intention(self, Game):#盤面の情報を渡してAgentの動かし方を返す
         intentions = self.searchIntentions(Game) #可能な行動を全て探す
@@ -65,30 +72,38 @@ class kerasDQNPlayer(Player):
                     GameImg[i][j][1] = Panel.getState()*Panel.getSurrounded()[Panel.getState()-1]
         return GameImg
 
-    def learn(self, reword):#対戦データを学習
-        Qs = [[reword]]
-        for i in range(len(self._GameImgLog)-1):
-            Qs.insert(0, [self._GAMMA*Qs[i][0]])
-        Qs = np.array(Qs)
+    def learn(self, reward):#対戦データを学習
 
-        model = buildModel()
-        model.compile(
+        #報酬rのリストを作成
+        turn = len(self._GameImgLog)
+        rs = np.zeros(turn)
+        rs[len(rs)-1] = reward
+
+        xImgs = np.array(self._GameImgLog).reshape([-1,12,12,2])
+        xIntentions = np.array(self._GameIntentionLog).reshape([-1,2,3])
+
+        self._model.compile(
             loss="mean_squared_error",
             optimizer="adam"
             )
         if(os.path.isfile("./checkpoint/model_params")):
             model.load_weights("./checkpoint/model_params")
-        model.summary()
-        print(np.array(self._GameImgLog).shape)
-        print(np.array(self._GameIntentionLog).shape)
-        print(np.array(Qs)[:,np.newaxis].shape)
+
+        #model推論で算出した更新前Q値のリスト
+        predQs = Evaluate(self._model, xImgs, xIntentions)
+
+        Rs = np.hstack(rs.reshape([-1,1])).astype(float)
+        for i in range(turn):
+            rMax = rs[i]
+            Rs[i] = self._GAMMA * rMax
+        yRs = Rs.reshape([-1,1])
 
         train(
-            model,
-            [np.array(self._GameImgLog), np.array(self._GameIntentionLog)],
-            self._GameImgLog[0],
-            self._GameIntentionLog[0],
-            np.array(Qs)[:,np.newaxis],
+            self._model,
+            [xImgs, xIntentions],
+            yRs,
+            [xImgs, xIntentions],#val
+            yRs,#val
             10000,
             )
 
