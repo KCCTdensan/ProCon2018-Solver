@@ -36,7 +36,7 @@ def buildModel():
     model = Model(inputs=[board_input,action_input],outputs=output)
     return model
 
-def train(model, x_train, y_train, val_x, val_y, max_epochs):
+def train(model, x_train1, x_train2, y_train, val_x1, val_x2, val_y, max_epochs):
     timestamp = datetime.datetime.now()
 
     cp_dir = "./checkpoint".format(timestamp)
@@ -50,15 +50,23 @@ def train(model, x_train, y_train, val_x, val_y, max_epochs):
     tb_log_dir = "./tensorboard/{:%Y%m%d_%H%M%S}".format(timestamp)
     cb_tb = TensorBoard(log_dir=tb_log_dir)
 
+    x_train1 = x_train1.reshape(-1, 12, 12, 2).astype("float32")/16.0
+    x_train2 = x_train2.reshape(-1, 2, 3).astype("float32")
+    y_train = y_train.reshape(-1, 1).astype("float32")
+
+    val_x1 = val_x1.reshape(-1, 12, 12, 2).astype("float32")/16.0
+    val_x2 = val_x2.reshape(-1, 2, 3).astype("float32")
+    val_y = val_y.reshape(-1, 1).astype("float32")
+
     model.fit(
-        x=x_train,
+        x=[x_train1, x_train2],
         y=y_train,
-        #epochs=max_epochs,
+        epochs=max_epochs,
         verbose=2,
-        validation_data=(val_x, val_y),
+        validation_data=([val_x1, val_x2], val_y),
         callbacks=[cb_mc, cb_tb])
 
 def Evaluate(model, img, intention): #行動の評価値を算出
-    img = np.array(img).reshape(-1,12,12,2)
-    intention = np.array(intention).reshape(-1,2,3)
+    img = np.array(img).reshape(-1,12,12,2).astype("float32")/16.0
+    intention = np.array(intention).reshape(-1,2,3).astype("float32")
     return model.predict([img, intention], verbose=0)
