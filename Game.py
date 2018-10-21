@@ -19,6 +19,7 @@ class Game:
 		image = 'test.png' #QRコードの画像
 		data = decode(Image.open(image))	#QRコードのデータ全体
 		QRtext = str(data).split('\'')[1]	#QRコードのテキスト部分
+		QRText_s =  QRtext.replace(' ',',')
 		_yLen = int(QRtext.split(':')[0].split(' ')[0])	#ステージの縦*横(_yLen*_xLen)
 		_xLen = int(QRtext.split(':')[0].split(' ')[1])
 		Agentx = int(QRtext.split(':')[_yLen+1].split(' ')[0])-1	#1Pの1人目のエージェントのx,y座標
