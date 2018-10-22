@@ -79,22 +79,27 @@ class kerasDQNPlayer(Player):
                     GameImg[i][j][1] += 1
         return GameImg
 
-    def learn(self, reward):#対戦データを学習
-
+    def getAllReward(self, reward):#総報酬の計算
         #報酬rのリストを作成
         turn = len(self._GameImgLog)
         rs = np.zeros(turn)
         rs[len(rs)-1] = reward
 
-        xImgs = np.array(self._GameImgLog).reshape([-1,12,12,2])
-        xIntentions = np.array(self._GameIntentionLog).reshape([-1,2,3])
-
-        #総報酬の計算
         Rs = np.hstack(rs.reshape([-1,1])).astype(float)
         for i in range(turn-1):
             Rs[i] = self._GAMMA * (rs[i] + self._maxQs[i+1] - self._maxQs[i])
         Rs[turn-1] = reward
-        yRs = Rs.reshape([-1,1])
+        return Rs.reshape([-1,1])
+
+    def learn(self, reward, train_x1=None, train_x2=None, train_y=None):#対戦データを学習
+        xImgs = np.array(self._GameImgLog).reshape([-1,12,12,2])
+        xIntentions = np.array(self._GameIntentionLog).reshape([-1,2,3])
+        yRs = self.getAllReward(reward)
+
+        if((train_x1!=None)&(train_x2!=None)&(train_y!=None)):
+            xImgs = np.array(train_x1).reshape([-1,12,12,2])
+            xIntentions = np.array(train_x2).reshape([-1,2,3])
+            yRs = np.array(train_y).reshape([-1,1])
 
         self._model.compile(
             loss="mean_squared_error",
