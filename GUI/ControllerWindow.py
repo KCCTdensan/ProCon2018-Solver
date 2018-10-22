@@ -1,5 +1,5 @@
 ﻿import wx
-from .AIEvaluationPanel import AIEvaluationPanel
+from AIEvaluationPanel import AIEvaluationPanel
 from .ControllerPanel import ControllerPanel
 
 class ControllerFrame(wx.Frame):
