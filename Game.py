@@ -186,8 +186,8 @@ class Game:
 		Agents = [self._1PAgents[0], self._1PAgents[1], self._2PAgents[0], self._2PAgents[1]]
 		Agent = Agents[AgentNum]
 		CurrentPosition = np.append(Agent.getPoint(), 0)
-		action = Intention[2]
-		actionPosition = CurrentPosition + Intention
+		action = Intention[AgentNum][2]
+		actionPosition = CurrentPosition + Intention[AgentNum]
 
 		#map内かどうかを確認
 		py = actionPosition[0]
@@ -197,8 +197,12 @@ class Game:
 		if not ((0 <= py) and (py < NumY) and (0 <= px) and (px < NumX)):return False
 
 		OperatedPanel = self._Panels[actionPosition[0]][actionPosition[1]]
-		if action == 0:#移動の場合、敵パネルがないかどうか
+		if action == 0:#移動の場合、敵パネルがないかどうか、パネル除去しようとしてる人がいないかどうか
 			if OperatedPanel.getState() + Agent.getTeam()==3: return False
+			for i,agent in enumerate(Agents):
+				if not agent is Agent:
+					if np.allclose(agent.getPoint(),np.array([actionPosition[0],actionPosition[1]])) and Intention[i][2] == 1:
+						return False
 		elif action == 1:#除去の場合、パネルがあるかどうか
 			if OperatedPanel.getState()==0: return False
 		return True
@@ -209,7 +213,7 @@ class Game:
 		Intentions = [[PlayerIntentions[0][1], PlayerIntentions[0][0],PlayerIntentions[0][2]], [PlayerIntentions[1][1], PlayerIntentions[1][0],PlayerIntentions[1][2]], [PlayerIntentions[2][1], PlayerIntentions[2][0],PlayerIntentions[2][2]], [PlayerIntentions[3][1], PlayerIntentions[3][0],PlayerIntentions[3][2]]]
 
 		for i in range(len(Intentions)):
-			if(not self.canAction(Intentions[i], i)):Intentions[i]=[0,0,0]
+			if(not self.canAction(Intentions, i)):Intentions[i]=[0,0,0]
 
 		def clearOverlap(PlayerIntentions):#action先の重複をなくす
 			CurrentPositions = [self._1PAgents[0]._point, self._1PAgents[1]._point, self._2PAgents[0]._point, self._2PAgents[1]._point]
@@ -285,7 +289,7 @@ class Game:
 			except EOFError:
 				print("EOFerror log"+str(num)+".pickleのログが最後まで取れていない可能性があります")
 				logfile.close
-				return
+				return game_logs,intention_logs
 
 		result = bin
 		logfile.close
