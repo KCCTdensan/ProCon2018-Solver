@@ -8,6 +8,8 @@
 
 ### 計算用
 - NumPy
+- Keras
+- Tensorflow
 
 ### QRコード読取用
 - pyzbar
