@@ -13,6 +13,9 @@ class kerasDQNPlayer(Player):
         self._team = team
         self._model = buildModel()
 
+        #if(os.path.isfile("./checkpoint/model_params")):
+        #    model.load_weights("./checkpoint/model_params")
+
         #GPU使用率決定
         #self._config = tf.ConfigProto()
         #self._config.gpu_options.per_process_gpu_memory_fraction = 0.6 #freememory/totalmemory
@@ -74,9 +77,6 @@ class kerasDQNPlayer(Player):
 
     def learn(self, train_x, train_y, val_x, val_y):#対戦データを学習
         
-        #if(os.path.isfile("./checkpoint/model_params")):
-        #    model.load_weights("./checkpoint/model_params")
-
         train(
             self._model,
             #train_data 

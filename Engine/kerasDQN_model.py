@@ -29,10 +29,11 @@ def buildModel():
     output = Dense(81, activation="relu")(x)
     
     model = Model(inputs=input, outputs=output)
-    model.summary()
+    #model.summary()
     model.compile(
-            loss="mean_squared_error",
-            optimizer=Adam(lr=0.1)
+            loss="binary_crossentropy",
+            optimizer=Adam(lr=0.0001),
+            metrics=["accuracy"]
             )
     return model
 
@@ -56,8 +57,8 @@ def train(model, x_train, y_train, val_x, val_y, epochs):
     val_x = val_x.reshape(-1, 10, 12, 12).astype("float32")/16.0
     val_y = val_y.reshape(-1, 81).astype("float32")/2.0
     
-    train_Dataflow=trainDataGenerator(x_train, y_train)
-    val_Dataflow=trainDataGenerator(val_x, val_y)
+    train_Dataflow=trainDataGenerator(x_train, y_train, 100)
+    val_Dataflow=trainDataGenerator(val_x, val_y, 100)
 
     model.fit_generator(
         train_Dataflow,
@@ -65,7 +66,7 @@ def train(model, x_train, y_train, val_x, val_y, epochs):
         epochs=epochs,
         callbacks=[cb_mc, cb_tb],
         validation_data=val_Dataflow,
-        validation_steps=100,
+        validation_steps=10,
         shuffle=True
         )
 
@@ -73,8 +74,12 @@ def Evaluate(model, img): #行動の評価値を算出
     img = np.array(img).reshape(-1,10,12,12).astype("float32")/16.0
     return model.predict(img, verbose=0)
 
-def trainDataGenerator(x_train, y_train):
+def trainDataGenerator(x_train, y_train, batch_size):
     while True:
-        nData = len(x_train)
-        i = np.random.randint(nData)
-        yield x_train[i:i+1,:], y_train[i:i+1,:]
+        yield trainDataCreater(x_train, y_train, batch_size)
+
+def trainDataCreater(x_train, y_train, batch_size):
+    offsets = np.random.randint(len(x_train), size=batch_size)
+    batch_x = np.stack(x_train[offset] for offset in offsets)
+    batch_y = np.stack(y_train[offset] for offset in offsets)
+    return batch_x, batch_y
