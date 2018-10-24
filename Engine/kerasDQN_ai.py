@@ -36,9 +36,43 @@ class kerasDQNPlayer(Player):
         return goodIntention
 
     def getGameImg(self, Game): #盤面を画像に
-        GameImg = np.random.rand(10, 12, 12)
-        print(GameImg)
+        GameImg = np.zeros(10, 12, 12)
         Panels = Game.getPanels()
+        Agents = Game.getAgents()
+        xlen = len(Panels[0])
+        ylen = len(Panels)
+        if(self._team==1):enemyteam = 2
+        elif(self._team==2):enemyteam = 1
+
+        """
+        [0]パネルの有無
+        [1]パネルのポイント
+        [2]味方エージェント1の有無
+        [3]味方エージェント2の有無
+        [4]味方パネルの有無
+        [5]味方パネルに囲まれた領域
+        [6]相手エージェント1の有無
+        [7]相手エージェント2の有無
+        [8]相手パネルの有無
+        [9]相手パネルに囲まれた領域
+        """
+        for i in Panels:
+            for j in Panels[0]:
+                GameImg[0][i][j] = 1
+                GameImg[1][i][j] = Panels[i][j].getScore() 
+                if(Panels[i][j].getState()==self.team):GameImg[4][i][j] = 1 
+                elif(Panels[i][j].getState()==enemyteam):GameImg[8][i][j] = 1
+                if(Panels[i][j].getSurrounded()[team-1]):GameImg[5][i][j] = 1
+                if(Panels[i][j].getSurrounded()[enemyteam-1]):GameImg[9][i][j] = 1
+                if(GameImg[5][i][j]==1 & GameImg[9][i][j]==1):
+                    GameImg[5][i][j] = 0
+                    GameImg[9][i][j] = 0
+        for i in len(Agents):
+            point = Agents[i].getPoint()
+            if(Agents[i].getTeam()==self._team):
+                GameImg[2+i%2][point[0]][point[1]]=1
+            elif(Agents[i].getTeam()==enemyteam):
+                GameImg[6+i%2][point[0]][point[1]]=1
         return GameImg
 
     def learn(self, train_x, train_y, val_x, val_y):#対戦データを学習

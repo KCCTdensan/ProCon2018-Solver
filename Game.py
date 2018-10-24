@@ -338,6 +338,9 @@ class Game:
 	def getPoints(self)->list:
 		return [self._1PTileScore, self._1PRegionScore, self._2PTileScore, self._2PRegionScore]
 
+	def getAgents(self)->list:
+		return [self._1PAgents[0], self._1PAgents[1], self._2PAgents[0], self._2PAgents[1]]
+
 	def endGame(self):
 		logfile = open("./Log/log"+str(self._gamecount)+".pickle","ab") #ログファイル出力準備
 		if self._turn==self._lastTurn:
