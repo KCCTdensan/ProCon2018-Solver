@@ -4,6 +4,7 @@ import numpy as np
 from keras.models import Model
 from keras.layers import Input, Dense, Dropout, Conv2D, Activation, Flatten, Concatenate, BatchNormalization 
 from keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping
+from keras.optimizers import Adam
 from keras.losses import mean_squared_error
 
 def buildModel():
@@ -28,6 +29,11 @@ def buildModel():
     output = Dense(81, activation="relu")(x)
     
     model = Model(inputs=input, outputs=output)
+    model.summary()
+    model.compile(
+            loss="mean_squared_error",
+            optimizer=Adam(lr=0.1)
+            )
     return model
 
 def train(model, x_train, y_train, val_x, val_y, epochs):
@@ -45,17 +51,17 @@ def train(model, x_train, y_train, val_x, val_y, epochs):
     cb_tb = TensorBoard(log_dir=tb_log_dir)
 
     x_train = x_train.reshape(-1, 10, 12, 12).astype("float32")/16.0
-    y_train = y_train.reshape(-1, 81).astype("float32")
+    y_train = y_train.reshape(-1, 81).astype("float32")/2.0
 
     val_x = val_x.reshape(-1, 10, 12, 12).astype("float32")/16.0
-    val_y = val_y.reshape(-1, 81).astype("float32")
+    val_y = val_y.reshape(-1, 81).astype("float32")/2.0
     
     train_Dataflow=trainDataGenerator(x_train, y_train)
     val_Dataflow=trainDataGenerator(val_x, val_y)
 
     model.fit_generator(
         train_Dataflow,
-        steps_per_epoch=10000,
+        steps_per_epoch=100,
         epochs=epochs,
         callbacks=[cb_mc, cb_tb],
         validation_data=val_Dataflow,

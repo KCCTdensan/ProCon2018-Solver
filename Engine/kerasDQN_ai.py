@@ -14,9 +14,9 @@ class kerasDQNPlayer(Player):
         self._model = buildModel()
 
         #GPU使用率決定
-        self._config = tf.ConfigProto()
-        self._config.gpu_options.per_process_gpu_memory_fraction = 0.6 #freememory/totalmemory
-        set_session(tf.Session(config=self._config))
+        #self._config = tf.ConfigProto()
+        #self._config.gpu_options.per_process_gpu_memory_fraction = 0.6 #freememory/totalmemory
+        #set_session(tf.Session(config=self._config))
 
     def intention(self, Game):#盤面の情報を渡してAgentの動かし方を返す
         GameImg = self.getGameImg(Game) #盤面を画像データに
@@ -36,7 +36,7 @@ class kerasDQNPlayer(Player):
         return goodIntention
 
     def getGameImg(self, Game): #盤面を画像に
-        GameImg = np.zeros(10, 12, 12)
+        GameImg = np.zeros((10, 12, 12), int)
         Panels = Game.getPanels()
         Agents = Game.getAgents()
         xlen = len(Panels[0])
@@ -56,18 +56,15 @@ class kerasDQNPlayer(Player):
         [8]相手パネルの有無
         [9]相手パネルに囲まれた領域
         """
-        for i in Panels:
-            for j in Panels[0]:
+        for i in range(len(Panels)):
+            for j in range(len(Panels[0])):
                 GameImg[0][i][j] = 1
                 GameImg[1][i][j] = Panels[i][j].getScore() 
-                if(Panels[i][j].getState()==self.team):GameImg[4][i][j] = 1 
+                if(Panels[i][j].getState()==self._team):GameImg[4][i][j] = 1 
                 elif(Panels[i][j].getState()==enemyteam):GameImg[8][i][j] = 1
-                if(Panels[i][j].getSurrounded()[team-1]):GameImg[5][i][j] = 1
-                if(Panels[i][j].getSurrounded()[enemyteam-1]):GameImg[9][i][j] = 1
-                if(GameImg[5][i][j]==1 & GameImg[9][i][j]==1):
-                    GameImg[5][i][j] = 0
-                    GameImg[9][i][j] = 0
-        for i in len(Agents):
+                if(Panels[i][j].getSurrounded()[self._team -1]):GameImg[5][i][j] = 1
+                if(Panels[i][j].getSurrounded()[enemyteam -1]):GameImg[9][i][j] = 1
+        for i in range(len(Agents)):
             point = Agents[i].getPoint()
             if(Agents[i].getTeam()==self._team):
                 GameImg[2+i%2][point[0]][point[1]]=1
@@ -76,10 +73,7 @@ class kerasDQNPlayer(Player):
         return GameImg
 
     def learn(self, train_x, train_y, val_x, val_y):#対戦データを学習
-        self._model.compile(
-            loss="mean_squared_error",
-            optimizer="adam"
-            )
+        
         #if(os.path.isfile("./checkpoint/model_params")):
         #    model.load_weights("./checkpoint/model_params")
 
