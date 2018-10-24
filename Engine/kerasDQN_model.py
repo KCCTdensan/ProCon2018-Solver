@@ -24,14 +24,14 @@ def buildModel():
     x = BatchNormalization()(x)
     x = Dense(256, activation="relu")(x)
     x = BatchNormalization()(x)
-    x = Dropout(2.0)(x)
+    #x = Dropout(2.0)(x)
 
     output = Dense(81, activation="relu")(x)
     
     model = Model(inputs=input, outputs=output)
     #model.summary()
     model.compile(
-            loss="binary_crossentropy",
+            loss="categorical_crossentropy",
             optimizer=Adam(lr=0.0001),
             metrics=["accuracy"]
             )
@@ -62,11 +62,11 @@ def train(model, x_train, y_train, val_x, val_y, epochs):
 
     model.fit_generator(
         train_Dataflow,
-        steps_per_epoch=100,
+        steps_per_epoch=1000,
         epochs=epochs,
         callbacks=[cb_mc, cb_tb],
         validation_data=val_Dataflow,
-        validation_steps=10,
+        validation_steps=100,
         shuffle=True
         )
 
