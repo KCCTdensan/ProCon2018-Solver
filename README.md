@@ -3,12 +3,18 @@
 これは第29回高専プロコンのソルバです。
 
 ## 依存
+### GUI用
 - wxPython
+
+### 計算用
 - NumPy
-- (QRコード読み取り用↓)
+- Keras
+- Tensorflow
+
+### QRコード読取用
 - pyzbar
 - pillow
-- ZBarを以下よりダウンロード、インストール
+ZBarを以下よりダウンロード、インストール
 - http://zbar.sourceforge.net/download.html-
 - (機械学習用↓)
 - tensorflow-gpu 1.4
@@ -16,7 +22,7 @@
 - CUDA 8.0
 - cudnn 6.0
 
-### 導入
+### 導入コマンド例
  ``` $ pip install wxpython numpy ```
 
 ### anaconda学習用仮想環境作成
