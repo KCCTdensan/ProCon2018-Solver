@@ -1,6 +1,6 @@
 #from Game import *
 
-class Player():#人，AIの継承用クラス
+class KA_31():#人，AIの継承用クラス
 	def __init__(self):
 		self._Intention = [[0, 0, 0], [0, 0, 0]] #2つのエージェントの動かし方
 

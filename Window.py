@@ -3,7 +3,7 @@ import sys
 from Game import Game
 from Panel import Panel
 from GUI.ControllerWindow import ControllerFrame
-from Engine.Test_ai import AI
+from Engine.KA_31 import KA_31
 
 class PlayerInfo:
 	def __init__(self, Label:str, Color:str, SelectColor:str):
@@ -140,8 +140,8 @@ class WindowFrame(wx.Frame):
 		gamePanels = self.__Game.getPanels()
 
 		#コントローラのインスタンス生成
-		self.__Human1 = ControllerFrame(PlayerInfo("1P-1", "#ed1c24", "#f78e94"), PlayerInfo("1P-2", "#ff7f27", "#ffbe93"), AI())
-		self.__Human2 = ControllerFrame(PlayerInfo("2P-1", "#22b14c", "#82e8a0"), PlayerInfo("2P-2", "#00a2e8", "#75d6ff"), AI())
+		self.__Human1 = ControllerFrame(PlayerInfo("1P-1", "#ed1c24", "#f78e94"), PlayerInfo("1P-2", "#ff7f27", "#ffbe93"), KA_31())
+		self.__Human2 = ControllerFrame(PlayerInfo("2P-1", "#22b14c", "#82e8a0"), PlayerInfo("2P-2", "#00a2e8", "#75d6ff"), KA_31())
 
 		self.__RootPanel = wx.Panel(self, wx.ID_ANY)
 		self.__RootPanel.SetBackgroundColour("#1f1f1f")
