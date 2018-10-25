@@ -1,23 +1,36 @@
 ﻿from Game import *
 
 class node:
-	def __init__(self):
+	NumCallPlay = 100000
+	Threshold = 100
+
+	NumTurns = 0
+	CntTurns = 0
+	NumChildren = 0
+	Q = 0.0
+	N = 0
+	Record = 0
+
+	def __init__(self,CntTurns:char):
 		pass
-	def ChangeNumTurns(self,NumTurns:int):
+	def ChangeNumTurns(self,NumTurns:char):
 		pass
-	def ChangeCntTurns(CntTurns):
+	def ChangeCntTurns(self,CntTurns :char):
 		pass
 	def IsLeafNode():
 		return false
 
 class friend_node:
-	def __init__(Stage):
+	*Children[ID_MaxID][ID_MaxID] : opponent_node
+	Stage :Game
+
+	def __init__(self,Stage):
 		pass
-	def __init__(Stage,CntTurns:char):
+	def __init__(self,Stage,CntTurns:char):
 		pass
-	def Search(NumCallPlay:int):
+	def Search(self,NumCallPlay:int):
 		pass
-	def Result(Result[ID_MaxID][ID_MaxID]):
+	def Result(self,Result[ID_MaxID][ID_MaxID]):
 		pass
 	def ChildNode(IntentionID1,IntentionID2):
 		pass
@@ -51,6 +64,8 @@ class friend_node:
 		pass
 
 class opponent_node:
+
+	friend_node:friend
 
 	def Play():
 		pass
