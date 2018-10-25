@@ -1,4 +1,5 @@
 ﻿from Game import *
+import numpy as np
 
 class node:
 	NumCallPlay = 100000
@@ -13,35 +14,36 @@ class node:
 
 	def __init__(self,CntTurns:char):
 		pass
-	def ChangeNumTurns(self,NumTurns:char):
-		pass
-	def ChangeCntTurns(self,CntTurns :char):
-		pass
 	def IsLeafNode():
 		return false
+	def ChangeNumTurns(NumTurns:int):
+		pass
+	def ChangeCntTurns(CntTurns :int):
+		pass
 
 class friend_node:
-	*Children[ID_MaxID][ID_MaxID] : opponent_node
+	Children = np.full((9,9),opponent_node())
 	Stage :Game
 
-	def __init__(self,Stage):
+	def __init__(self,ParentNode:opponent_node,Stage:Game,CntTurns:int):
 		pass
-	def __init__(self,Stage,CntTurns:char):
+	def __init__(self,Stage:Game):
 		pass
 	def Search(self,NumCallPlay:int):
 		pass
-	def Result(self,Result[ID_MaxID][ID_MaxID]):
-		pass
+	def Result(self):
+		return np.zeros(9,9)
 	def ChildNode(IntentionID1,IntentionID2):
-		pass
-	def ChildNode(action_id[stage::NumAgents]):
-		pass
-	def UpdateCurrentNode(action_id(&SelectIntentionIDs)[NumTeams][stage::NumAgents]):
-		pass
-	def NextNode(action_id[NumTeams][stage::NumAgents]):
-		pass
-	def GetStage();
-		pass
+		return np.full((9,9),opponent_node())
+	def ChildNode(SelectIntentionIDs):
+		return (9,9),opponent_node()
+	def UpdateCurrentNode(SelectIntentionIDs):
+		return np.full((9,9),friend_node())
+	def NextNode():
+		return np.full((9,9),friend_node())
+	def GetStage():
+		Stage
+
 	def PrintStage():
 		pass
 	def PrintChildNodeInfo():
@@ -49,45 +51,45 @@ class friend_node:
 
 
 	def Play():
-		pass
+		return 0
 	def Selection():
-		pass
+		return 0
 	def Expansion():
 		pass
 	def Evaluation():
-		pass
+		return 0
 	def Rollout(NumTurn:int):
-		pass
+		return 0
 	def ClearChildNode():
 		pass
 	def UCB1(Q:float,NChild:int):
-		pass
+		return 0,0
 
 class opponent_node:
 
 	friend_node:friend
 
 	def Play():
-		pass
+		return 0
 	def Selection():
-		pass
+		return 0;
 	def Expansion():
 		pass
 	def ClearChildNode():
 		pass
-	def UCB1(float Q, int NChild):
-		pass
+	def UCB1(Q:float,NChild:int):
+		return 0.0
 
-	def opponent_node(*ParentNode,Intentions[stage::NumAgents]:action_id,CntTurns:char)
+	def __init__(*ParentNode:friend_node,Intentions,CntTurns:int):
 		pass
-	def Search(NumCallPlay:int):
+	def Search(NumCallPlay:):
 		pass
-	def Result(Result[ID_MaxID][ID_MaxID]:int[][]):
-		pass
-	def ChildNode(action_id IntentionID1, action_id IntentionID2):
-		pass
-	def ChildNode(action_id(&IntentionIDs)[stage::NumAgents]):
-		pass
+	def Result():
+		return np.zeros(9,9)
+	def ChildNode(IntentionID1,IntentionID2):
+		return np.full((9,9),friend_node())
+	def ChildNode(IntentionIDs):
+		return np.full((9,9),friend_node())
 
 	def PrintChildNodeInfo():
 		pass
