@@ -33,7 +33,7 @@ def buildModel():
     #model.summary()
     model.compile(
             loss="categorical_crossentropy",
-            optimizer="adam",
+            optimizer=Adam(lr=0.00001),
             metrics=["accuracy"]
             )
     return model
