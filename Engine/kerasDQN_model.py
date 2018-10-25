@@ -10,9 +10,9 @@ from keras.losses import mean_squared_error
 def buildModel():
     input = Input((10, 12, 12))
 
-    x = Conv2D(12, 2, padding="same", data_format="channels_first", input_shape=(10, 12, 12))(input)
+    x = Conv2D(12, 3, padding="same", data_format="channels_first", input_shape=(10, 12, 12))(input)
     x = Activation("relu")(x)
-    x = Conv2D(12, 2, padding="same")(x)
+    x = Conv2D(12, 3, padding="same")(x)
     x = Activation("relu")(x)
     x = Conv2D(24, 3, padding="same")(x)
     x = Activation("relu")(x)
@@ -24,15 +24,15 @@ def buildModel():
     x = BatchNormalization()(x)
     x = Dense(256, activation="relu")(x)
     x = BatchNormalization()(x)
-    #x = Dropout(2.0)(x)
+    x = Dropout(0.5)(x)
 
-    output = Dense(81, activation="relu")(x)
+    output = Dense(1, activation="sigmoid")(x)
     
     model = Model(inputs=input, outputs=output)
     #model.summary()
     model.compile(
-            loss="categorical_crossentropy",
-            optimizer=Adam(lr=0.0001),
+            loss="binary_crossentropy",
+            optimizer=Adam(lr=0.00001),
             metrics=["accuracy"]
             )
     return model
@@ -52,10 +52,10 @@ def train(model, x_train, y_train, val_x, val_y, epochs):
     cb_tb = TensorBoard(log_dir=tb_log_dir)
 
     x_train = x_train.reshape(-1, 10, 12, 12).astype("float32")/16.0
-    y_train = y_train.reshape(-1, 81).astype("float32")/2.0
+    y_train = y_train.reshape(-1, 1).astype("float32")
 
     val_x = val_x.reshape(-1, 10, 12, 12).astype("float32")/16.0
-    val_y = val_y.reshape(-1, 81).astype("float32")/2.0
+    val_y = val_y.reshape(-1, 1).astype("float32")
     
     train_Dataflow=trainDataGenerator(x_train, y_train, 100)
     val_Dataflow=trainDataGenerator(val_x, val_y, 100)

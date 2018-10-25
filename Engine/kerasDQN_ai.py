@@ -13,8 +13,8 @@ class kerasDQNPlayer(Player):
         self._team = team
         self._model = buildModel()
 
-        #if(os.path.isfile("./checkpoint/model_params")):
-        #    model.load_weights("./checkpoint/model_params")
+        if(os.path.isfile("./checkpoint/kati/model_000030.h5")):
+            self._model.load_weights("./checkpoint/kati/model_000030.h5")
 
         #GPU使用率決定
         #self._config = tf.ConfigProto()
@@ -85,5 +85,5 @@ class kerasDQNPlayer(Player):
             #val_data
             val_x, 
             val_y,
-            1000,
+            50000,
             )
