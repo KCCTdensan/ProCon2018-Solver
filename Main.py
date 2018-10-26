@@ -1,6 +1,6 @@
 import wx
 from Prog.Window import WindowFrame
-from Prog.AutoFight import AutoFight
+#from Prog.AutoFight import AutoFight
 
 def main():
 	app = wx.App(False)

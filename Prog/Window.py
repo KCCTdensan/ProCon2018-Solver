@@ -181,6 +181,7 @@ class WindowFrame(wx.Frame):
 
 	def Rev1Act(self, e):
 		self.__Game = self.__Game.rewindOneTurn()
+		self.Update()
 
 	def OnButton(self, e):
 		Intentions1 = self.__Human1.GetIntentions()
