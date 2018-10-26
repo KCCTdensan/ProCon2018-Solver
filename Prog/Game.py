@@ -7,11 +7,11 @@ import copy
 import pickle
 #from pyzbar.pyzbar import decode
 #from PIL import Image
-from Panel import *
-from Agent import *
-from Window import *
-from intention import *
-from position import *
+from .Panel import *
+from .Agent import *
+from .Window import *
+from .intention import *
+from .position import *
 
 class intention_info:
 	def __init__():

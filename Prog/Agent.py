@@ -1,5 +1,5 @@
 import numpy as np
-from position import *
+from .position import *
 
 class Agent:
 	def __init__(self, point:[int, int], team:int): #エージェント生成(point:座標,team:チーム)
