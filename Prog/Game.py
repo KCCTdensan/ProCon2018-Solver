@@ -7,9 +7,9 @@ import copy
 import pickle
 #from pyzbar.pyzbar import decode
 #from PIL import Image
-from Panel import *
-from Agent import *
-from Window import *
+from .Panel import *
+from .Agent import *
+from .Window import *
 
 class Game:
 	#zbarのインストールが必要 URL: http://zbar.sourceforge.net/download.html

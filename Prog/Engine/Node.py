@@ -76,6 +76,7 @@ class friend_node(node):
 		return SelectedNode.Play()
 
 	def EvaluateAndExpand()->float:
+		Policy, Value = self.__evaluate(self.__Stage)
 		for i in range(9):
 			self.__Children.append([])
 			if not(self.Stage.CanAction(i, 0, 0)):
@@ -86,8 +87,10 @@ class friend_node(node):
 					self.__Children[i].append(None)
 					continue
 				self.__Children[i].append(opponent_node(self, [i, j], self.CntTurns + 1))
+				self.__Children[i][j].Q = Policy[i][j]
 				self.NumChildren += 1
 		self.__EvalFlag = False
+		return Value
 
 	def ClearChildNode():
 		self.__Children = []

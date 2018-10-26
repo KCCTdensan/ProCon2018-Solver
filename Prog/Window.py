@@ -1,9 +1,9 @@
 import wx
 import sys
-from Game import Game
-from Panel import Panel
-from GUI.ControllerWindow import ControllerFrame
-from Engine.KA_31 import KA_31
+from .Game import Game
+from .Panel import Panel
+from .GUI.ControllerWindow import ControllerFrame
+from .Engine.KA_31 import KA_31
 
 class PlayerInfo:
 	def __init__(self, Label:str, Color:str, SelectColor:str):
