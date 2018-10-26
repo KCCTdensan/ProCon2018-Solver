@@ -10,6 +10,15 @@ import pickle
 from Panel import *
 from Agent import *
 from Window import *
+from intention import *
+from position import *
+
+class intention_info:
+	def __init__():
+		Delta = intention()
+		ExpectedPosition = position()
+		NextPosition = position()
+		CanAct = 0
 
 class Game:
 	#zbarのインストールが必要 URL: http://zbar.sourceforge.net/download.html
@@ -355,3 +364,155 @@ class Game:
 		if Player1Score == Player2Score: return 0
 		elif Player1Score > Player2Score: return 1
 		elif Player1Score < Player2Score: return 2
+
+	def Move(Infos,intention_info,Team,AgentNo):
+		self.NumCall = 0;
+		#すでに移動不可とわかっている場合
+		if (Infos[Team][AgentNo].CanAct == -1):
+			return false;
+		#座標外への移動の試行やとどまる手など、移動可能かどうかがすぐに確定する場合
+		if(CanActionOne(Agents[Team][AgentNo].getPosition(),Infos[Team][AgentNo].Delta) == -1):
+			return false
+		elif(CanActionOne(Agents[Team][AgentNo].getPosition(),Infos[Team][AgentNo].Delta) == 1):
+			return true
+
+		#目標座標の重複や他エージェントの位置に移動しようとした場合などを判定
+		for t in range(2):
+			for a in range(2):
+				#自分のエージェントとは比較しない
+				if (t == Team and a == AgentNo):
+					continue
+				#他エージェントと目標座標が重複していた場合
+				if ((Infos[Team][AgentNo].ExpectedPosition.x == Infos[t][a].ExpectedPosition.x)and(Infos[Team][AgentNo].ExpectedPosition.y == Infos[t][a].ExpectedPosition.y)):
+					Infos[Team][AgentNo].CanAct = -1;
+					Infos[t][a].CanAct = -1;
+					return false;
+
+				#他エージェントの位置と目標座標が重複していた場合
+				if ((Infos[Team][AgentNo].ExpectedPosition.x == Infos[t][a].NextPosition.x)and(Infos[Team][AgentNo].ExpectedPosition.y == Infos[t][a].NextPosition.y)):
+					Infos[Team][AgentNo].CanAct = -1;
+					return false;
+
+				#他エージェントの現在の位置が目標座標と重複していた場合
+				if ((Infos[Team][AgentNo].ExpectedPosition.x == Agents[t][a].GetPosition().x)and(Infos[Team][AgentNo].ExpectedPosition.y == Agents[t][a].GetPosition().y)):
+				
+				#自エージェントの現在の位置が目標座標と重複していた場合
+				if (Infos[t][a].ExpectedPosition.x == Agents[Team][AgentNo].GetPosition()):
+					Infos[Team][AgentNo].CanAct = -1;
+					Infos[t][a].CanAct = -1;
+					return false;
+
+				//他エージェントが移動できる場合
+				if (Move(Infos, t, a))
+				{
+					NumCall--;
+					Infos[Team][AgentNo].CanAct = 1;
+					return true;
+				}
+
+				//他エージェントが移動できない場合
+				Infos[Team][AgentNo].CanAct = -1;
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+	def CanAction(self,Intentions:intention):
+		self.Infos = np.full((2,2),intention)
+		self.Result = np.full((2,2),bool)
+		for t in range(2):
+			for a in range(2):
+				self.Infos[t][a].Delta = copy.deepcopy(Intentions[t][a])
+				self.Infos[t][a].ExpectedPosition.DeltaX = copy.deepcopy(self.Agents[t][a]._point[0] + Infos[t][a].Delta.DeltaX)
+				ExpectedPosState = self.Panels[Infos[t][a].ExpectedPosition].getState();
+				if (ExpectedPosState != t and ExpectedPosState != -1):
+					Infos[t][a].NextPosition = copy.deepcopy(self.Agents[t][a]._point)
+				else:
+					Infos[t][a].NextPosition = Infos[t][a].ExpectedPosition
+					Infos[t][a].CanAct = 0
+		for t in range(2):
+			for a in range(2):
+				Result[t][a] = Move(Infos, t, a);
+
+
+void stage::CanAction(action_id(&IntentionIDs)[NumTeams][NumAgents], bool(&Result)[NumTeams][NumAgents])const
+{
+	intention Intentions[NumTeams][NumAgents];
+	for (team_no t = 0; t < NumTeams; ++t)
+	{
+		for (char a = 0; a < NumAgents; ++a)
+		{
+			Intentions[t][a] = IntentionIDs[t][a];
+		}
+	}
+	CanAction(Intentions, Result);
+}
+
+bool stage::CanAction(intention(&Intentions)[NumTeams][NumAgents])const
+{
+	bool Result[NumTeams][NumAgents];
+	CanAction(Intentions, Result);
+	return (Result[0][0] && Result[0][1]) && (Result[1][0] && Result[1][1]);
+}
+
+bool stage::CanAction(action_id(&IntentionIDs)[NumTeams][NumAgents])const
+{
+	intention Intentions[NumTeams][NumAgents];
+	for (team_no t = 0; t < NumTeams; ++t)
+	{
+		for (char a = 0; a < NumAgents; ++a)
+		{
+			Intentions[t][a] = IntentionIDs[t][a];
+		}
+	}
+	return CanAction(Intentions);
+}
+
+bool stage::CanAction(intention(&Intentions)[NumAgents], team_no Team)const
+{
+	if(CanActionOne(Agents[Team][0].GetPosition(), Intentions[0]) == -1 || CanActionOne(Agents[Team][1].GetPosition(), Intentions[1]) == -1)
+	{
+		return false;
+	}
+	if (Agents[Team][0].GetPosition() + Intentions[0] == Agents[Team][1].GetPosition() + Intentions[1])
+	{
+		return false;
+	}
+	if ((Agents[Team][0].GetPosition() + Intentions[0] == Agents[Team][1].GetPosition()) && (Agents[Team][1].GetPosition() + Intentions[1] == Agents[Team][0].GetPosition()))
+	{
+		return false;
+	}
+	return true;
+}
+
+bool stage::CanAction(action_id(&IntentionIDs)[NumAgents], team_no Team)const
+{
+	intention Intentions[NumAgents];
+	for (char a = 0; a < NumAgents; ++a)
+	{
+		Intentions[a] = IntentionIDs[a];
+	}
+	return CanAction(Intentions, Team);
+}
+
+bool stage::CanAction(intention Intention, team_no Team, char AgentNo)const
+{
+	return CanActionOne(Agents[Team][AgentNo].GetPosition(), Intention) != -1;
+}
+
+bool stage::CanAction(action_id IntentionID, team_no Team, char AgentNo)const
+{
+	return CanAction((intention)IntentionID, Team, AgentNo);
+}
+
+char stage::CanActionOne(position Position, intention Intention)const
+{
+	if(Intention.DeltaX == 0 && Intention.DeltaY == 0)
+	{
+		return 1;
+	}
+	Position += Intention;
+	return ((0 <= Position.x && Position.x < NumX) && (0 <= Position.y && Position.y < NumY)) ? 0 : -1;
+}
