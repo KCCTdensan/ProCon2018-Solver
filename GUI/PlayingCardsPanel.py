@@ -15,7 +15,7 @@ class PlayingCardsPanel(wx.Panel):
 		self.SetBackgroundColour("#ffffff")
 		self.SetSizer(self.__Sizer)
 		self.Fit()
-		
+
 		self.__AI = AI
 
 
