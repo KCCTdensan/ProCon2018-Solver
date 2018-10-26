@@ -215,7 +215,7 @@ class Game:
 		elif action == 1:#除去の場合、パネルがあるかどうか、パネル除去してる人がいないかどうか
 			if CurrentPosition[0] == actionPosition[0] and CurrentPosition[1] == actionPosition[1]:
 				return False
-			for i,agent in enumerate(Agents):
+			for i,agent in enumerate(self.Agents):
 				if not agent is Agent:
 					if np.allclose(agent.getPoint(),np.array([actionPosition[0],actionPosition[1]])) and Intention[i][2] == 1:
 						return False
@@ -282,7 +282,11 @@ class Game:
 
 		self.printMatchLog(num)
 
-		logfile = open("./Log/log"+str(num)+".pickle","rb") #ログファイル入力準備
+		try:
+			logfile = open("./Log/log"+str(num)+".pickle","rb") #ログファイル入力準備
+		except FileNotFoundError:
+			print("log"+str(num)+".pickleがなくて開けません")
+			return 
 		try:
 			bin = pickle.load(logfile)
 		except EOFError:
@@ -310,7 +314,11 @@ class Game:
 		return game_logs,intention_logs,result
 
 	def printMatchLog(self,num): #指定された試合のログをprintする 
-		logfile = open("./Log/log"+str(num)+".pickle","rb") #ログファイル入力準備
+		try:
+			logfile = open("./Log/log"+str(num)+".pickle","rb") #ログファイル入力準備
+		except FileNotFoundError:
+			print("log"+str(num)+".pickleがなくて開けません")
+			return 
 		try:
 			bin = pickle.load(logfile)
 		except EOFError:
@@ -347,8 +355,10 @@ class Game:
 		logfile.close
 
 	def rewindOneTurn(self):
-		print("etst")
-		games,intentions = self.readMatchLog(self._gamecount)
+		if not self.readMatchLog(self._gamecount) is None:
+			games,intentions = self.readMatchLog(self._gamecount)
+		else:
+			return self
 
 		if len(games) <= 1:
 			print("一手戻れません（一番最初のターンになってる）")
