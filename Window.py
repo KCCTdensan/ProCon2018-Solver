@@ -187,8 +187,10 @@ class WindowFrame(wx.Frame):
 		    print("Winner : "+str(self.__Game.getWinner()))
 		    sys.exit()
 		self.Update()
-		self.__Human1.ResetIntentions()
-		self.__Human2.ResetIntentions()
+		self.__Human1.UpdateAIEvaluation()
+		self.__Human2.UpdateAIEvaluation()
+		#self.__Human1.ResetIntentions()
+		#self.__Human2.ResetIntentions()
 
 	def Update(self):
 		self.__StagePanel.Update([self.__Game._1PAgents[0], self.__Game._1PAgents[1], self.__Game._2PAgents[0], self.__Game._2PAgents[1]], self.__Game.getPanels())
