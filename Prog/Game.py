@@ -347,6 +347,7 @@ class Game:
 		logfile.close
 
 	def rewindOneTurn(self):
+		print("etst")
 		games,intentions = self.readMatchLog(self._gamecount)
 
 		if len(games) <= 1:
