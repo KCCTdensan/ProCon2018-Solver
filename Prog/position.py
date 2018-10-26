@@ -25,6 +25,7 @@ class position:
 			self.x += 1
 		else:
 			pass
+
 		return self
 
 	def add_3(self, Position, Intention:intention):
@@ -36,10 +37,10 @@ class position:
 		return Position.add_2(action_id)
 
 	def isSame(self, Position1, Position2):
-		return Position1.x == Position2.x
+		return (Position1.x == Position2.x)and(Position1.y == Position2.y)
 
 	def notSame(self, Position1, Position2):
-		return not(Position1.x == Position2.x)
+		return not((Position1.x == Position2.x)and(Position1.y == Position2.y))
 
 def sum(Position:position, Intention:intention)->position:
 	tmp = copy.copy(Position)

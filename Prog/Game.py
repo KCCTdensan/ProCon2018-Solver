@@ -372,7 +372,7 @@ class Game:
 		elif Player1Score > Player2Score: return 1
 		elif Player1Score < Player2Score: return 2
 
-	def Move(Infos,intention_info,Team,AgentNo):
+	def Move(self,Infos,Team,AgentNo):
 		self.NumCall = 0;
 		#すでに移動不可とわかっている場合
 		if (Infos[Team][AgentNo].CanAct == -1):
@@ -387,11 +387,10 @@ class Game:
 		for t in range(2):
 			for a in range(2):
 				#自分のエージェントとは比較しない
-				if (t == Team and a == AgentNo):
+				if ((t == Team) and (a == AgentNo)):
 					continue
 				#他エージェントと目標座標が重複していた場合
 				if ((Infos[Team][AgentNo].ExpectedPosition.x == Infos[t][a].ExpectedPosition.x)and(Infos[Team][AgentNo].ExpectedPosition.y == Infos[t][a].ExpectedPosition.y)):
-					Infos[Team][AgentNo].CanAct = -1
 					Infos[Team][AgentNo].CanAct = -1
 					Infos[t][a].CanAct = -1
 					return false
@@ -411,7 +410,7 @@ class Game:
 						return false
 
 					#他エージェントが移動できる場合
-					if (Move(Infos, t, a)):
+					if (Move(Infos,t,a)):
 						NumCall -=1
 						Infos[Team][AgentNo].CanAct = 1;
 						return true

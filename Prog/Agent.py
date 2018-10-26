@@ -17,6 +17,6 @@ class Agent:
 
 	def getPosition(self):
 		_position = position()
-		_position.x = self._point[0]
-		_position.y = self._point[1]
+		_position.x = self._point[1]
+		_position.y = self._point[0]
 		return _position
