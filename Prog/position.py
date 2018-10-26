@@ -1,16 +1,17 @@
-﻿from intention import *
+﻿from .intention import *
 import copy
+
 class position:
 	def __init__(self):
 		self.x = 0
 		self.y = 0
 
-	def add_1(self,Intention:intention):
+	def add_1(self, Intention:intention):
 		self.x += Intention.DeltaX
 		self.y += Intention.DeltaY
 		return self
 	
-	def add_2(self,action_id:int):
+	def add_2(self, action_id:int):
 		if( 1>= 1 and action_id <= 3):
 			self.y += -1
 		elif(action_id >= 6 and action_id <= 8):
@@ -26,16 +27,21 @@ class position:
 			pass
 		return self
 
-	def add_3(self,Position:position,Intention:intention):
+	def add_3(self, Position, Intention:intention):
 		#self._Position = copy.deepcopy(Position)
 		return Position.add_1(Intention)
 
-	def add_3(self,Position:position,action_id:int):
+	def add_3(self, Position, action_id:int):
 		self._Position = copy.deepcopy(Position)
 		return Position.add_2(action_id)
 
-	def isSame(self,Position1:position,Position2:position):
+	def isSame(self, Position1, Position2):
 		return Position1.x == Position2.x
 
-	def notSame(self,Position1:position,Position2:position):
+	def notSame(self, Position1, Position2):
 		return not(Position1.x == Position2.x)
+
+def sum(Position:position, Intention:intention)->position:
+	tmp = copy.copy(Position)
+	tmp.add_1(Intention)
+	return tmp
