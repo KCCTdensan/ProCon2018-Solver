@@ -34,7 +34,7 @@ class IntentionKeysPanel(wx.Panel):
 		self.ResetIntention()
 		for iAction in range(len(self.__listButton)):
 			if Button == self.__listButton[iAction]:
-				self.__Intention = [iAction % 3 - 1, iAction // 3 - 1, 0]#修正必須
+				self.__Intention = [iAction % 3 - 1, iAction // 3 - 1]
 		Button.SetBackgroundColour(self.__SelectColor)
 
 	def GetIntention(self)->list:
@@ -42,7 +42,7 @@ class IntentionKeysPanel(wx.Panel):
 
 	def ResetIntention(self):
 		self.__listButton[self.__Intention[0] + 1 + (self.__Intention[1] + 1) * 3].SetBackgroundColour(self.__Color)
-		self.__Intention = [0, 0, 0]
+		self.__Intention = [0, 0]
 
 class PlayerPanel(wx.Panel):
 	"""
@@ -50,6 +50,7 @@ class PlayerPanel(wx.Panel):
 	"""			
 	def __init__(self, Parent:wx.Panel, Label:str, Color:str, SelectColor:str):
 		super().__init__(Parent, wx.ID_ANY)
+		self.__IntentionRemove = 0
 		self.__Sizer = wx.BoxSizer(wx.VERTICAL)
 
 		#コントローラのラベルを作成
@@ -57,18 +58,41 @@ class PlayerPanel(wx.Panel):
 		self.__LabelText.SetForegroundColour("#ffffff")
 		self.__Sizer.Add(self.__LabelText, 0, wx.GROW|wx.TOP|wx.BOTTOM, border=10)
 
+		#返すボタンを作成
+		ID = wx.NewId()
+		self.__RemoveButton = wx.ToggleButton(self, ID, "返", size=(150, 50))
+		self.__RemoveButton.SetForegroundColour("#ffffff")
+		self.__RemoveButton.SetBackgroundColour(Color)
+		self.__Sizer.Add(self.__RemoveButton, 0, wx.CENTER)
+		
 		#ボタン・パネルを作成
+		self.__Color = Color
+		self.__SelectColor = SelectColor
 		self.__IntentionKeysPanel = IntentionKeysPanel(self, Color, SelectColor)
 		self.__Sizer.Add(self.__IntentionKeysPanel)
 		
+		self.Bind(wx.EVT_TOGGLEBUTTON, self.__OnButton, id=ID)
 		self.SetSizer(self.__Sizer)
 		self.Fit()
 
+	def __OnButton(self, e:wx.Event):
+		v = self.__RemoveButton.GetValue()
+		if v:
+			self.__IntentionRemove = 1
+			self.__RemoveButton.SetBackgroundColour(self.__SelectColor)
+			return
+		self.__IntentionRemove = 0
+		self.__RemoveButton.SetBackgroundColour(self.__Color)
+
 	def GetIntention(self)->list:
-		return self.__IntentionKeysPanel.GetIntention()
+		Intention = self.__IntentionKeysPanel.GetIntention()
+		Intention.append(self.__IntentionRemove)
+		return Intention
 
 	def ResetIntention(self):
 		self.__IntentionKeysPanel.ResetIntention()
+		self.__IntentionRemove = 0
+		self.__RemoveButton.SetBackgroundColour(self.__Color)
 
 class ControllerPanel(wx.Panel):
 	"""
