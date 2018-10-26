@@ -1,6 +1,7 @@
-﻿from ..Game import *
-from .kerasDQN_ai import kerasDQNPlayer
+﻿from .Game import *
+#from .kerasDQN_ai import kerasDQNPlayer
 import numpy as np
+from .intention import *
 
 class node():
 	NumCallPlay = 10000
@@ -30,7 +31,6 @@ class friend_node(node):
 		self.__Stage = Stage
 		self.__Children = []
 		self.__EvalFlag = True
-		self.__DQN = kerasDQNPlayer(1)
 	
 	def Search(self, NumCallPlay:int):
 		if self.__EvalFlag:
@@ -79,17 +79,17 @@ class friend_node(node):
 		return SelectedNode.Play()
 
 	def EvaluateAndExpand(self)->float:
-		Policy, Value = self.__DQN.evaluate(self.__Stage)
+		#Policy, Value = self.__DQN.evaluate(self.__Stage)
 		for i in range(9):
 			self.__Children.append([])
-			if not(self.__Stage.CanActionOne(intention(i), 0, 0)):
+			if not(self.__Stage.CanActionOne(intention().from_action_id(i), 0, 0)):
 				self.__Children[i].append(None)
 				continue
 			for j in range(9):
-				if not(self.__Stage.CanActionTeam([intention(i), intention(j)], 0)):
+				if not(self.__Stage.CanActionTeam([intention().from_action_id(i),intention().from_action_id(j)], 0)):
 					self.__Children[i].append(None)
 					continue
-				self.__Children[i].append(opponent_node(self, [i, j], self.CntTurns + 1))
+				self.__Children[i].append(opponent_node(self, [intention().from_action_id(i),intention().from_action_id(j)], self.CntTurns + 1))
 				self.__Children[i][j].Q = Policy[i][j]
 				self.NumChildren += 1
 		self.__EvalFlag = False
@@ -147,11 +147,11 @@ class opponent_node(node):
 	def Expand(self):
 		for i in range(9):
 			self.__Children.append([])
-			if not(self.__ParentNode.GetStage().CanActionOne(intention(i), 1, 0)):
+			if not(self.__ParentNode.GetStage().CanActionOne(intention().from_action_id(i), 1, 0)):
 				self.__Children[i].append(None)
 				continue
 			for j in range(9):
-				if not(self.__ParentNode.GetStage().CanActionAll([[self.__FriendIDs[0], self.__FriendIDs[1]], [i, j]])):
+				if not(self.__ParentNode.GetStage().CanActionAll([[self.__FriendIDs[0], self.__FriendIDs[1]], [intention().from_action_id(i),intention().from_action_id(j)]])):
 					self.__Children[i].append(None)
 					continue
 				self.__Children[i].append(friend_node(self.ParentNode.GetStage(), self.CntTurns + 1))

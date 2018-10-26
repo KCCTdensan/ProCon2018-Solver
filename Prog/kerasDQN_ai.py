@@ -2,16 +2,13 @@ import random
 import os
 import numpy as np
 from .Player import Player
-from .kerasDQN_model import(
-    buildModel, train, predict  
-)
+
 
 class kerasDQNPlayer(Player):
     def __init__(self, team):
         self._team = team
         if(self._team==1):self._enemyteam = 2
         elif(self._team==2):self._enemyteam = 1
-        self._model = buildModel()
 
         #if(os.path.isfile("./checkpoint/model_params")):
         #    model.load_weights("./checkpoint/model_params")
@@ -112,5 +109,5 @@ class kerasDQNPlayer(Player):
             50000,
             )
 
-    def evaluate(self, Game):
-        return predict(self._model, self.getGameImg(Game))
+    #def evaluate(self, Game):
+        #return predict(self._model, self.getGameImg(Game))

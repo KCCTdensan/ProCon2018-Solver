@@ -14,7 +14,7 @@ from .intention import *
 from .position import *
 
 class intention_info:
-	def __init__():
+	def __init__(self):
 		self.Delta = intention()
 		self.ExpectedPosition = position()
 		self.NextPosition = position()
@@ -378,7 +378,7 @@ class Game:
 		if (Infos[Team][AgentNo].CanAct == -1):
 			return false;
 		#座標外への移動の試行やとどまる手など、移動可能かどうかがすぐに確定する場合
-		if(CanActionOne(Agents[Team][AgentNo].getPosition(),Infos[Team][AgentNo].Delta) == -1):
+		if(self.CanActionOne(self.Agents[Team][AgentNo].getPosition(),self.Infos[Team][AgentNo].Delta) == -1):
 			return false
 		elif(CanActionOne(Agents[Team][AgentNo].getPosition(),Infos[Team][AgentNo].Delta) == 1):
 			return true
@@ -421,22 +421,23 @@ class Game:
 		return true
 
 	def CanActionAll(self, Intentions:list)->list:
-		self.Infos = np.full((2,2), intention_info)
+		self.Infos = np.full((2,2),intention_info)
 		self.Result = np.full((2,2), bool)
 		for t in range(2):
 			for a in range(2):
+				self.Infos[t][a] = intention_info()
 				self.Infos[t][a].Delta = copy.copy(Intentions[t][a])
 				self.Infos[t][a].ExpectedPosition.x = self.Agents[t][a]._point[0] + Intentions[t][a].DeltaX
 				self.Infos[t][a].ExpectedPosition.y = self.Agents[t][a]._point[1] + Intentions[t][a].DeltaY
-				ExpectedPosState = self.Panels[Infos[t][a].ExpectedPosition.y][Infos[t][a].ExpectedPosition.x].getState();
+				ExpectedPosState = self._Panels[self.Infos[t][a].ExpectedPosition.y][self.Infos[t][a].ExpectedPosition.x].getState();
 				if (ExpectedPosState != t)and(ExpectedPosState != -1):
-					Infos[t][a].NextPosition = copy.copy(self.Agents[t][a]._point)
+					self.Infos[t][a].NextPosition = copy.copy(self.Agents[t][a]._point)
 				else:
-					Infos[t][a].NextPosition = copy.copy(Infos[t][a].ExpectedPosition)
-				Infos[t][a].CanAct = 0
+					self.Infos[t][a].NextPosition = copy.copy(self.Infos[t][a].ExpectedPosition)
+				self.Infos[t][a].CanAct = 0
 		for t in range(2):
 			for a in range(2):
-				Result[t][a] = Move(Infos, t, a);
+				Result[t][a] = self.Move(self.Infos, t, a);
 
 	def CanActionAll_ID(self, IntentionIDs:list)->list:
 		return CanActionAll(self, [[intention(IntentionIDs[0][0]), intention(IntentionIDs[0][1])], [intention(IntentionIDs[1][0]), intention(IntentionIDs[1][1])]])

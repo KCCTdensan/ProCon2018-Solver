@@ -2,7 +2,7 @@
 	def __init__(self):
 		self.DeltaX = 0
 		self.DeltaY = 0
-	def __init__(self, action_id:int):
+	def from_action_id(self, action_id:int):
 		if(action_id >= 1 and action_id <= 3):
 			self.DeltaY = -1
 		elif(action_id >= 6 and action_id <= 8):
@@ -16,3 +16,4 @@
 			self.DeltaX = 1
 		else:
 			self.DeltaX = 0
+		return self
