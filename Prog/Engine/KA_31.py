@@ -25,7 +25,7 @@ class KA_31(Player):#人，AIの継承用クラス
 		return [0, 0, 0]
 
 	def intention(self, Game)->list:#盤面の情報を渡してAgentの動かし方を返す
-		CurrentNode = friend_node(Game)
+		CurrentNode = friend_node(Game, 0)
 		CurrentNode.Search(1000)
 		Result = CurrentNode.Result()
 		Selected_i = 0

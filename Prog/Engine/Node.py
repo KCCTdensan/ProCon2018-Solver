@@ -95,10 +95,10 @@ class friend_node(node):
 	def ClearChildNode():
 		self.__Children = []
 
-	def ChildNode(IntentionIDs:list)->opponent_node:
+	def ChildNode(IntentionIDs:list):
 		return self.__Children[IntentionIDs[0]][IntentionIDs[1]]
 
-	def NextNode(IntentionIDs:list)->friend_node:
+	def NextNode(IntentionIDs:list):
 		return self.ChildNode(IntentionIDs[0]).ChildNode(IntentionIDs[1])
 
 	def GetStage():
