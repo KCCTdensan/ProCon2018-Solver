@@ -332,6 +332,27 @@ class Game:
 
 		logfile.close
 
+	def rewindOneTurn(self):
+		games,intentions = self.readMatchLog(self._gamecount)
+
+		if len(games) <= 1:
+			print("一手戻れません（一番最初のターンになってる）")
+			return self
+
+		rewindGame = games[-2]
+
+		os.remove("./Log/log"+str(self._gamecount)+".pickle")
+
+		logfile = open("./Log/log"+str(self._gamecount)+".pickle","ab")
+
+		for game,intention in zip(games[:-1],intentions[:-1]):
+			pickle.dump(game,logfile) #gameobjectバイナリ出力
+			pickle.dump(intention,logfile) #Intentionsバイナリ出力
+		
+		logfile.close
+
+		return rewindGame
+
 	def getPanels(self):
 		return self._Panels
 
