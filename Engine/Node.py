@@ -52,6 +52,7 @@ class friend_node(node):
 			Ret = self.Select()
 		self.Record += Ret
 		self.N += 1
+		self.Q = self.Record / N
 		return Ret
 
 	def Select()->float:
@@ -98,7 +99,9 @@ class friend_node(node):
 		return self.__Stage
 
 	def UCB1(Q:float, NChild:int):
-		pass
+		if NChild == 0:
+			return None
+		return Q + sqrt(2.0 * log(self.N) / NChild)
 
 class opponent_node(node):
 	def __init__(self, ParentNode:friend_node, IntentionIDs:list, CntTurns:int):
@@ -109,8 +112,9 @@ class opponent_node(node):
 
 	def Play()->float:
 		Ret = self.Select()
-		self.N += 1
 		self.Record += Ret
+		self.N += 1
+		self.Q = self.Record / N
 		return Ret
 
 	def Select()->float:	
@@ -137,36 +141,28 @@ class opponent_node(node):
 				self.__Children[i].append(None)
 				continue
 			for j in range(9):
-				if not(self.Stage.CanAction(((i, j), (i, j)), 0)):
+				if not(self.Stage.CanAction(((self.__FriendIDs[0], self.__FriendIDs[1]), (i, j)), 0)):
 					self.__Children[i].append(None)
 					continue
 				self.__Children[i].append(friend_node(self.ParentNode.GetStage(), self.CntTurns + 1))
 				self.NumChildren += 1
-		self.__EvalFlag = False
 
 	def ClearChildNode():
 		ChildNode = []
 
 	def UCB1(Q:float, NChild:int):
-		pass
-
-	def Search(NumCallPlay:int):
-		pass
+		if NChild == 0:
+			return None
+		return -Q + sqrt(2.0 * log(self.N) / NChild)
 
 	def Result()->list:
-		pass
-
-	def ChildNode(IntentionID1:int, IntentionID2:int)->friend_node:
-		pass
+		Ret = []
+		for row in self.__Children:
+			tmp = []
+			for i in row:
+				tmp.append(i.N)
+			Ret.append(tmp)
+		return Ret		
 
 	def ChildNode(IntentionIDs:list)->friend_node:
-		pass
-	def Result():
-		return np.zeros(9,9)
-	def ChildNode(IntentionID1,IntentionID2):
-		return np.full((9,9),friend_node())
-	def ChildNode(IntentionIDs):
-		return np.full((9,9),friend_node())
-
-	def PrintChildNodeInfo():
-		pass
+		return self.__Children[IntentionIDs[0]][IntentionIDs[1]]
