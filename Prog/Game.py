@@ -389,40 +389,34 @@ class Game:
 					continue
 				#他エージェントと目標座標が重複していた場合
 				if ((Infos[Team][AgentNo].ExpectedPosition.x == Infos[t][a].ExpectedPosition.x)and(Infos[Team][AgentNo].ExpectedPosition.y == Infos[t][a].ExpectedPosition.y)):
-					Infos[Team][AgentNo].CanAct = -1;
-					Infos[t][a].CanAct = -1;
-					return false;
+					Infos[Team][AgentNo].CanAct = -1
+					Infos[t][a].CanAct = -1
+					return false
 
 				#他エージェントの位置と目標座標が重複していた場合
 				if ((Infos[Team][AgentNo].ExpectedPosition.x == Infos[t][a].NextPosition.x)and(Infos[Team][AgentNo].ExpectedPosition.y == Infos[t][a].NextPosition.y)):
-					Infos[Team][AgentNo].CanAct = -1;
-					return false;
+					Infos[Team][AgentNo].CanAct = -1
+					return false
 
 				#他エージェントの現在の位置が目標座標と重複していた場合
 				if ((Infos[Team][AgentNo].ExpectedPosition.x == Agents[t][a].GetPosition().x)and(Infos[Team][AgentNo].ExpectedPosition.y == Agents[t][a].GetPosition().y)):
 				
-				#自エージェントの現在の位置が目標座標と重複していた場合
-				if (Infos[t][a].ExpectedPosition.x == Agents[Team][AgentNo].GetPosition()):
+					#自エージェントの現在の位置が目標座標と重複していた場合
+					if ((Infos[t][a].ExpectedPosition.x == Agents[Team][AgentNo].GetPosition().x)and(Infos[t][a].ExpectedPosition.y == Agents[Team][AgentNo].GetPosition().y)):
+						Infos[Team][AgentNo].CanAct = -1
+						Infos[t][a].CanAct = -1
+						return false
+
+					#他エージェントが移動できる場合
+					if (Move(Infos, t, a)):
+						NumCall -=1
+						Infos[Team][AgentNo].CanAct = 1;
+						return true
+
+					#他エージェントが移動できない場合
 					Infos[Team][AgentNo].CanAct = -1;
-					Infos[t][a].CanAct = -1;
-					return false;
-
-				//他エージェントが移動できる場合
-				if (Move(Infos, t, a))
-				{
-					NumCall--;
-					Infos[Team][AgentNo].CanAct = 1;
-					return true;
-				}
-
-				//他エージェントが移動できない場合
-				Infos[Team][AgentNo].CanAct = -1;
-				return false;
-			}
-		}
-	}
-	return true;
-}
+					return false
+		return true
 
 	def CanAction(self,Intentions:intention):
 		self.Infos = np.full((2,2),intention)
