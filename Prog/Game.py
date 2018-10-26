@@ -14,8 +14,8 @@ from .intention import *
 from .position import *
 
 class intention_info:
-	def __init__():
-		self.Delta = intention()
+	def __init__(self):
+		self.Delta = intention(0)
 		self.ExpectedPosition = position()
 		self.NextPosition = position()
 		self.CanAct = 0
@@ -68,6 +68,7 @@ class Game:
 		self._1PAgents = [Agent([Agenty, Agentx],1),Agent([_yLen - 1 - Agenty, _xLen - 1 - Agentx],1)] #ステージに存在する1Pのエージェントのリスト
 		self._2PAgents = [Agent([_yLen - 1 - Agenty, Agentx],2),Agent([Agenty, _xLen - 1 - Agentx],2)] #ステージに存在する2Pのエージェントのリスト
 		self.Agents = [[self._1PAgents[0], self._1PAgents[1]], [self._2PAgents[0], self._2PAgents[1]]]
+		self.Agents4 = [self._1PAgents[0], self._1PAgents[1], self._2PAgents[0], self._2PAgents[1]]
 		self.randtype = Ran.randint(0,2)	#左右対称、または上下対称、または上下左右対称
 		self._Panels = [[Panel(0) for i in range(_xLen)]for j in range(_yLen)]	#パネルの配列の作成
 
@@ -195,7 +196,7 @@ class Game:
 					self._2PTileScore += panelScore
 		
 	def canAction(self, Intention, AgentNum):#アクション可能か判定
-		Agent = self.Agents[AgentNum]
+		Agent = self.Agents4[AgentNum]
 		CurrentPosition = np.append(Agent.getPoint(), 0)
 		action = Intention[AgentNum][2]
 		actionPosition = CurrentPosition + Intention[AgentNum]
@@ -210,14 +211,14 @@ class Game:
 		OperatedPanel = self._Panels[actionPosition[0]][actionPosition[1]]
 		if action == 0:#移動の場合、敵パネルがないかどうか、パネル除去しようとしてる人がいないかどうか
 			if OperatedPanel.getState() + Agent.getTeam()==3: return False
-			for i,agent in enumerate(self.Agents):
+			for i,agent in enumerate(self.Agents4):
 				if not agent is Agent:
 					if np.allclose(agent.getPoint(),np.array([actionPosition[0],actionPosition[1]])) and Intention[i][2] == 1:
 						return False
 		elif action == 1:#除去の場合、パネルがあるかどうか、パネル除去してる人がいないかどうか
 			if CurrentPosition[0] == actionPosition[0] and CurrentPosition[1] == actionPosition[1]:
 				return False
-			for i,agent in enumerate(Agents):
+			for i,agent in enumerate(self.Agents4):
 				if not agent is Agent:
 					if np.allclose(agent.getPoint(),np.array([actionPosition[0],actionPosition[1]])) and Intention[i][2] == 1:
 						return False
@@ -421,14 +422,16 @@ class Game:
 		return true
 
 	def CanActionAll(self, Intentions:list)->list:
-		self.Infos = np.full((2,2), intention_info)
-		self.Result = np.full((2,2), bool)
+		Infos = []
+		Result = np.full((2,2), bool)
 		for t in range(2):
+			Infos.append([])
 			for a in range(2):
-				self.Infos[t][a].Delta = copy.copy(Intentions[t][a])
-				self.Infos[t][a].ExpectedPosition.x = self.Agents[t][a]._point[0] + Intentions[t][a].DeltaX
-				self.Infos[t][a].ExpectedPosition.y = self.Agents[t][a]._point[1] + Intentions[t][a].DeltaY
-				ExpectedPosState = self.Panels[Infos[t][a].ExpectedPosition.y][Infos[t][a].ExpectedPosition.x].getState();
+				Infos[t].append(intention_info())
+				Infos[t][a].Delta = copy.copy(Intentions[t][a])
+				Infos[t][a].ExpectedPosition.x = self.Agents[t][a]._point[0] + Intentions[t][a].DeltaX
+				Infos[t][a].ExpectedPosition.y = self.Agents[t][a]._point[1] + Intentions[t][a].DeltaY
+				ExpectedPosState = self._Panels[Infos[t][a].ExpectedPosition.y][Infos[t][a].ExpectedPosition.x].getState();
 				if (ExpectedPosState != t)and(ExpectedPosState != -1):
 					Infos[t][a].NextPosition = copy.copy(self.Agents[t][a]._point)
 				else:

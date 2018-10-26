@@ -1,7 +1,4 @@
 ﻿class intention:
-	def __init__(self):
-		self.DeltaX = 0
-		self.DeltaY = 0
 	def __init__(self, action_id:int):
 		if(action_id >= 1 and action_id <= 3):
 			self.DeltaY = -1
