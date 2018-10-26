@@ -3,39 +3,44 @@ import os
 import numpy as np
 from .Player import Player
 from .kerasDQN_model import(
-    buildModel, train, Evaluate  
+    buildModel, train, predict  
 )
-import tensorflow as tf
-from keras.backend.tensorflow_backend import set_session
 
 class kerasDQNPlayer(Player):
     def __init__(self, team):
         self._team = team
+        if(self._team==1):self._enemyteam = 2
+        elif(self._team==2):self._enemyteam = 1
         self._model = buildModel()
 
         #if(os.path.isfile("./checkpoint/model_params")):
         #    model.load_weights("./checkpoint/model_params")
 
-        #GPU使用率決定
-        #self._config = tf.ConfigProto()
-        #self._config.gpu_options.per_process_gpu_memory_fraction = 0.6 #freememory/totalmemory
-        #set_session(tf.Session(config=self._config))
-
     def intention(self, Game):#盤面の情報を渡してAgentの動かし方を返す
         GameImg = self.getGameImg(Game) #盤面を画像データに
+        Agents = Game.getAgents()
+        myAgentsPoint = [Agents[team*2-2].getPoint(), Agents[team*2-1].getPoint()]
 
         #評価値が一番高い行動を選択
         maxEvalue = -1
-        Agent1Intention = 0
-        Agent2Intention = 0
-        print(Evaluate(self._model, GameImg)) 
-        Evalues = Evaluate(self._model, GameImg).reshape(9, 9) #行動の評価値計算
-        for i in Evalues:
-            for j in Evalues[0]:
-                if Evalues[i][j] > maxEvalue:
-                    Agent1Intention = i
-                    Agent2Intention = j
+        Agent1ActionID = 0
+        Agent2ActionID = 0
+        Policies, Evalues = predict(self._model, GameImg).reshape(9, 9) #行動の評価値計算
+        for i in range(len(Policies)):
+            for j in range(len(Policies[0])):
+                if Policies[i][j] > maxEvalue:
+                    Agent1ActionID = j
+                    Agent2ActionID = i
 
+        goodIntention = []
+        IntentionVectors = [actionIDtoVector(Agent1ActionID), actionIDtoVector(Agent2ActionID)]
+        for i in range(2):
+            x = myAgentsPoint[i][0]+IntentionVectors[i][0]
+            y = myAgentsPoint[i][1]+IntentionVectors[i][1]
+            if(Game.getPanels()[x][y].getState()==self._enemyteam):
+                goodIntention.append(IntentionsVector[i].append(1))
+            else:
+                goodIntention.append(IntentionsVector[i].append(0))
         return goodIntention
 
     def getGameImg(self, Game): #盤面を画像に
@@ -44,8 +49,6 @@ class kerasDQNPlayer(Player):
         Agents = Game.getAgents()
         xlen = len(Panels[0])
         ylen = len(Panels)
-        if(self._team==1):enemyteam = 2
-        elif(self._team==2):enemyteam = 1
 
         """
         [0]パネルの有無
@@ -64,26 +67,47 @@ class kerasDQNPlayer(Player):
                 GameImg[0][i][j] = 1
                 GameImg[1][i][j] = Panels[i][j].getScore() 
                 if(Panels[i][j].getState()==self._team):GameImg[4][i][j] = 1 
-                elif(Panels[i][j].getState()==enemyteam):GameImg[8][i][j] = 1
+                elif(Panels[i][j].getState()==self._enemyteam):GameImg[8][i][j] = 1
                 if(Panels[i][j].getSurrounded()[self._team -1]):GameImg[5][i][j] = 1
-                if(Panels[i][j].getSurrounded()[enemyteam -1]):GameImg[9][i][j] = 1
+                if(Panels[i][j].getSurrounded()[self._enemyteam -1]):GameImg[9][i][j] = 1
         for i in range(len(Agents)):
             point = Agents[i].getPoint()
             if(Agents[i].getTeam()==self._team):
                 GameImg[2+i%2][point[0]][point[1]]=1
-            elif(Agents[i].getTeam()==enemyteam):
+            elif(Agents[i].getTeam()==self._enemyteam):
                 GameImg[6+i%2][point[0]][point[1]]=1
         return GameImg
 
-    def learn(self, train_x, train_y, val_x, val_y):#対戦データを学習
+    def actionIDtoVector(Value):
+        if Value == 1:
+            return [-1, -1]
+        if Value == 2:
+            return [0, -1]
+        if Value == 3:
+            return [1, -1]
+        if Value == 4:
+            return [-1, 0]
+        if Value == 5:
+            return [1, 0]
+        if Value == 6:
+            return [-1, 1]
+        if Value == 7:
+            return [0, 1]
+        if Value == 8:
+            return [1, 1]
+        return [0, 0]
+
+    def learn(self, train_x, train_y1, train_y2, val_x, val_y1, val_y2):#対戦データを学習
         
         train(
             self._model,
             #train_data 
             train_x, 
-            train_y,
+            train_y1,
+            train_y2,
             #val_data
             val_x, 
-            val_y,
-            1000,
+            val_y1,
+            val_y2,
+            50000,
             )
