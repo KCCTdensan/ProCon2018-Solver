@@ -13,8 +13,8 @@ class kerasDQNPlayer(Player):
         elif(self._team==2):self._enemyteam = 1
         self._model = buildModel()
 
-        if(os.path.isfile("./checkpoint/kati/model_000030.h5")):
-            self._model.load_weights("./checkpoint/kati/model_000030.h5")
+        #if(os.path.isfile("./checkpoint/model_params")):
+        #    model.load_weights("./checkpoint/model_params")
 
     def intention(self, Game):#盤面の情報を渡してAgentの動かし方を返す
         GameImg = self.getGameImg(Game) #盤面を画像データに
@@ -107,6 +107,10 @@ class kerasDQNPlayer(Player):
             train_y2,
             #val_data
             val_x, 
-            val_y,
-            1000,
+            val_y1,
+            val_y2,
+            50000,
             )
+
+    def evaluate(self, Game):
+        return predict(self._model, self.getGameImg(Game))
