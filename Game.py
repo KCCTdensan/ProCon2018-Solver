@@ -203,8 +203,13 @@ class Game:
 				if not agent is Agent:
 					if np.allclose(agent.getPoint(),np.array([actionPosition[0],actionPosition[1]])) and Intention[i][2] == 1:
 						return False
-		elif action == 1:#除去の場合、パネルがあるかどうか
-			if OperatedPanel.getState()==0: return False
+		elif action == 1:#除去の場合、パネルがあるかどうか、パネル除去してる人がいないかどうか
+			if CurrentPosition[0] == actionPosition[0] and CurrentPosition[1] == actionPosition[1]:
+				return False
+			for i,agent in enumerate(Agents):
+				if not agent is Agent:
+					if np.allclose(agent.getPoint(),np.array([actionPosition[0],actionPosition[1]])) and Intention[i][2] == 1:
+						return False
 		return True
 
 	def action(self, PlayerIntentions:list): #エージェントの意思をみて，実際に移動orパネル操作
