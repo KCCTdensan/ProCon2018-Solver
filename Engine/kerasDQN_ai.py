@@ -111,3 +111,6 @@ class kerasDQNPlayer(Player):
             val_y2,
             50000,
             )
+
+    def evaluate(self, Game):
+        return predict(self._model, self.getGameImg(Game))
