@@ -42,8 +42,8 @@ class PlayingCardsPanel(wx.Panel):
 		return info
 
 
-	def UpdatePlayingCardsInfo(self):
-		Intentions = self.__AI.intention(None)
+	def UpdatePlayingCardsInfo(self, Game):
+		Intentions = self.__AI.intention(Game)
 		Text1P = "1P : "
 		Text2P = "2P : "
 		Text1P += self.IntentionDataToText(Intentions[0])

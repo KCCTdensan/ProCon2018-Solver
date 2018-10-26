@@ -58,6 +58,8 @@ class Game:
 		#ステージの縦*横(_yLen*_xLen)
 		_xLen = Ran.randint(3, 12)
 		_yLen = Ran.randint(3, 12)
+		self._XLen = _xLen
+		self._YLen = _yLen
 		_yLen2 = -(- _yLen//2)
 		_xLen2 = -(- _xLen//2)
 		#1Pの1人目のエージェントのx,y座標
@@ -65,7 +67,7 @@ class Game:
 		Agenty = Ran.randint(0, (_yLen//2)-1)
 		self._1PAgents = [Agent([Agenty, Agentx],1),Agent([_yLen - 1 - Agenty, _xLen - 1 - Agentx],1)] #ステージに存在する1Pのエージェントのリスト
 		self._2PAgents = [Agent([_yLen - 1 - Agenty, Agentx],2),Agent([Agenty, _xLen - 1 - Agentx],2)] #ステージに存在する2Pのエージェントのリスト
-		self.Agents = [self._1PAgents[0], self._1PAgents[1], self._2PAgents[0], self._2PAgents[1]]
+		self.Agents = [[self._1PAgents[0], self._1PAgents[1]], [self._2PAgents[0], self._2PAgents[1]]]
 		self.randtype = Ran.randint(0,2)	#左右対称、または上下対称、または上下左右対称
 		self._Panels = [[Panel(0) for i in range(_xLen)]for j in range(_yLen)]	#パネルの配列の作成
 
@@ -425,8 +427,8 @@ class Game:
 		for t in range(2):
 			for a in range(2):
 				self.Infos[t][a].Delta = copy.copy(Intentions[t][a])
-				self.Infos[t][a].ExpectedPosition.x = self.Agents[t][a]._point[0] + Infos[t][a].Delta.DeltaX
-				self.Infos[t][a].ExpectedPosition.y = self.Agents[t][a]._point[1] + Infos[t][a].Delta.DeltaY
+				self.Infos[t][a].ExpectedPosition.x = self.Agents[t][a]._point[0] + Intentions[t][a].DeltaX
+				self.Infos[t][a].ExpectedPosition.y = self.Agents[t][a]._point[1] + Intentions[t][a].DeltaY
 				ExpectedPosState = self.Panels[Infos[t][a].ExpectedPosition.y][Infos[t][a].ExpectedPosition.x].getState();
 				if (ExpectedPosState != t)and(ExpectedPosState != -1):
 					Infos[t][a].NextPosition = copy.copy(self.Agents[t][a]._point)
@@ -443,17 +445,17 @@ class Game:
 	def CanActionTeam(self, Intentions:list, TeamNo:int)->bool:
 		if (self.CanActionOne(Intentions[0], TeamNo, 0) == -1)or(self.CanActionOne(Intentions[1], TeamNo, 1)):
 			return False
-		if sum(self.Agents[TeamNo][0].getPosition(), Intentions[0]) == sum(Agents[TeamNo][1].getPosition(), Intentions[1]):
+		if sum(self.Agents[TeamNo][0].getPosition(), Intentions[0]) == sum(self.Agents[TeamNo][1].getPosition(), Intentions[1]):
 			return False
-		if (sum(self.Agents[TeamNo][0].getPosition(), Intentions[0]) == Agetns[TeamNo][1].getPosition())and(sum(self.Agents[TeamNo][1].getPosition(), Intentions[1]) == Agetns[TeamNo][0].getPosition()):
+		if (sum(self.Agents[TeamNo][0].getPosition(), Intentions[0]) == self.Agents[TeamNo][1].getPosition())and(sum(self.Agents[TeamNo][1].getPosition(), Intentions[1]) == self.Agents[TeamNo][0].getPosition()):
 			return False
 		return True
 
 	def CanActionOne(self, Intention:intention, TeamNo:int, AgentNo:int)->int:
 		if (Intention.DeltaX == 0)and(Intention.DeltaY == 0):
 			return 1
-		Pos = sum(Agents[TeamNo][AgentNo].getPosition(), Intention)
-		if((0 <= Pos.x)and(Pos.x < self._xLen))and((0 <= Pos.y)and(Pos.y < self._yLen)):
+		Pos = sum(self.Agents[TeamNo][AgentNo].getPosition(), Intention)
+		if((0 <= Pos.x)and(Pos.x < self._XLen))and((0 <= Pos.y)and(Pos.y < self._YLen)):
 			return 0
 		else:
 			return -1

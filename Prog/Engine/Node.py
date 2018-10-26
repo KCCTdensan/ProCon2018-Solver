@@ -43,11 +43,14 @@ class friend_node(node):
 		for row in self.__Children:
 			tmp = []
 			for i in row:
+				if i == None:
+					tmp.append(0)
+					continue
 				tmp.append(i.N)
 			Ret.append(tmp)
 		return Ret
 			
-	def Play()->float:
+	def Play(self)->float:
 		Ret = 0
 		if self.__EvalFlag:
 			Ret = self.EvalateAndExpand()
@@ -58,7 +61,7 @@ class friend_node(node):
 		self.Q = self.Record / N
 		return Ret
 
-	def Select()->float:
+	def Select(self)->float:
 		Q_Max = -10.0
 		SelectedNode = None
 		for row in self.__Children:
@@ -75,15 +78,15 @@ class friend_node(node):
 			return -1.0
 		return SelectedNode.Play()
 
-	def EvaluateAndExpand()->float:
-		Policy, Value = self.__evaluate(self.__Stage)
+	def EvaluateAndExpand(self)->float:
+		Policy, Value = self.__DQN.evaluate(self.__Stage)
 		for i in range(9):
 			self.__Children.append([])
-			if not(self.Stage.CanAction(i, 0, 0)):
+			if not(self.__Stage.CanActionOne(intention(i), 0, 0)):
 				self.__Children[i].append(None)
 				continue
 			for j in range(9):
-				if not(self.Stage.CanAction((i, j), 0)):
+				if not(self.__Stage.CanActionTeam([intention(i), intention(j)], 0)):
 					self.__Children[i].append(None)
 					continue
 				self.__Children[i].append(opponent_node(self, [i, j], self.CntTurns + 1))
@@ -92,19 +95,19 @@ class friend_node(node):
 		self.__EvalFlag = False
 		return Value
 
-	def ClearChildNode():
+	def ClearChildNode(self):
 		self.__Children = []
 
-	def ChildNode(IntentionIDs:list):
+	def ChildNode(self, IntentionIDs:list):
 		return self.__Children[IntentionIDs[0]][IntentionIDs[1]]
 
-	def NextNode(IntentionIDs:list):
+	def NextNode(self, IntentionIDs:list):
 		return self.ChildNode(IntentionIDs[0]).ChildNode(IntentionIDs[1])
 
-	def GetStage():
+	def GetStage(self):
 		return self.__Stage
 
-	def UCB1(Q:float, NChild:int):
+	def UCB1(self, Q:float, NChild:int):
 		if NChild == 0:
 			return None
 		return Q + sqrt(2.0 * log(self.N) / NChild)
@@ -113,6 +116,7 @@ class opponent_node(node):
 	def __init__(self, ParentNode:friend_node, IntentionIDs:list, CntTurns:int):
 		super().__init__(CntTurns)
 		self.__ParentNode = ParentNode
+		self.__Children = []
 		self.__FriendIDs = IntentionIDs
 		self.Expand()
 
@@ -123,7 +127,7 @@ class opponent_node(node):
 		self.Q = self.Record / N
 		return Ret
 
-	def Select()->float:	
+	def Select(self)->float:	
 		Q_Max = -10.0
 		SelectedNode = None
 		for row in self.__Children:
@@ -140,14 +144,14 @@ class opponent_node(node):
 			return -1.0
 		return SelectedNode.Play()
 
-	def Expand():
+	def Expand(self):
 		for i in range(9):
 			self.__Children.append([])
-			if not(self.Stage.CanAction(i, 0, 0)):
+			if not(self.__ParentNode.GetStage().CanActionOne(intention(i), 1, 0)):
 				self.__Children[i].append(None)
 				continue
 			for j in range(9):
-				if not(self.Stage.CanAction(((self.__FriendIDs[0], self.__FriendIDs[1]), (i, j)), 0)):
+				if not(self.__ParentNode.GetStage().CanActionAll([[self.__FriendIDs[0], self.__FriendIDs[1]], [i, j]])):
 					self.__Children[i].append(None)
 					continue
 				self.__Children[i].append(friend_node(self.ParentNode.GetStage(), self.CntTurns + 1))
@@ -156,19 +160,22 @@ class opponent_node(node):
 	def ClearChildNode():
 		ChildNode = []
 
-	def UCB1(Q:float, NChild:int):
+	def UCB1(self, Q:float, NChild:int):
 		if NChild == 0:
 			return None
 		return -Q + sqrt(2.0 * log(self.N) / NChild)
 
-	def Result()->list:
+	def Result(self)->list:
 		Ret = []
 		for row in self.__Children:
 			tmp = []
 			for i in row:
+				if i == None:
+					tmp.append(0)
+					continue
 				tmp.append(i.N)
 			Ret.append(tmp)
-		return Ret		
+		return Ret
 
-	def ChildNode(IntentionIDs:list)->friend_node:
+	def ChildNode(self, IntentionIDs:list)->friend_node:
 		return self.__Children[IntentionIDs[0]][IntentionIDs[1]]

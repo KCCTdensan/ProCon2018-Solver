@@ -34,8 +34,8 @@ class AIEvaluationPanel(wx.Panel):
 			Ret += "返"
 		return Ret
 
-	def UpdateEvaluation(self, Game):
-		Intentions = self.__AI.intention(Game)
+	def UpdateEvaluation(self):
+		Intentions = self.__AI.intention(None)
 		Text1P = "1P : "
 		Text2P = "2P : "
 		Text1P += self.IntentionDataToText(Intentions[0])

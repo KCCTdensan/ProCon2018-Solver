@@ -31,10 +31,10 @@ class ControllerFrame(wx.Frame):
 		self.__RootPanel.Fit()
 		self.Fit()
 
-	def UpdateAIEvaluation(self):
+	def UpdateAIEvaluation(self, Game):
 		if self.__AIEvaluationPanel != None:
-			self.__AIEvaluationPanel.UpdateEvaluation()
-		self.__PlayingCardsPanel.UpdatePlayingCardsInfo()
+			self.__AIEvaluationPanel.UpdateEvaluation(Game)
+		self.__PlayingCardsPanel.UpdatePlayingCardsInfo(Game)
 
 	def GetIntentions(self):
 		return self.__ControllerPanel.GetIntentions()

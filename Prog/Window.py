@@ -4,6 +4,7 @@ from .Game import Game
 from .Panel import Panel
 from .GUI.ControllerWindow import ControllerFrame
 from .Engine.KA_31 import KA_31
+from .Engine.kerasDQN_ai import kerasDQNPlayer
 
 class PlayerInfo:
 	def __init__(self, Label:str, Color:str, SelectColor:str):
@@ -141,7 +142,7 @@ class WindowFrame(wx.Frame):
 
 		#コントローラのインスタンス生成
 		self.__Human1 = ControllerFrame(PlayerInfo("1P-1", "#ed1c24", "#f78e94"), PlayerInfo("1P-2", "#ff7f27", "#ffbe93"), KA_31())
-		self.__Human2 = ControllerFrame(PlayerInfo("2P-1", "#22b14c", "#82e8a0"), PlayerInfo("2P-2", "#00a2e8", "#75d6ff"), KA_31())
+		self.__Human2 = ControllerFrame(PlayerInfo("2P-1", "#22b14c", "#82e8a0"), PlayerInfo("2P-2", "#00a2e8", "#75d6ff"), kerasDQNPlayer(2))
 
 		self.__RootPanel = wx.Panel(self, wx.ID_ANY)
 		self.__RootPanel.SetBackgroundColour("#1f1f1f")
@@ -170,8 +171,8 @@ class WindowFrame(wx.Frame):
 		self.__Human2.Show()
 
 		#TEST
-		self.__Human1.UpdateAIEvaluation()
-		self.__Human2.UpdateAIEvaluation()
+		self.__Human1.UpdateAIEvaluation(self.__Game)
+		self.__Human2.UpdateAIEvaluation(self.__Game)
 
 	def OnButton(self, e):
 		Intentions1 = self.__Human1.GetIntentions()
@@ -187,8 +188,8 @@ class WindowFrame(wx.Frame):
 		    print("Winner : "+str(self.__Game.getWinner()))
 		    sys.exit()
 		self.Update()
-		self.__Human1.UpdateAIEvaluation()
-		self.__Human2.UpdateAIEvaluation()
+		self.__Human1.UpdateAIEvaluation(self.__Game)
+		self.__Human2.UpdateAIEvaluation(self.__Game)
 		self.__Human1.ResetIntentions()
 		self.__Human2.ResetIntentions()
 
