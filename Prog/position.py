@@ -39,3 +39,8 @@ class position:
 
 	def notSame(self,Position1:position,Position2:position):
 		return not(Position1.x == Position2.x)
+
+def sum(Position:position, Intention:intention)->position:
+	tmp = copy.copy(Position)
+	tmp.add_1(Intention)
+	return tmp

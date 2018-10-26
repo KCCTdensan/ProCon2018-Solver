@@ -15,10 +15,10 @@ from position import *
 
 class intention_info:
 	def __init__():
-		Delta = intention()
-		ExpectedPosition = position()
-		NextPosition = position()
-		CanAct = 0
+		self.Delta = intention()
+		self.ExpectedPosition = position()
+		self.NextPosition = position()
+		self.CanAct = 0
 
 class Game:
 	#zbarのインストールが必要 URL: http://zbar.sourceforge.net/download.html
@@ -65,6 +65,7 @@ class Game:
 		Agenty = Ran.randint(0, (_yLen//2)-1)
 		self._1PAgents = [Agent([Agenty, Agentx],1),Agent([_yLen - 1 - Agenty, _xLen - 1 - Agentx],1)] #ステージに存在する1Pのエージェントのリスト
 		self._2PAgents = [Agent([_yLen - 1 - Agenty, Agentx],2),Agent([Agenty, _xLen - 1 - Agentx],2)] #ステージに存在する2Pのエージェントのリスト
+		self.Agents = [self._1PAgents[0], self._1PAgents[1], self._2PAgents[0], self._2PAgents[1]]
 		self.randtype = Ran.randint(0,2)	#左右対称、または上下対称、または上下左右対称
 		self._Panels = [[Panel(0) for i in range(_xLen)]for j in range(_yLen)]	#パネルの配列の作成
 
@@ -192,8 +193,7 @@ class Game:
 					self._2PTileScore += panelScore
 		
 	def canAction(self, Intention, AgentNum):#アクション可能か判定
-		Agents = [self._1PAgents[0], self._1PAgents[1], self._2PAgents[0], self._2PAgents[1]]
-		Agent = Agents[AgentNum]
+		Agent = self.Agents[AgentNum]
 		CurrentPosition = np.append(Agent.getPoint(), 0)
 		action = Intention[AgentNum][2]
 		actionPosition = CurrentPosition + Intention[AgentNum]
@@ -208,7 +208,7 @@ class Game:
 		OperatedPanel = self._Panels[actionPosition[0]][actionPosition[1]]
 		if action == 0:#移動の場合、敵パネルがないかどうか、パネル除去しようとしてる人がいないかどうか
 			if OperatedPanel.getState() + Agent.getTeam()==3: return False
-			for i,agent in enumerate(Agents):
+			for i,agent in enumerate(self.Agents):
 				if not agent is Agent:
 					if np.allclose(agent.getPoint(),np.array([actionPosition[0],actionPosition[1]])) and Intention[i][2] == 1:
 						return False
@@ -417,107 +417,44 @@ class Game:
 
 				//他エージェントが移動できない場合
 				Infos[Team][AgentNo].CanAct = -1;
-				return false;
-			}
-		}
-	}
-	return true;
-}
+				return false
+		return true
 
-	def CanAction(self,Intentions:intention):
-		self.Infos = np.full((2,2),intention)
-		self.Result = np.full((2,2),bool)
+	def CanActionAll(self, Intentions:list)->list:
+		self.Infos = np.full((2,2), intention_info)
+		self.Result = np.full((2,2), bool)
 		for t in range(2):
 			for a in range(2):
-				self.Infos[t][a].Delta = copy.deepcopy(Intentions[t][a])
-				self.Infos[t][a].ExpectedPosition.DeltaX = copy.deepcopy(self.Agents[t][a]._point[0] + Infos[t][a].Delta.DeltaX)
-				ExpectedPosState = self.Panels[Infos[t][a].ExpectedPosition].getState();
-				if (ExpectedPosState != t and ExpectedPosState != -1):
-					Infos[t][a].NextPosition = copy.deepcopy(self.Agents[t][a]._point)
+				self.Infos[t][a].Delta = copy.copy(Intentions[t][a])
+				self.Infos[t][a].ExpectedPosition.x = self.Agents[t][a]._point[0] + Infos[t][a].Delta.DeltaX
+				self.Infos[t][a].ExpectedPosition.y = self.Agents[t][a]._point[1] + Infos[t][a].Delta.DeltaY
+				ExpectedPosState = self.Panels[Infos[t][a].ExpectedPosition.y][Infos[t][a].ExpectedPosition.x].getState();
+				if (ExpectedPosState != t)and(ExpectedPosState != -1):
+					Infos[t][a].NextPosition = copy.copy(self.Agents[t][a]._point)
 				else:
-					Infos[t][a].NextPosition = Infos[t][a].ExpectedPosition
-					Infos[t][a].CanAct = 0
+					Infos[t][a].NextPosition = copy.copy(Infos[t][a].ExpectedPosition)
+				Infos[t][a].CanAct = 0
 		for t in range(2):
 			for a in range(2):
 				Result[t][a] = Move(Infos, t, a);
 
+	def CanActionAll_ID(self, IntentionIDs:list)->list:
+		return CanActionAll(self, [[intention(IntentionIDs[0][0]), intention(IntentionIDs[0][1])], [intention(IntentionIDs[1][0]), intention(IntentionIDs[1][1])]])
 
-void stage::CanAction(action_id(&IntentionIDs)[NumTeams][NumAgents], bool(&Result)[NumTeams][NumAgents])const
-{
-	intention Intentions[NumTeams][NumAgents];
-	for (team_no t = 0; t < NumTeams; ++t)
-	{
-		for (char a = 0; a < NumAgents; ++a)
-		{
-			Intentions[t][a] = IntentionIDs[t][a];
-		}
-	}
-	CanAction(Intentions, Result);
-}
+	def CanActionTeam(self, Intentions:list, TeamNo:int)->bool:
+		if (self.CanActionOne(Intentions[0], TeamNo, 0) == -1)or(self.CanActionOne(Intentions[1], TeamNo, 1)):
+			return False
+		if sum(self.Agents[TeamNo][0].getPosition(), Intentions[0]) == sum(Agents[TeamNo][1].getPosition(), Intentions[1]):
+			return False
+		if (sum(self.Agents[TeamNo][0].getPosition(), Intentions[0]) == Agetns[TeamNo][1].getPosition())and(sum(self.Agents[TeamNo][1].getPosition(), Intentions[1]) == Agetns[TeamNo][0].getPosition()):
+			return False
+		return True
 
-bool stage::CanAction(intention(&Intentions)[NumTeams][NumAgents])const
-{
-	bool Result[NumTeams][NumAgents];
-	CanAction(Intentions, Result);
-	return (Result[0][0] && Result[0][1]) && (Result[1][0] && Result[1][1]);
-}
-
-bool stage::CanAction(action_id(&IntentionIDs)[NumTeams][NumAgents])const
-{
-	intention Intentions[NumTeams][NumAgents];
-	for (team_no t = 0; t < NumTeams; ++t)
-	{
-		for (char a = 0; a < NumAgents; ++a)
-		{
-			Intentions[t][a] = IntentionIDs[t][a];
-		}
-	}
-	return CanAction(Intentions);
-}
-
-bool stage::CanAction(intention(&Intentions)[NumAgents], team_no Team)const
-{
-	if(CanActionOne(Agents[Team][0].GetPosition(), Intentions[0]) == -1 || CanActionOne(Agents[Team][1].GetPosition(), Intentions[1]) == -1)
-	{
-		return false;
-	}
-	if (Agents[Team][0].GetPosition() + Intentions[0] == Agents[Team][1].GetPosition() + Intentions[1])
-	{
-		return false;
-	}
-	if ((Agents[Team][0].GetPosition() + Intentions[0] == Agents[Team][1].GetPosition()) && (Agents[Team][1].GetPosition() + Intentions[1] == Agents[Team][0].GetPosition()))
-	{
-		return false;
-	}
-	return true;
-}
-
-bool stage::CanAction(action_id(&IntentionIDs)[NumAgents], team_no Team)const
-{
-	intention Intentions[NumAgents];
-	for (char a = 0; a < NumAgents; ++a)
-	{
-		Intentions[a] = IntentionIDs[a];
-	}
-	return CanAction(Intentions, Team);
-}
-
-bool stage::CanAction(intention Intention, team_no Team, char AgentNo)const
-{
-	return CanActionOne(Agents[Team][AgentNo].GetPosition(), Intention) != -1;
-}
-
-bool stage::CanAction(action_id IntentionID, team_no Team, char AgentNo)const
-{
-	return CanAction((intention)IntentionID, Team, AgentNo);
-}
-
-char stage::CanActionOne(position Position, intention Intention)const
-{
-	if(Intention.DeltaX == 0 && Intention.DeltaY == 0)
-	{
-		return 1;
-	}
-	Position += Intention;
-	return ((0 <= Position.x && Position.x < NumX) && (0 <= Position.y && Position.y < NumY)) ? 0 : -1;
-}
+	def CanActionOne(self, Intention:intention, TeamNo:int, AgentNo:int)->int:
+		if (Intention.DeltaX == 0)and(Intention.DeltaY == 0):
+			return 1
+		Pos = sum(Agents[TeamNo][AgentNo].getPosition(), Intention)
+		if((0 <= Pos.x)and(Pos.x < self._xLen))and((0 <= Pos.y)and(Pos.y < self._yLen)):
+			return 0
+		else:
+			return -1
