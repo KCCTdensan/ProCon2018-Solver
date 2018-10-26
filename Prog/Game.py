@@ -390,6 +390,7 @@ class Game:
 				#他エージェントと目標座標が重複していた場合
 				if ((Infos[Team][AgentNo].ExpectedPosition.x == Infos[t][a].ExpectedPosition.x)and(Infos[Team][AgentNo].ExpectedPosition.y == Infos[t][a].ExpectedPosition.y)):
 					Infos[Team][AgentNo].CanAct = -1
+										Infos[Team][AgentNo].CanAct = -1
 					Infos[t][a].CanAct = -1
 					return false
 
