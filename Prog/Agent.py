@@ -1,4 +1,5 @@
 import numpy as np
+from .position import *
 
 class Agent:
 	def __init__(self, point:[int, int], team:int): #エージェント生成(point:座標,team:チーム)
@@ -13,3 +14,9 @@ class Agent:
 
 	def getTeam(self):
 		return self._team
+
+	def getPosition(self):
+		_position = position()
+		_position.x = self._point[1]
+		_position.y = self._point[0]
+		return _position

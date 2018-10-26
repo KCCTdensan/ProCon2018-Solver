@@ -7,9 +7,18 @@ import copy
 import pickle
 #from pyzbar.pyzbar import decode
 #from PIL import Image
-from Panel import *
-from Agent import *
-from Window import *
+from .Panel import *
+from .Agent import *
+from .Window import *
+from .intention import *
+from .position import *
+
+class intention_info:
+	def __init__():
+		self.Delta = intention()
+		self.ExpectedPosition = position()
+		self.NextPosition = position()
+		self.CanAct = 0
 
 class Game:
 	#zbarのインストールが必要 URL: http://zbar.sourceforge.net/download.html
@@ -56,6 +65,7 @@ class Game:
 		Agenty = Ran.randint(0, (_yLen//2)-1)
 		self._1PAgents = [Agent([Agenty, Agentx],1),Agent([_yLen - 1 - Agenty, _xLen - 1 - Agentx],1)] #ステージに存在する1Pのエージェントのリスト
 		self._2PAgents = [Agent([_yLen - 1 - Agenty, Agentx],2),Agent([Agenty, _xLen - 1 - Agentx],2)] #ステージに存在する2Pのエージェントのリスト
+		self.Agents = [self._1PAgents[0], self._1PAgents[1], self._2PAgents[0], self._2PAgents[1]]
 		self.randtype = Ran.randint(0,2)	#左右対称、または上下対称、または上下左右対称
 		self._Panels = [[Panel(0) for i in range(_xLen)]for j in range(_yLen)]	#パネルの配列の作成
 
@@ -183,8 +193,7 @@ class Game:
 					self._2PTileScore += panelScore
 		
 	def canAction(self, Intention, AgentNum):#アクション可能か判定
-		Agents = [self._1PAgents[0], self._1PAgents[1], self._2PAgents[0], self._2PAgents[1]]
-		Agent = Agents[AgentNum]
+		Agent = self.Agents[AgentNum]
 		CurrentPosition = np.append(Agent.getPoint(), 0)
 		action = Intention[AgentNum][2]
 		actionPosition = CurrentPosition + Intention[AgentNum]
@@ -199,12 +208,17 @@ class Game:
 		OperatedPanel = self._Panels[actionPosition[0]][actionPosition[1]]
 		if action == 0:#移動の場合、敵パネルがないかどうか、パネル除去しようとしてる人がいないかどうか
 			if OperatedPanel.getState() + Agent.getTeam()==3: return False
+			for i,agent in enumerate(self.Agents):
+				if not agent is Agent:
+					if np.allclose(agent.getPoint(),np.array([actionPosition[0],actionPosition[1]])) and Intention[i][2] == 1:
+						return False
+		elif action == 1:#除去の場合、パネルがあるかどうか、パネル除去してる人がいないかどうか
+			if CurrentPosition[0] == actionPosition[0] and CurrentPosition[1] == actionPosition[1]:
+				return False
 			for i,agent in enumerate(Agents):
 				if not agent is Agent:
 					if np.allclose(agent.getPoint(),np.array([actionPosition[0],actionPosition[1]])) and Intention[i][2] == 1:
 						return False
-		elif action == 1:#除去の場合、パネルがあるかどうか
-			if OperatedPanel.getState()==0: return False
 		return True
 
 	def action(self, PlayerIntentions:list): #エージェントの意思をみて，実際に移動orパネル操作
@@ -359,6 +373,9 @@ class Game:
 	def getPoints(self)->list:
 		return [self._1PTileScore, self._1PRegionScore, self._2PTileScore, self._2PRegionScore]
 
+	def getAgents(self)->list:
+		return [self._1PAgents[0], self._1PAgents[1], self._2PAgents[0], self._2PAgents[1]]
+
 	def endGame(self):
 		logfile = open("./Log/log"+str(self._gamecount)+".pickle","ab") #ログファイル出力準備
 		if self._turn==self._lastTurn:
@@ -373,3 +390,90 @@ class Game:
 		if Player1Score == Player2Score: return 0
 		elif Player1Score > Player2Score: return 1
 		elif Player1Score < Player2Score: return 2
+
+	def Move(self,Infos,Team,AgentNo):
+		self.NumCall = 0;
+		#すでに移動不可とわかっている場合
+		if (Infos[Team][AgentNo].CanAct == -1):
+			return false;
+		#座標外への移動の試行やとどまる手など、移動可能かどうかがすぐに確定する場合
+		if(CanActionOne(Agents[Team][AgentNo].getPosition(),Infos[Team][AgentNo].Delta) == -1):
+			return false
+		elif(CanActionOne(Agents[Team][AgentNo].getPosition(),Infos[Team][AgentNo].Delta) == 1):
+			return true
+
+		#目標座標の重複や他エージェントの位置に移動しようとした場合などを判定
+		for t in range(2):
+			for a in range(2):
+				#自分のエージェントとは比較しない
+				if (t == Team and a == AgentNo):
+					continue
+				#他エージェントと目標座標が重複していた場合
+				if ((Infos[Team][AgentNo].ExpectedPosition.x == Infos[t][a].ExpectedPosition.x)and(Infos[Team][AgentNo].ExpectedPosition.y == Infos[t][a].ExpectedPosition.y)):
+					Infos[Team][AgentNo].CanAct = -1
+					Infos[t][a].CanAct = -1
+					return false
+
+				#他エージェントの位置と目標座標が重複していた場合
+				if ((Infos[Team][AgentNo].ExpectedPosition.x == Infos[t][a].NextPosition.x)and(Infos[Team][AgentNo].ExpectedPosition.y == Infos[t][a].NextPosition.y)):
+					Infos[Team][AgentNo].CanAct = -1
+					return false
+
+				#他エージェントの現在の位置が目標座標と重複していた場合
+				if ((Infos[Team][AgentNo].ExpectedPosition.x == Agents[t][a].GetPosition().x)and(Infos[Team][AgentNo].ExpectedPosition.y == Agents[t][a].GetPosition().y)):
+				
+					#自エージェントの現在の位置が目標座標と重複していた場合
+					if ((Infos[t][a].ExpectedPosition.x == Agents[Team][AgentNo].GetPosition().x)and(Infos[t][a].ExpectedPosition.y == Agents[Team][AgentNo].GetPosition().y)):
+						Infos[Team][AgentNo].CanAct = -1
+						Infos[t][a].CanAct = -1
+						return false
+
+					#他エージェントが移動できる場合
+					if (Move(Infos, t, a)):
+						NumCall -=1
+						Infos[Team][AgentNo].CanAct = 1;
+						return true
+
+					#他エージェントが移動できない場合
+					Infos[Team][AgentNo].CanAct = -1;
+					return false
+		return true
+
+	def CanActionAll(self, Intentions:list)->list:
+		self.Infos = np.full((2,2), intention_info)
+		self.Result = np.full((2,2), bool)
+		for t in range(2):
+			for a in range(2):
+				self.Infos[t][a].Delta = copy.copy(Intentions[t][a])
+				self.Infos[t][a].ExpectedPosition.x = self.Agents[t][a]._point[0] + Infos[t][a].Delta.DeltaX
+				self.Infos[t][a].ExpectedPosition.y = self.Agents[t][a]._point[1] + Infos[t][a].Delta.DeltaY
+				ExpectedPosState = self.Panels[Infos[t][a].ExpectedPosition.y][Infos[t][a].ExpectedPosition.x].getState();
+				if (ExpectedPosState != t)and(ExpectedPosState != -1):
+					Infos[t][a].NextPosition = copy.copy(self.Agents[t][a]._point)
+				else:
+					Infos[t][a].NextPosition = copy.copy(Infos[t][a].ExpectedPosition)
+				Infos[t][a].CanAct = 0
+		for t in range(2):
+			for a in range(2):
+				Result[t][a] = Move(Infos, t, a);
+
+	def CanActionAll_ID(self, IntentionIDs:list)->list:
+		return CanActionAll(self, [[intention(IntentionIDs[0][0]), intention(IntentionIDs[0][1])], [intention(IntentionIDs[1][0]), intention(IntentionIDs[1][1])]])
+
+	def CanActionTeam(self, Intentions:list, TeamNo:int)->bool:
+		if (self.CanActionOne(Intentions[0], TeamNo, 0) == -1)or(self.CanActionOne(Intentions[1], TeamNo, 1)):
+			return False
+		if sum(self.Agents[TeamNo][0].getPosition(), Intentions[0]) == sum(Agents[TeamNo][1].getPosition(), Intentions[1]):
+			return False
+		if (sum(self.Agents[TeamNo][0].getPosition(), Intentions[0]) == Agetns[TeamNo][1].getPosition())and(sum(self.Agents[TeamNo][1].getPosition(), Intentions[1]) == Agetns[TeamNo][0].getPosition()):
+			return False
+		return True
+
+	def CanActionOne(self, Intention:intention, TeamNo:int, AgentNo:int)->int:
+		if (Intention.DeltaX == 0)and(Intention.DeltaY == 0):
+			return 1
+		Pos = sum(Agents[TeamNo][AgentNo].getPosition(), Intention)
+		if((0 <= Pos.x)and(Pos.x < self._xLen))and((0 <= Pos.y)and(Pos.y < self._yLen)):
+			return 0
+		else:
+			return -1
