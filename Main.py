@@ -1,6 +1,6 @@
 import wx
-from Window import WindowFrame
-from AutoFight import AutoFight
+from Prog.Window import WindowFrame
+from Prog.AutoFight import AutoFight
 
 def main():
 	app = wx.App(False)
@@ -25,4 +25,4 @@ def main3():
 	AI.learn(train_x, train_y, val_x, val_y)
 
 if __name__ == '__main__':
-	main3()
+	main()
