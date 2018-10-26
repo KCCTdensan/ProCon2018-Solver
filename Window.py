@@ -187,6 +187,8 @@ class WindowFrame(wx.Frame):
 		    print("Winner : "+str(self.__Game.getWinner()))
 		    sys.exit()
 		self.Update()
+		self.__Human1.UpdateAIEvaluation()
+		self.__Human1.UpdateAIEvaluation()
 		self.__Human1.ResetIntentions()
 		self.__Human2.ResetIntentions()
 

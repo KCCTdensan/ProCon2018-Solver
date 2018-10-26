@@ -1,9 +1,10 @@
 ﻿from ..Game import *
+from .kerasDQN_ai import kerasDQNPlayer
 import numpy as np
 
 class node():
 	NumCallPlay = 10000
-	NumTurns = 0
+	NumTurns = 80
 
 	def __init__(self, CntTurns:int):
 		self.CntTurns = CntTurns
@@ -22,12 +23,14 @@ class friend_node(node):
 		self.__Stage = Stage
 		self.__Children = []
 		self.__EvalFlag = True
+		self.__DQN = kerasDQNPlayer(1)
 
 	def __init__(self, Stage, CntTurns:int):
 		super().__init__(CntTurns)
 		self.__Stage = Stage
 		self.__Children = []
 		self.__EvalFlag = True
+		self.__DQN = kerasDQNPlayer(1)
 	
 	def Search(self, NumCallPlay:int):
 		if self.__EvalFlag:
