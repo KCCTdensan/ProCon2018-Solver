@@ -9,7 +9,7 @@ class tree_search_ai:
 	CurrentNode = friend_node(Stage)
 
 def NumTurns(NumTurns:char):
-	ChangeNumTurns(NumTurns);
+	ChangeNumTurns(NumTurns)
 
 def BestMove(IntentionIDs[NumTeams][stage.NumAgents]:action_id):
 	for intentions in IntentionIDs:
