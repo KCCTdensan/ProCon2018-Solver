@@ -193,7 +193,7 @@ class Game:
 					self._1PTileScore += panelScore
 				elif panelState == 2:
 					self._2PTileScore += panelScore
-		
+
 	def canAction(self, Intention, AgentNum):#アクション可能か判定
 		Agent = self.Agents4[AgentNum]
 		CurrentPosition = np.append(Agent.getPoint(), 0)
