@@ -6,7 +6,6 @@ def main():
     frame.Show()
     app.MainLoop()
 
-
 def main2():
     from Prog.AutoFight import AutoFight
     A = AutoFight()

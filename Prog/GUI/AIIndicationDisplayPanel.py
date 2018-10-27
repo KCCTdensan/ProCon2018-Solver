@@ -12,16 +12,13 @@ class IndicationPosition(Enum):
 	Bottom		= 8
 	BottomLeft	= 9
 
-
 class IndicationAction(Enum):
 	Move		= 0
 	Turn		= 1
 
-
 def GetIndication(Intention: list) -> (IndicationPosition, IndicationAction):
 	if (Intention[0] == 0) and (Intention[1] == 0):
 		return (IndicationPosition.Stop, IndicationAction.Stop)
-
 	pos = IndicationPosition.Stop
 	if Intention[0] == -1: # 左側
 		if Intention[1] == -1: # 上
@@ -37,13 +34,10 @@ def GetIndication(Intention: list) -> (IndicationPosition, IndicationAction):
 			pos = IndicationPosition.BottomRight
 		else: # 右
 			pos = IndicationPosition.Right
-
 	act = IndicationAction.Move
 	if Intention[2] != 0:
 		act = IndicationAction.Turn
-
 	return (pos, act)
-
 
 def GetIndicationJPStr(pos, act)  -> str:
 	s = ""
@@ -53,7 +47,6 @@ def GetIndicationJPStr(pos, act)  -> str:
 		s = "[返] "
 	else:	
 		s = "[?] "
-
 	if pos == IndicationPosition.TopRight:
 		return s + "右上"
 	elif pos == IndicationPosition.Top:
@@ -75,7 +68,6 @@ def GetIndicationJPStr(pos, act)  -> str:
 	else:
 		return s + "?"
 
-
 def GetIndicationPlayingCardsInfoStr(pos, agtnum) -> str:
 	s = ""
 	if agtnum == 1:
@@ -84,7 +76,6 @@ def GetIndicationPlayingCardsInfoStr(pos, agtnum) -> str:
 		s = "赤"
 	else:
 		s = "?"
-
 	# 壇(ステージ)側は上
 	if pos == IndicationPosition.TopRight:
 		return s + "9"
@@ -107,7 +98,6 @@ def GetIndicationPlayingCardsInfoStr(pos, agtnum) -> str:
 	else:
 		return s + "?"
 
-
 class AIIndicationDisplayPanel(wx.Panel):
 	def __init__(self, Parent: wx.Panel, AI):
 		super().__init__(Parent, wx.ID_ANY)
@@ -118,16 +108,12 @@ class AIIndicationDisplayPanel(wx.Panel):
 		self.SetBackgroundColour("#ffffff")
 		self.SetSizer(self.__Sizer)
 		self.Fit()
-
 		self.__AI = AI
-
 
 	def UpdateEvaluation(self, Game):
 		Intentions = self.__AI.intention(Game)
 		(pos1, act1) = GetIndication(Intentions[0])
 		(pos2, act2) = GetIndication(Intentions[1])
-
 		agent1 = "1P: " + GetIndicationJPStr(pos1, act1) + GetIndicationPlayingCardsInfoStr(pos1, 1)
 		agent2 = "2P: " + GetIndicationJPStr(pos2, act2) + GetIndicationPlayingCardsInfoStr(pos2, 2)
-
 		self.__IntentionText.SetLabelText(agent1 + "    |    " + agent2)

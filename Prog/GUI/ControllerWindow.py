@@ -18,7 +18,6 @@ class ControllerFrame(wx.Frame):
 			self.__RootSizer.Add(self.__AIIndicationDisplayPanel, 0, wx.GROW)
 		else:
 			self.__AIIndicationDisplayPanel = None
-
 		# エージェント操作パネル
 		self.__ControllerPanel = ControllerPanel(self.__RootPanel, Player1Info, Player2Info)
 		self.__RootSizer.Add(self.__ControllerPanel, 0, wx.GROW)
@@ -26,15 +25,12 @@ class ControllerFrame(wx.Frame):
 		self.__RootPanel.Fit()
 		self.Fit()
 
-
 	def UpdateAIEvaluation(self, Game):
 		if self.__AIIndicationDisplayPanel != None:
 			self.__AIIndicationDisplayPanel.UpdateEvaluation(Game)
 
-
 	def GetIntentions(self):
 		return self.__ControllerPanel.GetIntentions()
-
 
 	def ResetIntentions(self):
 		self.__ControllerPanel.ResetIntentions()

@@ -8,7 +8,6 @@ class AutoFight():
 		self._AI2 = AI()
 		self._WinNum = 0
 
-
 	def play(self):
 		_Game = Game()
 		while (not _Game.endGame()):
@@ -28,7 +27,6 @@ class AutoFight():
 				#self._AI1.learn(1)
 			#elif Winner == 2: self._AI1.learn(-1)
 			#elif Winner == 0: self._AI1.learn(0)
-
 
 def AutoFight(self, num):
 	for i in range(num):
