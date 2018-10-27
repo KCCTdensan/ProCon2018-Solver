@@ -17,9 +17,9 @@ class IndicationAction(Enum):
 	TURN		= 1
 
 def GetIndication(Intention: list) -> (IndicationPosition, IndicationAction):
-	if (Intention[0] == 0) and (Intention[1] == 0):
+	if (Intention[0] == 0) and (Intention[1] == 0): # 停留
 		return (IndicationPosition.STOP, IndicationAction.MOVE)
-	pos = IndicationPosition.STOP
+	pos = IndicationPosition.STOP # 適当
 	if Intention[0] == -1: # 左側
 		if Intention[1] == -1: # 上
 			pos = IndicationPosition.TOPLEFT
@@ -34,10 +34,10 @@ def GetIndication(Intention: list) -> (IndicationPosition, IndicationAction):
 			pos = IndicationPosition.BOTTOMRIGHT
 		else: # 右
 			pos = IndicationPosition.RIGHT
-	else :
-		if Intention[1] == -1:
+	else: # 中心
+		if Intention[1] == -1: # 上
 			pos = IndicationPosition.TOP
-		elif Intention[1] == 1:
+		elif Intention[1] == 1: # 下
 			pos = IndicationPosition.BOTTOM
 
 	act = IndicationAction.MOVE
