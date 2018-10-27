@@ -10,28 +10,28 @@ from keras.losses import mean_squared_error
 def buildModel():
 	input = Input(( 12, 12, 10))
 
-	x = Conv2D(240, 3, padding="same", input_shape=(12, 12, 10))(input)
-	x = BatchNormalization()(x) 
-	x = Activation("relu")(x)
-	x = Conv2D(240, 3, padding="same")(x)
-	x = BatchNormalization()(x)
-	x = Activation("relu")(x)
-	x = Conv2D(240, 3, padding="same")(x)
-	x = BatchNormalization()(x)
-	x = Activation("relu")(x)
-	x = Conv2D(240, 3, padding="same")(x)
-	x = BatchNormalization()(x)
-	x = Activation("relu")(x)
-	x = Conv2D(240, 3, padding="same")(x)
-	x = BatchNormalization()(x)
-	x = Activation("relu")(x)
-	x = Conv2D(240, 3, padding="same")(x)
-	x = BatchNormalization()(x)
-	x = Activation("relu")(x)
-	x = Conv2D(240, 3, padding="same")(x)
-	x = BatchNormalization()(x)
-	x = Activation("relu")(x)
-	x = Flatten()(x)
+    x = Conv2D(240, 3, padding="same", input_shape=(12, 12, 10))(input)
+    x = BatchNormalization()(x) 
+    x = Activation("relu")(x)
+    x = Conv2D(240, 3, padding="same")(x)
+    x = BatchNormalization()(x)
+    x = Activation("relu")(x)
+    x = Conv2D(240, 3, padding="same")(x)
+    x = BatchNormalization()(x)
+    x = Activation("relu")(x)
+    x = Conv2D(240, 3, padding="same")(x)
+    x = BatchNormalization()(x)
+    x = Activation("relu")(x)
+    x = Conv2D(240, 3, padding="same")(x)
+    x = BatchNormalization()(x)
+    x = Activation("relu")(x)
+    x = Conv2D(240, 3, padding="same")(x)
+    x = BatchNormalization()(x)
+    x = Activation("relu")(x)
+    x = Conv2D(240, 3, padding="same")(x)
+    x = BatchNormalization()(x)
+    x = Activation("relu")(x)
+    x = Flatten()(x)
 
 	x = Dense(1024, activation="relu")(x)
 	x = BatchNormalization()(x)
@@ -60,11 +60,11 @@ def buildModel():
 def train(model, x_train, y_train1, y_train2, val_x, val_y1, val_y2, epochs):
 	timestamp = datetime.datetime.now()
 
-	cp_dir = "./checkpoint/{:%Y%m%d_%H%M%S}".format(timestamp)
-	if not os.path.exists(cp_dir):
-		os.makedirs(cp_dir)
-	cp_filepath = os.path.join(cp_dir, "model_{epoch:06d}.h5")
-	cb_mc = ModelCheckpoint(filepath=cp_filepath, monitor="val_loss", period=1, save_best_only=True)
+    cp_dir = "./checkpoint/{:%Y%m%d_%H%M%S}".format(timestamp)
+    if not os.path.exists(cp_dir):
+        os.makedirs(cp_dir)
+    cp_filepath = os.path.join(cp_dir, "model_{epoch:06d}.h5")
+    cb_mc = ModelCheckpoint(filepath=cp_filepath, monitor="val_intention_acc", period=1, mode="max", save_best_only=True)
 
 	#cb_es = EarlyStopping(monitor="val_loss")
 
@@ -93,9 +93,9 @@ def train(model, x_train, y_train1, y_train2, val_x, val_y1, val_y2, epochs):
 		)
 
 def predict(model, img): #方策、行動の評価値を算出
-	img = np.array(img).reshape(-1,10,12,12).astype("float32")/16.0
-	img = img.transpose(0,2,3,1)
-	return model.predict(img, verbose=0)
+    img = np.array(img).reshape(-1,10,12,12).astype("float32")/16.0
+    img = img.transpose(0,2,3,1)
+    return model.predict(img, verbose=0)
 
 def trainDataGenerator(x_train, y_train1, y_train2, batch_size):
 	while True:
