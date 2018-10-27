@@ -5,8 +5,8 @@ import random as Ran
 import math
 import copy
 import pickle
-#from pyzbar.pyzbar import decode
-#from PIL import Image
+from pyzbar.pyzbar import decode
+from PIL import Image
 from .Panel import *
 from .Agent import *
 from .Window import *
