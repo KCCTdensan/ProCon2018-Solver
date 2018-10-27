@@ -1,6 +1,5 @@
 ﻿import wx
-from .AIEvaluationPanel import AIEvaluationPanel
-from .PlayingCardsPanel import PlayingCardsPanel
+from .AIIndicationDisplayPanel import AIIndicationDisplayPanel
 from .ControllerPanel import ControllerPanel
 
 class ControllerFrame(wx.Frame):
@@ -15,15 +14,11 @@ class ControllerFrame(wx.Frame):
 		
 		# AI指示表示パネル
 		if AI != None:
-			self.__AIEvaluationPanel = AIEvaluationPanel(self.__RootPanel, AI)
-			self.__RootSizer.Add(self.__AIEvaluationPanel, 0, wx.GROW)
+			self.__AIIndicationDisplayPanel = AIIndicationDisplayPanel(self.__RootPanel, AI)
+			self.__RootSizer.Add(self.__AIIndicationDisplayPanel, 0, wx.GROW)
 		else:
-			self.__AIEvaluationPanel = None
+			self.__AIIndicationDisplayPanel = None
 
-		# トランプ情報表示パネル
-		self.__PlayingCardsPanel = PlayingCardsPanel(self.__RootPanel, AI)
-		self.__RootSizer.Add(self.__PlayingCardsPanel, 0, wx.GROW)
-		
 		# エージェント操作パネル
 		self.__ControllerPanel = ControllerPanel(self.__RootPanel, Player1Info, Player2Info)
 		self.__RootSizer.Add(self.__ControllerPanel, 0, wx.GROW)
@@ -32,9 +27,8 @@ class ControllerFrame(wx.Frame):
 		self.Fit()
 
 	def UpdateAIEvaluation(self, Game):
-		if self.__AIEvaluationPanel != None:
-			self.__AIEvaluationPanel.UpdateEvaluation(Game)
-		self.__PlayingCardsPanel.UpdatePlayingCardsInfo(Game)
+		if self.__AIIndicationDisplayPanel != None:
+			self.__AIIndicationDisplayPanel.UpdateEvaluation(Game)
 
 	def GetIntentions(self):
 		return self.__ControllerPanel.GetIntentions()
