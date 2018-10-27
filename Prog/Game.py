@@ -25,7 +25,6 @@ class Game:
 
 	def __init__(self):
 		#QRコード読み取りステージ生成部分
-		
 		image = 'test.jpg' #QRコードの画像
 		data = decode(Image.open(image))	#QRコードのデータ全体
 		QRtext = str(data).split('\'')[1]	#QRコードのテキスト部分
@@ -103,6 +102,7 @@ class Game:
 						PanelsScore = -PanelsScore
 					self._Panels[y][x] = Panel(PanelsScore)
 					self._Panels[_yLen - y - 1][x] = Panel(PanelsScore)
+	"""
 
 	def UpdatePanelSurrounded(self):
 		NumY = len(self._Panels)
