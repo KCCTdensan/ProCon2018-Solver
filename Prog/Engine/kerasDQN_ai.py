@@ -2,6 +2,7 @@ import random
 import os
 import numpy as np
 from .Player import Player
+from keras.models import load_model
 from .kerasDQN_model import(
     buildModel, train, predict  
 )
@@ -15,7 +16,7 @@ class kerasDQNPlayer(Player):
 
         #if(os.path.isfile("./checkpoint/model_.h5")):
             #self._model.load_weights("./checkpoint/model_.h5")
-
+        
     def intention(self, Game):#盤面の情報を渡してAgentの動かし方を返す
         GameImg = self.getGameImg(Game) #盤面を画像データに
         Agents = Game.getAgents()
