@@ -45,14 +45,14 @@ class kerasDQNPlayer(Player):
             elif(Game.canAction(intentions_rm, self._team*2-2+i)):goodIntention.append(IntentionVectors[i] + [1])
             else:goodIntention.append([0,0,0])
 
-		return goodIntention
+        return goodIntention
 
-	def getGameImg(self, Game): #盤面を画像に
-		GameImg = np.zeros((10, 12, 12), int)
-		Panels = Game.getPanels()
-		Agents = Game.getAgents()
-		xlen = len(Panels[0])
-		ylen = len(Panels)
+    def getGameImg(self, Game): #盤面を画像に
+        GameImg = np.zeros((10, 12, 12), int)
+        Panels = Game.getPanels()
+        Agents = Game.getAgents()
+        xlen = len(Panels[0])
+        ylen = len(Panels)
 
         """
         [0]パネルの有無
@@ -101,20 +101,20 @@ class kerasDQNPlayer(Player):
             return [1, 1]
         return [0, 0]
 
-	def learn(self, train_x, train_y1, train_y2, val_x, val_y1, val_y2):#対戦データを学習
-		
-		train(
-			self._model,
-			#train_data 
-			train_x, 
-			train_y1,
-			train_y2,
-			#val_data
-			val_x, 
-			val_y1,
-			val_y2,
-			50000,
-			)
+    def learn(self, train_x, train_y1, train_y2, val_x, val_y1, val_y2):#対戦データを学習
+        
+        train(
+            self._model,
+            #train_data 
+            train_x, 
+            train_y1,
+            train_y2,
+            #val_data
+            val_x, 
+            val_y1,
+            val_y2,
+            50000,
+            )
 
-	def evaluate(self, Game):
-		return predict(self._model, self.getGameImg(Game))
+    def evaluate(self, Game):
+        return predict(self._model, self.getGameImg(Game))
