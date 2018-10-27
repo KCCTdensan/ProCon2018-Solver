@@ -1,4 +1,4 @@
-move "C:\Users\densan\Pictures\Camera Roll\*.jpg" C:\Users\densan\source\repos\ProCon2018-Solver\test.jpg
+move "C:\Users\%username%\Pictures\Camera Roll\*.jpg" %~dp0QRCode.jpg
 
 python Main.py
 
