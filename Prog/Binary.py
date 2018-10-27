@@ -10,6 +10,7 @@ def ReadTrainingData(FileName:str)->list:
 	OutputValue = All[-1]
 	return [Inputs, OutputPolicy, OutputValue]
 
+
 def ReadTrainingDatasFromDirectory(Path:str):
 	Files = os.listdir(Path)
 	InputList = []

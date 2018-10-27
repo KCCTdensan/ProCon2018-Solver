@@ -5,8 +5,8 @@ import random as Ran
 import math
 import copy
 import pickle
-#from pyzbar.pyzbar import decode
-#from PIL import Image
+from pyzbar.pyzbar import decode
+from PIL import Image
 from .Panel import *
 from .Agent import *
 from .Window import *
@@ -25,8 +25,7 @@ class Game:
 
 	def __init__(self):
 		#QRコード読み取りステージ生成部分
-		"""
-		image = 'test.png' #QRコードの画像
+		image = 'test.jpg' #QRコードの画像
 		data = decode(Image.open(image))	#QRコードのデータ全体
 		QRtext = str(data).split('\'')[1]	#QRコードのテキスト部分
 		_yLen = int(QRtext.split(':')[0].split(' ')[0])	#ステージの縦*横(_yLen*_xLen)
@@ -42,7 +41,6 @@ class Game:
 			for x in range(_xLen):
 				PanelScore = int(PanelsScores.split(' ')[x])
 				self._Panels[y][x] = Panel(PanelScore)
-		"""
 		self._gamecount=1 #試合回数（ファイル番号）
 		while os.path.isfile("./Log/log"+str(self._gamecount)+".pickle"): #もうすでにその試合回数（ファイル番号）のログが存在すれば
 			self._gamecount+=1 #試合回数（ファイル番号） = 試合回数（ファイル番号） + 1
@@ -54,6 +52,7 @@ class Game:
 		self._1PRegionScore = 0 #1Pの領域ポイント
 		self._2PRegionScore = 0 #1Pの領域ポイント
 
+		"""
 		#ランダムステージ作成部分
 		#ステージの縦*横(_yLen*_xLen)
 		_xLen = Ran.randint(3, 12)
@@ -102,7 +101,7 @@ class Game:
 						PanelsScore = -PanelsScore
 					self._Panels[y][x] = Panel(PanelsScore)
 					self._Panels[_yLen - y - 1][x] = Panel(PanelsScore)
-
+		"""
 
 	def UpdatePanelSurrounded(self):
 		NumY = len(self._Panels)
@@ -194,7 +193,7 @@ class Game:
 					self._1PTileScore += panelScore
 				elif panelState == 2:
 					self._2PTileScore += panelScore
-		
+
 	def canAction(self, Intention, AgentNum):#アクション可能か判定
 		Agent = self.Agents4[AgentNum]
 		CurrentPosition = np.append(Agent.getPoint(), 0)
@@ -285,7 +284,11 @@ class Game:
 
 		self.printMatchLog(num)
 
-		logfile = open("./Log/log"+str(num)+".pickle","rb") #ログファイル入力準備
+		try:
+			logfile = open("./Log/log"+str(num)+".pickle","rb") #ログファイル入力準備
+		except FileNotFoundError:
+			print("log"+str(num)+".pickleがなくて開けません")
+			return 
 		try:
 			bin = pickle.load(logfile)
 		except EOFError:
@@ -313,7 +316,11 @@ class Game:
 		return game_logs,intention_logs,result
 
 	def printMatchLog(self,num): #指定された試合のログをprintする 
-		logfile = open("./Log/log"+str(num)+".pickle","rb") #ログファイル入力準備
+		try:
+			logfile = open("./Log/log"+str(num)+".pickle","rb") #ログファイル入力準備
+		except FileNotFoundError:
+			print("log"+str(num)+".pickleがなくて開けません")
+			return 
 		try:
 			bin = pickle.load(logfile)
 		except EOFError:
@@ -348,6 +355,30 @@ class Game:
 			print("2Pチーム勝利")
 
 		logfile.close
+
+	def rewindOneTurn(self):
+		if not self.readMatchLog(self._gamecount) is None:
+			games,intentions = self.readMatchLog(self._gamecount)
+		else:
+			return self
+
+		if len(games) <= 1:
+			print("一手戻れません（一番最初のターンになってる）")
+			return self
+
+		rewindGame = games[-2]
+
+		os.remove("./Log/log"+str(self._gamecount)+".pickle")
+
+		logfile = open("./Log/log"+str(self._gamecount)+".pickle","ab")
+
+		for game,intention in zip(games[:-1],intentions[:-1]):
+			pickle.dump(game,logfile) #gameobjectバイナリ出力
+			pickle.dump(intention,logfile) #Intentionsバイナリ出力
+		
+		logfile.close
+
+		return rewindGame
 
 	def getPanels(self):
 		return self._Panels

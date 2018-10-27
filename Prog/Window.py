@@ -163,6 +163,12 @@ class WindowFrame(wx.Frame):
 		self.__Sizer.Add(self.__ActionButton, 0, wx.ALIGN_CENTER|wx.BOTTOM, border=15)
 		self.Bind(wx.EVT_BUTTON, self.OnButton, id=ID_GO)
 
+		# 一手戻すボタンを作成
+		ID_REV = wx.NewId()
+		self.__Revert1Button = wx.Button(self.__RootPanel, ID_REV, "一手戻す", size = (80, 40))
+		self.__Sizer.Add(self.__Revert1Button, 0, wx.ALIGN_CENTER|wx.BOTTOM, border = 15)
+		self.Bind(wx.EVT_BUTTON, self.Rev1Act, id = ID_REV)
+
 		self.__RootPanel.SetSizer(self.__Sizer)
 		self.__RootPanel.Fit()
 		self.Update()
@@ -171,9 +177,13 @@ class WindowFrame(wx.Frame):
 		self.__Human1.Show()
 		self.__Human2.Show()
 
-		#TEST
 		self.__Human1.UpdateAIEvaluation(self.__Game)
 		self.__Human2.UpdateAIEvaluation(self.__Game)
+
+		#TEST
+	def Rev1Act(self, e):
+		self.__Game = self.__Game.rewindOneTurn()
+		self.Update()
 
 	def OnButton(self, e):
 		Intentions1 = self.__Human1.GetIntentions()
@@ -181,16 +191,18 @@ class WindowFrame(wx.Frame):
 		self.__Game.action([Intentions1[0], Intentions1[1], Intentions2[0], Intentions2[1]])
 		self.__Game.score()
 		if self.__Game.endGame():
-		    Scores = self.__Game.getPoints()
-		    print("1PTileScore : "+str(Scores[0]))
-		    print("1PRegionScore : "+str(Scores[1]))
-		    print("2PTileScore : "+str(Scores[2]))
-		    print("2PRegionScore : "+str(Scores[3]))
-		    print("Winner : "+str(self.__Game.getWinner()))
-		    sys.exit()
+			Scores = self.__Game.getPoints()
+			print("1PTileScore : "+str(Scores[0]))
+			print("1PRegionScore : "+str(Scores[1]))
+			print("2PTileScore : "+str(Scores[2]))
+			print("2PRegionScore : "+str(Scores[3]))
+			print("Winner : "+str(self.__Game.getWinner()))
+			sys.exit()
 		self.Update()
+
 		self.__Human1.UpdateAIEvaluation(self.__Game)
 		self.__Human2.UpdateAIEvaluation(self.__Game)
+
 		self.__Human1.ResetIntentions()
 		self.__Human2.ResetIntentions()
 
