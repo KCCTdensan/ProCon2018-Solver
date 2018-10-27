@@ -12,9 +12,7 @@ class PlayerInfo:
 		self.Label = Label
 		self.Color = Color
 		self.SelectColor = SelectColor
-		
-#ID_BUTTON = []
-#ID_GO:int
+
 ColorPanelBkgnd = "#5f5f5f"
 ColorPanel1PRegion = "#af5f5f"
 ColorPanel2PRegion = "#5f8faf"
@@ -180,7 +178,6 @@ class WindowFrame(wx.Frame):
 		self.__Human1.UpdateAIEvaluation(self.__Game)
 		self.__Human2.UpdateAIEvaluation(self.__Game)
 
-		#TEST
 	def Rev1Act(self, e):
 		self.__Game = self.__Game.rewindOneTurn()
 		self.Update()
