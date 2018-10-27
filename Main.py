@@ -8,9 +8,11 @@ def main():
 	frame.Show()
 	app.MainLoop()
 
+
 def main2():
-    A = AutoFight()
-    A.AutoFight(1000)
+	A = AutoFight()
+	A.AutoFight(1000)
+
 
 def main3():
 	import numpy as np
@@ -24,6 +26,7 @@ def main3():
 	train_y1, val_y1 = np.split(TrainingData[1], [int(len(TrainingData[1])/10*9)])
 	train_y2, val_y2 = np.split(TrainingData[2], [int(len(TrainingData[2])/10*9)])
 	AI.learn(train_x, train_y1, train_y2, val_x, val_y1, val_y2)
+
 
 if __name__ == '__main__':
 	main()

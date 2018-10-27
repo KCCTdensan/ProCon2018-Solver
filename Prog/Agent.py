@@ -6,14 +6,18 @@ class Agent:
 		self._point = np.array(point) #座標
 		self._team = team #所属チーム(1or2)
 
+
 	def move(self,vector:[int, int]): #エージェントを動かす(vector:方向)
 		self._point += np.array(vector)
+
 
 	def getPoint(self):
 		return self._point
 
+
 	def getTeam(self):
 		return self._team
+
 
 	def getPosition(self):
 		_position = position()

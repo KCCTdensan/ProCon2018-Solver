@@ -26,12 +26,15 @@ class ControllerFrame(wx.Frame):
 		self.__RootPanel.Fit()
 		self.Fit()
 
+
 	def UpdateAIEvaluation(self, Game):
 		if self.__AIIndicationDisplayPanel != None:
 			self.__AIIndicationDisplayPanel.UpdateEvaluation(Game)
 
+
 	def GetIntentions(self):
 		return self.__ControllerPanel.GetIntentions()
+
 
 	def ResetIntentions(self):
 		self.__ControllerPanel.ResetIntentions()
