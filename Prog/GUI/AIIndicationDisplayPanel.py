@@ -2,68 +2,68 @@ import wx
 from enum import Enum
 
 class IndicationPosition(Enum):
-	TopRight		= 1
-	Top			= 2
-	TopLeft 		= 3
-	Right		= 4
-	Stop		= 5
-	Left			= 6
-	BottomRight	= 7
-	Bottom		= 8
-	BottomLeft	= 9
+	TOPRIGHT		= 1
+	TOP			= 2
+	TOPLEFT 		= 3
+	RIGHT		= 4
+	STOP		= 5
+	LEFT			= 6
+	BOTTOMRIGHT	= 7
+	BOTTOM		= 8
+	BOTTOMLEFT	= 9
 
 class IndicationAction(Enum):
-	Move		= 0
-	Turn		= 1
+	MOVE		= 0
+	TURN		= 1
 
 def GetIndication(Intention: list) -> (IndicationPosition, IndicationAction):
 	if (Intention[0] == 0) and (Intention[1] == 0):
-		return (IndicationPosition.Stop, IndicationAction.Stop)
-	pos = IndicationPosition.Stop
+		return (IndicationPosition.STOP, IndicationAction.STOP)
+	pos = IndicationPosition.STOP
 	if Intention[0] == -1: # 左側
 		if Intention[1] == -1: # 上
-			pos = IndicationPosition.TopLeft
+			pos = IndicationPosition.TOPLEFT
 		elif Intention[1] == 1: # 下
-			pos = IndicationPosition.BottomLeft
+			pos = IndicationPosition.BOTTOMLEFT
 		else: # 左
-			pos = IndicationPosition.Left
+			pos = IndicationPosition.LEFT
 	elif Intention[0] == 1: # 右側
 		if Intention[1] == -1: # 上
-			pos = IndicationPosition.TopRight
+			pos = IndicationPosition.TOPRIGHT
 		elif Intention[1] == 1: # 下
-			pos = IndicationPosition.BottomRight
+			pos = IndicationPosition.BOTTOMRIGHT
 		else: # 右
-			pos = IndicationPosition.Right
-	act = IndicationAction.Move
+			pos = IndicationPosition.RIGHT
+	act = IndicationAction.MOVE
 	if Intention[2] != 0:
 		act = IndicationAction.Turn
 	return (pos, act)
 
 def GetIndicationJPStr(pos, act)  -> str:
 	s = ""
-	if act == IndicationAction.Move:
+	if act == IndicationAction.MOVE:
 		s = "[動] "
-	elif act == IndicationAction.Turn:
+	elif act == IndicationAction.TURN:
 		s = "[返] "
 	else:	
 		s = "[?] "
-	if pos == IndicationPosition.TopRight:
+	if pos == IndicationPosition.TOPRIGHT:
 		return s + "右上"
-	elif pos == IndicationPosition.Top:
+	elif pos == IndicationPosition.TOP:
 		return s + "上"
-	elif pos == IndicationPosition.TopLeft:
+	elif pos == IndicationPosition.TOPLEFT:
 		return s + "左上"
-	elif pos == IndicationPosition.Right:
+	elif pos == IndicationPosition.RIGHT:
 		return s + "右"
-	elif pos == IndicationPosition.Stop:
+	elif pos == IndicationPosition.STOP:
 		return s + "留"
-	elif pos == IndicationPosition.Left:
+	elif pos == IndicationPosition.LEFT:
 		return s + "左"
-	elif pos == IndicationPosition.BottomRight:
+	elif pos == IndicationPosition.BOTTOMRIGHT:
 		return s + "右下"
-	elif pos == IndicationPosition.Bottom:
+	elif pos == IndicationPosition.BOTTOM:
 		return s + "下"
-	elif pos == IndicationPosition.BottomLeft:
+	elif pos == IndicationPosition.BOTTOMLEFT:
 		return s + "左下"
 	else:
 		return s + "?"
@@ -77,23 +77,23 @@ def GetIndicationPlayingCardsInfoStr(pos, agtnum) -> str:
 	else:
 		s = "?"
 	# 壇(ステージ)側は上
-	if pos == IndicationPosition.TopRight:
+	if pos == IndicationPosition.TOPRIGHT:
 		return s + "9"
-	elif pos == IndicationPosition.Top:
+	elif pos == IndicationPosition.TOP:
 		return s + "8"
-	elif pos == IndicationPosition.TopLeft:
+	elif pos == IndicationPosition.TOPLEFT:
 		return s + "7"
-	elif pos == IndicationPosition.Right:
+	elif pos == IndicationPosition.RIGHT:
 		return s + "6"
-	elif pos == IndicationPosition.Stop:
+	elif pos == IndicationPosition.STOP:
 		return s + "5"
-	elif pos == IndicationPosition.Left:
+	elif pos == IndicationPosition.LEFT:
 		return s + "4"
-	elif pos == IndicationPosition.BottomRight:
+	elif pos == IndicationPosition.BOTTOMRIGHT:
 		return s + "3"
-	elif pos == IndicationPosition.Bottom:
+	elif pos == IndicationPosition.BOTTOM:
 		return s + "2"
-	elif pos == IndicationPosition.BottomLeft:
+	elif pos == IndicationPosition.BOTTOMLEFT:
 		return s + "1"
 	else:
 		return s + "?"
