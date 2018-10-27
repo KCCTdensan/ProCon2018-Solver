@@ -5,12 +5,12 @@ class IndicationPosition(Enum):
 	TOPRIGHT		= 1
 	TOP			= 2
 	TOPLEFT 		= 3
-	RIGHT		= 4
-	STOP		= 5
+	RIGHT			= 4
+	STOP			= 5
 	LEFT			= 6
 	BOTTOMRIGHT	= 7
-	BOTTOM		= 8
-	BOTTOMLEFT	= 9
+	BOTTOM			= 8
+	BOTTOMLEFT		= 9
 
 class IndicationAction(Enum):
 	MOVE		= 0
@@ -36,7 +36,7 @@ def GetIndication(Intention: list) -> (IndicationPosition, IndicationAction):
 			pos = IndicationPosition.RIGHT
 	act = IndicationAction.MOVE
 	if Intention[2] != 0:
-		act = IndicationAction.Turn
+		act = IndicationAction.TURN
 	return (pos, act)
 
 def GetIndicationJPStr(pos, act)  -> str:
