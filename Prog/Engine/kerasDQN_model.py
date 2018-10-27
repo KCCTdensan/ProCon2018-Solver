@@ -31,15 +31,6 @@ def buildModel():
     x = Conv2D(240, 3, padding="same")(x)
     x = BatchNormalization()(x)
     x = Activation("relu")(x)
-    x = Conv2D(240, 3, padding="same")(x)
-    x = BatchNormalization()(x)
-    x = Activation("relu")(x)
-    x = Conv2D(240, 3, padding="same")(x)
-    x = BatchNormalization()(x)
-    x = Activation("relu")(x)
-    x = Conv2D(240, 3, padding="same")(x)
-    x = BatchNormalization()(x)
-    x = Activation("relu")(x)
     x = Flatten()(x)
 
     x = Dense(1024, activation="relu")(x)
@@ -73,7 +64,7 @@ def train(model, x_train, y_train1, y_train2, val_x, val_y1, val_y2, epochs):
     if not os.path.exists(cp_dir):
         os.makedirs(cp_dir)
     cp_filepath = os.path.join(cp_dir, "model_{epoch:06d}.h5")
-    cb_mc = ModelCheckpoint(filepath=cp_filepath, monitor="val_acc", period=1, save_best_only=True)
+    cb_mc = ModelCheckpoint(filepath=cp_filepath, monitor="val_intention_acc", period=1, mode="max", save_best_only=True)
 
     #cb_es = EarlyStopping(monitor="val_loss")
 
@@ -102,6 +93,7 @@ def train(model, x_train, y_train1, y_train2, val_x, val_y1, val_y2, epochs):
         )
 
 def predict(model, img): #方策、行動の評価値を算出
+    print(img)
     img = np.array(img).reshape(-1,10,12,12).astype("float32")/16.0
     img = img.transpose(0,2,3,1)
     return model.predict(img, verbose=0)

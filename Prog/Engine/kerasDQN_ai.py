@@ -13,13 +13,13 @@ class kerasDQNPlayer(Player):
         elif(self._team==2):self._enemyteam = 1
         self._model = buildModel()
 
-        #if(os.path.isfile("./checkpoint/model_params")):
-        #    model.load_weights("./checkpoint/model_params")
+        #if(os.path.isfile("./checkpoint/model_.h5")):
+            #self._model.load_weights("./checkpoint/model_.h5")
 
     def intention(self, Game):#盤面の情報を渡してAgentの動かし方を返す
         GameImg = self.getGameImg(Game) #盤面を画像データに
         Agents = Game.getAgents()
-        myAgentsPoint = [Agents[self._team*2-2].getPoint(), Agents[self.team*2-1].getPoint()]
+        myAgentsPoint = [Agents[self._team*2-2].getPoint(), Agents[self._team*2-1].getPoint()]
 
         #評価値が一番高い行動を選択
         maxEvalue = -1
@@ -30,14 +30,19 @@ class kerasDQNPlayer(Player):
         for i in range(len(Policies)):
             for j in range(len(Policies[0])):
                 if Policies[i][j] > maxEvalue:
+                    maxEvalue = Policies[i][j]
                     Agent1ActionID = j
                     Agent2ActionID = i
-
+        print(Agent1ActionID, Agent2ActionID)
         goodIntention = []
-        IntentionVectors = [actionIDtoVector(Agent1ActionID), actionIDtoVector(Agent2ActionID)]
-        for i in 2:
-            if(Game.canAction(IntentionVectors[i] + [0])):goodIntention.append(IntentionVectors[i] + [0])
-            elif(Game.canAction(IntentionVectors[i] + [1])):goodIntention.append(IntentionVectors[i] + [1])
+        IntentionVectors = [self.actionIDtoVector(Agent1ActionID), self.actionIDtoVector(Agent2ActionID)]
+        for i in range(2):
+            intentions_mv = np.zeros((4, 3), int)
+            intentions_rm = np.zeros((4, 3), int)
+            intentions_mv[self._team*2-2+i]=IntentionVectors[i] + [0]
+            intentions_rm[self._team*2-2+i]=IntentionVectors[i] + [0]
+            if(Game.canAction(intentions_mv, self._team*2-2+i)):goodIntention.append(IntentionVectors[i] + [0])
+            elif(Game.canAction(intentions_rm, self._team*2-2+i)):goodIntention.append(IntentionVectors[i] + [1])
             else:goodIntention.append([0,0,0])
 
         return goodIntention
@@ -77,7 +82,7 @@ class kerasDQNPlayer(Player):
                 GameImg[6+i%2][point[0]][point[1]]=1
         return GameImg
 
-    def actionIDtoVector(Value):
+    def actionIDtoVector(self, Value):
         if Value == 1:
             return [-1, -1]
         if Value == 2:

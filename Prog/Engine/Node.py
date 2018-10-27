@@ -151,7 +151,7 @@ class opponent_node(node):
 				self.__Children[i].append(None)
 				continue
 			for j in range(9):
-				if not(self.__ParentNode.GetStage().CanActionAll([[self.__FriendIDs[0], self.__FriendIDs[1]], [i, j]])):
+				if not(self.__ParentNode.GetStage().CanActionAll([[intention(self.__FriendIDs[0]), intention(self.__FriendIDs[1])], [intention(i), intention(j)]])):
 					self.__Children[i].append(None)
 					continue
 				self.__Children[i].append(friend_node(self.ParentNode.GetStage(), self.CntTurns + 1))
