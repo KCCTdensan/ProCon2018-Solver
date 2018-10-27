@@ -25,8 +25,7 @@ class Game:
 
 	def __init__(self):
 		#QRコード読み取りステージ生成部分
-		"""
-		image = 'test.png' #QRコードの画像
+		image = 'test.jpg' #QRコードの画像
 		data = decode(Image.open(image))	#QRコードのデータ全体
 		QRtext = str(data).split('\'')[1]	#QRコードのテキスト部分
 		_yLen = int(QRtext.split(':')[0].split(' ')[0])	#ステージの縦*横(_yLen*_xLen)
@@ -42,7 +41,6 @@ class Game:
 			for x in range(_xLen):
 				PanelScore = int(PanelsScores.split(' ')[x])
 				self._Panels[y][x] = Panel(PanelScore)
-		"""
 		self._gamecount=1 #試合回数（ファイル番号）
 		while os.path.isfile("./Log/log"+str(self._gamecount)+".pickle"): #もうすでにその試合回数（ファイル番号）のログが存在すれば
 			self._gamecount+=1 #試合回数（ファイル番号） = 試合回数（ファイル番号） + 1
@@ -54,6 +52,7 @@ class Game:
 		self._1PRegionScore = 0 #1Pの領域ポイント
 		self._2PRegionScore = 0 #1Pの領域ポイント
 
+		"""
 		#ランダムステージ作成部分
 		#ステージの縦*横(_yLen*_xLen)
 		_xLen = Ran.randint(3, 12)
@@ -102,7 +101,7 @@ class Game:
 						PanelsScore = -PanelsScore
 					self._Panels[y][x] = Panel(PanelsScore)
 					self._Panels[_yLen - y - 1][x] = Panel(PanelsScore)
-
+		"""
 
 	def UpdatePanelSurrounded(self):
 		NumY = len(self._Panels)

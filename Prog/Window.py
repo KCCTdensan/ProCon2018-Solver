@@ -178,8 +178,8 @@ class WindowFrame(wx.Frame):
 		self.__Human1.Show()
 		self.__Human2.Show()
 
-    self.__Human1.UpdateAIEvaluation(self.__Game)#?
-		self.__Human2.UpdateAIEvaluation(self.__Game)#?
+		self.__Human1.UpdateAIEvaluation(self.__Game)
+		self.__Human2.UpdateAIEvaluation(self.__Game)
 
 		#TEST
 	def Rev1Act(self, e):
@@ -204,7 +204,7 @@ class WindowFrame(wx.Frame):
 		self.__Human1.UpdateAIEvaluation(self.__Game)
 		self.__Human2.UpdateAIEvaluation(self.__Game)
 
-    self.__Human1.ResetIntentions()
+		self.__Human1.ResetIntentions()
 		self.__Human2.ResetIntentions()
 
 	def Update(self):
