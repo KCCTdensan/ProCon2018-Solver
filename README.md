@@ -16,7 +16,7 @@
 - pillow
 - ZBar (http://zbar.sourceforge.net/download.html-)
 
-###機械学習用
+### 機械学習用
 - tensorflow-gpu 1.4
 - keras
 - CUDA 8.0
