@@ -12,10 +12,9 @@ class kerasDQNPlayer(Player):
         self._team = team
         if(self._team==1):self._enemyteam = 2
         elif(self._team==2):self._enemyteam = 1
-        self._model = buildModel()
+        #self._model = buildModel()
 
-        #if(os.path.isfile("./checkpoint/model_.h5")):
-            #self._model.load_weights("./checkpoint/model_.h5")
+        self._model =load_model("./checkpoint/housaku/model_000014.h5")
         
     def intention(self, Game):#盤面の情報を渡してAgentの動かし方を返す
         GameImg = self.getGameImg(Game) #盤面を画像データに
