@@ -18,7 +18,7 @@ class IndicationAction(Enum):
 
 def GetIndication(Intention: list) -> (IndicationPosition, IndicationAction):
 	if (Intention[0] == 0) and (Intention[1] == 0):
-		return (IndicationPosition.STOP, IndicationAction.STOP)
+		return (IndicationPosition.STOP, IndicationAction.MOVE)
 	pos = IndicationPosition.STOP
 	if Intention[0] == -1: # 左側
 		if Intention[1] == -1: # 上
@@ -34,6 +34,12 @@ def GetIndication(Intention: list) -> (IndicationPosition, IndicationAction):
 			pos = IndicationPosition.BOTTOMRIGHT
 		else: # 右
 			pos = IndicationPosition.RIGHT
+	else :
+		if Intention[1] == -1:
+			pos = IndicationPosition.TOP
+		elif Intention[1] == 1:
+			pos = IndicationPosition.BOTTOM
+
 	act = IndicationAction.MOVE
 	if Intention[2] != 0:
 		act = IndicationAction.TURN
@@ -112,6 +118,7 @@ class AIIndicationDisplayPanel(wx.Panel):
 
 	def UpdateEvaluation(self, Game):
 		Intentions = self.__AI.intention(Game)
+		print(Intentions)
 		(pos1, act1) = GetIndication(Intentions[0])
 		(pos2, act2) = GetIndication(Intentions[1])
 		agent1 = "1P: " + GetIndicationJPStr(pos1, act1) + "(" + GetIndicationPlayingCardsInfoStr(pos1, 1) + ")"
