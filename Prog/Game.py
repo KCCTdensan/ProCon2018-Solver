@@ -12,6 +12,7 @@ from .Agent import *
 from .Window import *
 from .intention import *
 from .position import *
+from .QR import *
 
 class intention_info:
 	def __init__(self):
@@ -23,25 +24,13 @@ class intention_info:
 class Game:
 	#zbarのインストールが必要 URL: http://zbar.sourceforge.net/download.html
 
-	def __init__(self):
-		#QRコード読み取りステージ生成部分
-		image = 'QRCode.jpg' #QRコードの画像
-		data = decode(Image.open(image))	#QRコードのデータ全体
-		QRtext = str(data).split('\'')[1]	#QRコードのテキスト部分
-		_yLen = int(QRtext.split(':')[0].split(' ')[0])	#ステージの縦*横(_yLen*_xLen)
-		_xLen = int(QRtext.split(':')[0].split(' ')[1])
-		Agentx = int(QRtext.split(':')[_yLen+1].split(' ')[0])-1	#1Pの1人目のエージェントのx,y座標
-		Agenty = int(QRtext.split(':')[_yLen+1].split(' ')[1])-1
-		self._1PAgents = [Agent([Agenty, Agentx],1),Agent([_yLen - 1 - Agenty, _xLen - 1 - Agentx],1)] #ステージに存在する1Pのエージェントのリスト
-		self._2PAgents = [Agent([_yLen - 1 - Agenty, Agentx],2),Agent([Agenty, _xLen - 1 - Agentx],2)] #ステージに存在する2Pのエージェントのリスト
-		self.Agents4 = [self._1PAgents[0], self._1PAgents[1], self._2PAgents[0], self._2PAgents[1]]
-		self._Panels = [[Panel(0) for i in range(_xLen)]for j in range(_yLen)] #パネルの配列の作成
-		#パネルのスコア設定
-		for y in range(_yLen):
-			PanelsScores = QRtext.split(':')[y+1]
-			for x in range(_xLen):
-				PanelScore = int(PanelsScores.split(' ')[x])
-				self._Panels[y][x] = Panel(PanelScore)
+	def __init__(self,qr=None):
+		if not qr is None:
+			self._1PAgents = qr._1PAgents #ステージに存在する1Pのエージェントのリスト
+			self._2PAgents = qr._2PAgents #ステージに存在する2Pのエージェントのリスト
+			self.Agents4 = qr.Agents4
+			self._Panels = qr._Panels #パネルの配列の作成
+			
 		self._gamecount=1 #試合回数（ファイル番号）
 		while os.path.isfile("./Log/log"+str(self._gamecount)+".pickle"): #もうすでにその試合回数（ファイル番号）のログが存在すれば
 			self._gamecount+=1 #試合回数（ファイル番号） = 試合回数（ファイル番号） + 1
@@ -53,56 +42,55 @@ class Game:
 		self._1PRegionScore = 0 #1Pの領域ポイント
 		self._2PRegionScore = 0 #1Pの領域ポイント
 
-		"""
-		#ランダムステージ作成部分
-		#ステージの縦*横(_yLen*_xLen)
-		_xLen = Ran.randint(3, 12)
-		_yLen = Ran.randint(3, 12)
-		self._XLen = _xLen
-		self._YLen = _yLen
-		_yLen2 = -(- _yLen//2)
-		_xLen2 = -(- _xLen//2)
-		#1Pの1人目のエージェントのx,y座標
-		Agentx = Ran.randint(0, (_xLen//2)-1)
-		Agenty = Ran.randint(0, (_yLen//2)-1)
-		self._1PAgents = [Agent([Agenty, Agentx],1),Agent([_yLen - 1 - Agenty, _xLen - 1 - Agentx],1)] #ステージに存在する1Pのエージェントのリスト
-		self._2PAgents = [Agent([_yLen - 1 - Agenty, Agentx],2),Agent([Agenty, _xLen - 1 - Agentx],2)] #ステージに存在する2Pのエージェントのリスト
-		self.Agents = [[self._1PAgents[0], self._1PAgents[1]], [self._2PAgents[0], self._2PAgents[1]]]
-		self.Agents4 = [self._1PAgents[0], self._1PAgents[1], self._2PAgents[0], self._2PAgents[1]]
-		self.randtype = Ran.randint(0,2)	#左右対称、または上下対称、または上下左右対称
-		self._Panels = [[Panel(0) for i in range(_xLen)]for j in range(_yLen)]	#パネルの配列の作成
+		if qr is None:
+			#ランダムステージ作成部分
+			#ステージの縦*横(_yLen*_xLen)
+			_xLen = Ran.randint(3, 12)
+			_yLen = Ran.randint(3, 12)
+			self._XLen = _xLen
+			self._YLen = _yLen
+			_yLen2 = -(- _yLen//2)
+			_xLen2 = -(- _xLen//2)
+			#1Pの1人目のエージェントのx,y座標
+			Agentx = Ran.randint(0, (_xLen//2)-1)
+			Agenty = Ran.randint(0, (_yLen//2)-1)
+			self._1PAgents = [Agent([Agenty, Agentx],1),Agent([_yLen - 1 - Agenty, _xLen - 1 - Agentx],1)] #ステージに存在する1Pのエージェントのリスト
+			self._2PAgents = [Agent([_yLen - 1 - Agenty, Agentx],2),Agent([Agenty, _xLen - 1 - Agentx],2)] #ステージに存在する2Pのエージェントのリスト
+			self.Agents = [[self._1PAgents[0], self._1PAgents[1]], [self._2PAgents[0], self._2PAgents[1]]]
+			self.Agents4 = [self._1PAgents[0], self._1PAgents[1], self._2PAgents[0], self._2PAgents[1]]
+			self.randtype = Ran.randint(0,2)	#左右対称、または上下対称、または上下左右対称
+			self._Panels = [[Panel(0) for i in range(_xLen)]for j in range(_yLen)]	#パネルの配列の作成
 
-		#パネルのスコア設定
-		if self.randtype == 0: 
-			for y in range(_yLen2): 
-				for x in range(_xLen2):
-					PanelsScore = Ran.randint(0,16)
-					IsNegative = Ran.randint(0,9)
-					if IsNegative == 0:
-						PanelsScore = -PanelsScore
-					self._Panels[y][x] = Panel(PanelsScore)
-					self._Panels[_yLen - 1 - y][x] = Panel(PanelsScore)
-					self._Panels[y][_xLen - 1 - x] = Panel(PanelsScore)
-					self._Panels[_yLen - 1 - y][ _xLen - 1 - x] = Panel(PanelsScore)
-		elif self.randtype == 1:
-			for y in range(_yLen):
-				for x in range(_xLen2):
-					PanelsScore = Ran.randint(0,16)
-					IsNegative = Ran.randint(0,9)
-					if IsNegative == 0:
-						PanelsScore = -PanelsScore
-					self._Panels[y][x] = Panel(PanelsScore)
-					self._Panels[y][_xLen - 1 - x] = Panel(PanelsScore)
-		elif self.randtype == 2:
-			for y in range(_yLen2):	
-				for x in range(_xLen):
-					PanelsScore = Ran.randint(0,16)
-					IsNegative = Ran.randint(0,9)
-					if IsNegative == 0:
-						PanelsScore = -PanelsScore
-					self._Panels[y][x] = Panel(PanelsScore)
-					self._Panels[_yLen - y - 1][x] = Panel(PanelsScore)
-	"""
+			#パネルのスコア設定
+			if self.randtype == 0: 
+				for y in range(_yLen2): 
+					for x in range(_xLen2):
+						PanelsScore = Ran.randint(0,16)
+						IsNegative = Ran.randint(0,9)
+						if IsNegative == 0:
+							PanelsScore = -PanelsScore
+						self._Panels[y][x] = Panel(PanelsScore)
+						self._Panels[_yLen - 1 - y][x] = Panel(PanelsScore)
+						self._Panels[y][_xLen - 1 - x] = Panel(PanelsScore)
+						self._Panels[_yLen - 1 - y][ _xLen - 1 - x] = Panel(PanelsScore)
+			elif self.randtype == 1:
+				for y in range(_yLen):
+					for x in range(_xLen2):
+						PanelsScore = Ran.randint(0,16)
+						IsNegative = Ran.randint(0,9)
+						if IsNegative == 0:
+							PanelsScore = -PanelsScore
+						self._Panels[y][x] = Panel(PanelsScore)
+						self._Panels[y][_xLen - 1 - x] = Panel(PanelsScore)
+			elif self.randtype == 2:
+				for y in range(_yLen2):	
+					for x in range(_xLen):
+						PanelsScore = Ran.randint(0,16)
+						IsNegative = Ran.randint(0,9)
+						if IsNegative == 0:
+							PanelsScore = -PanelsScore
+						self._Panels[y][x] = Panel(PanelsScore)
+						self._Panels[_yLen - y - 1][x] = Panel(PanelsScore)
 
 	def UpdatePanelSurrounded(self):
 		NumY = len(self._Panels)
