@@ -13,34 +13,37 @@ class kerasDQNPlayer(Player):
         elif(self._team==2):self._enemyteam = 1
         self._model = buildModel()
 
-        #if(os.path.isfile("./checkpoint/model_params")):
-        #    model.load_weights("./checkpoint/model_params")
+        #if(os.path.isfile("./checkpoint/model_.h5")):
+            #self._model.load_weights("./checkpoint/model_.h5")
 
     def intention(self, Game):#盤面の情報を渡してAgentの動かし方を返す
         GameImg = self.getGameImg(Game) #盤面を画像データに
         Agents = Game.getAgents()
-        myAgentsPoint = [Agents[team*2-2].getPoint(), Agents[team*2-1].getPoint()]
+        myAgentsPoint = [Agents[self._team*2-2].getPoint(), Agents[self._team*2-1].getPoint()]
 
         #評価値が一番高い行動を選択
         maxEvalue = -1
         Agent1ActionID = 0
         Agent2ActionID = 0
-        Policies, Evalues = predict(self._model, GameImg).reshape(9, 9) #行動の評価値計算
+        Policies, Evalues = predict(self._model, GameImg)
+        Policies = np.reshape(Policies, (9, 9))#行動の評価値計算
         for i in range(len(Policies)):
             for j in range(len(Policies[0])):
                 if Policies[i][j] > maxEvalue:
                     Agent1ActionID = j
                     Agent2ActionID = i
-
+        print(Agent1ActionID, Agent2ActionID)
         goodIntention = []
-        IntentionVectors = [actionIDtoVector(Agent1ActionID), actionIDtoVector(Agent2ActionID)]
+        IntentionVectors = [self.actionIDtoVector(Agent1ActionID), self.actionIDtoVector(Agent2ActionID)]
         for i in range(2):
-            x = myAgentsPoint[i][0]+IntentionVectors[i][0]
-            y = myAgentsPoint[i][1]+IntentionVectors[i][1]
-            if(Game.getPanels()[x][y].getState()==self._enemyteam):
-                goodIntention.append(IntentionsVector[i].append(1))
-            else:
-                goodIntention.append(IntentionsVector[i].append(0))
+            intentions_mv = np.zeros((4, 3), int)
+            intentions_rm = np.zeros((4, 3), int)
+            intentions_mv[self._team*2-2+i]=IntentionVectors[i] + [0]
+            intentions_rm[self._team*2-2+i]=IntentionVectors[i] + [0]
+            if(Game.canAction(intentions_mv, self._team*2-2+i)):goodIntention.append(IntentionVectors[i] + [0])
+            elif(Game.canAction(intentions_rm, self._team*2-2+i)):goodIntention.append(IntentionVectors[i] + [1])
+            else:goodIntention.append([0,0,0])
+
         return goodIntention
 
     def getGameImg(self, Game): #盤面を画像に
@@ -78,7 +81,7 @@ class kerasDQNPlayer(Player):
                 GameImg[6+i%2][point[0]][point[1]]=1
         return GameImg
 
-    def actionIDtoVector(Value):
+    def actionIDtoVector(self, Value):
         if Value == 1:
             return [-1, -1]
         if Value == 2:
