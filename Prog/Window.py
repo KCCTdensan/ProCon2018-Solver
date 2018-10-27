@@ -143,7 +143,7 @@ class WindowFrame(wx.Frame):
 
 		#コントローラのインスタンス生成
 		self.__Human1 = ControllerFrame(PlayerInfo("1P-1", "#ed1c24", "#f78e94"), PlayerInfo("1P-2", "#ff7f27", "#ffbe93"), kerasDQNPlayer(1))
-		self.__Human2 = ControllerFrame(PlayerInfo("2P-1", "#22b14c", "#82e8a0"), PlayerInfo("2P-2", "#00a2e8", "#75d6ff"), None)
+		self.__Human2 = ControllerFrame(PlayerInfo("2P-1", "#22b14c", "#82e8a0"), PlayerInfo("2P-2", "#00a2e8", "#75d6ff"), randomAI())
 
 		self.__RootPanel = wx.Panel(self, wx.ID_ANY)
 		self.__RootPanel.SetBackgroundColour("#1f1f1f")

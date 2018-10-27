@@ -5,8 +5,8 @@ import random as Ran
 import math
 import copy
 import pickle
-#from pyzbar.pyzbar import decode
-#from PIL import Image
+from pyzbar.pyzbar import decode
+from PIL import Image
 from .Panel import *
 from .Agent import *
 from .Window import *
@@ -25,8 +25,8 @@ class Game:
 
 	def __init__(self):
 		#QRコード読み取りステージ生成部分
-		"""
-		image = 'test.png' #QRコードの画像
+		
+		image = 'test.jpg' #QRコードの画像
 		data = decode(Image.open(image))	#QRコードのデータ全体
 		QRtext = str(data).split('\'')[1]	#QRコードのテキスト部分
 		_yLen = int(QRtext.split(':')[0].split(' ')[0])	#ステージの縦*横(_yLen*_xLen)
@@ -34,7 +34,8 @@ class Game:
 		Agentx = int(QRtext.split(':')[_yLen+1].split(' ')[0])-1	#1Pの1人目のエージェントのx,y座標
 		Agenty = int(QRtext.split(':')[_yLen+1].split(' ')[1])-1
 		self._1PAgents = [Agent([Agenty, Agentx],1),Agent([_yLen - 1 - Agenty, _xLen - 1 - Agentx],1)] #ステージに存在する1Pのエージェントのリスト
-		self._2PAgents = [Agent([_yLen - 1 - Agenty, Agentx],2),Agent([Agenty, _xLen - 1 - Agentx],2)] #ステージに存在する2Pのエージェントのリスト		
+		self._2PAgents = [Agent([_yLen - 1 - Agenty, Agentx],2),Agent([Agenty, _xLen - 1 - Agentx],2)] #ステージに存在する2Pのエージェントのリスト
+		self.Agents4 = [self._1PAgents[0], self._1PAgents[1], self._2PAgents[0], self._2PAgents[1]]
 		self._Panels = [[Panel(0) for i in range(_xLen)]for j in range(_yLen)] #パネルの配列の作成
 		#パネルのスコア設定
 		for y in range(_yLen):
@@ -94,7 +95,7 @@ class Game:
 					self._Panels[y][x] = Panel(PanelsScore)
 					self._Panels[y][_xLen - 1 - x] = Panel(PanelsScore)
 		elif self.randtype == 2:
-			for y in range(_yLen2):
+			for y in range(_yLen2):	
 				for x in range(_xLen):
 					PanelsScore = Ran.randint(0,16)
 					IsNegative = Ran.randint(0,9)
@@ -102,7 +103,7 @@ class Game:
 						PanelsScore = -PanelsScore
 					self._Panels[y][x] = Panel(PanelsScore)
 					self._Panels[_yLen - y - 1][x] = Panel(PanelsScore)
-
+					"""
 
 	def UpdatePanelSurrounded(self):
 		NumY = len(self._Panels)
