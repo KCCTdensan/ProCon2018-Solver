@@ -25,6 +25,7 @@
 ### 導入コマンド例
  ``` $ pip install wxpython numpy ```
 
+## 環境整備
 ### anaconda学習用仮想環境作成
  ``` 
  $ conda create -n procon2018 python=3.6
