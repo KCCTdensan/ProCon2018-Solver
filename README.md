@@ -14,9 +14,9 @@
 ### QRコード読取用
 - pyzbar
 - pillow
-ZBarを以下よりダウンロード、インストール
-- http://zbar.sourceforge.net/download.html-
-- (機械学習用↓)
+- ZBar (http://zbar.sourceforge.net/download.html-)
+
+###機械学習用
 - tensorflow-gpu 1.4
 - keras
 - CUDA 8.0
