@@ -114,6 +114,6 @@ class AIIndicationDisplayPanel(wx.Panel):
 		Intentions = self.__AI.intention(Game)
 		(pos1, act1) = GetIndication(Intentions[0])
 		(pos2, act2) = GetIndication(Intentions[1])
-		agent1 = "1P: " + GetIndicationJPStr(pos1, act1) + GetIndicationPlayingCardsInfoStr(pos1, 1)
-		agent2 = "2P: " + GetIndicationJPStr(pos2, act2) + GetIndicationPlayingCardsInfoStr(pos2, 2)
+		agent1 = "1P: " + GetIndicationJPStr(pos1, act1) + "(" + GetIndicationPlayingCardsInfoStr(pos1, 1) + ")"
+		agent2 = "2P: " + GetIndicationJPStr(pos2, act2) + "(" + GetIndicationPlayingCardsInfoStr(pos2, 2) + ")"
 		self.__IntentionText.SetLabelText(agent1 + "    |    " + agent2)
