@@ -91,6 +91,8 @@ class Game:
 							PanelsScore = -PanelsScore
 						self._Panels[y][x] = Panel(PanelsScore)
 						self._Panels[_yLen - y - 1][x] = Panel(PanelsScore)
+		for Agent in self.Agents4:
+			self._Panels[Agent.getPoint()[0]][Agent.getPoint()[1]].mkcard(Agent.getTeam())
 
 	def UpdatePanelSurrounded(self):
 		NumY = len(self._Panels)
@@ -183,11 +185,31 @@ class Game:
 				elif panelState == 2:
 					self._2PTileScore += panelScore
 
+	def canOneAction(self, Intention, AgentNum):#ワンアクションを可能か判定
+		Agent = self.Agents4[AgentNum]
+		CurrentPosition = Agent.getPoint()
+		action = Intention[2]
+		actionPosition = CurrentPosition + np.array([Intention[1],Intention[0]])
+
+		#map内かどうかを確認
+		py = actionPosition[0]
+		px = actionPosition[1]
+		NumY = len(self._Panels)
+		NumX = len(self._Panels[0])
+		if not ((0 <= py) and (py < NumY) and (0 <= px) and (px < NumX)):return False
+
+		OperatedPanel = self._Panels[actionPosition[0]][actionPosition[1]]
+		if action == 0:#移動の場合、敵パネルがないかどうか、パネル除去しようとしてる人がいないかどうか
+			if OperatedPanel.getState() + Agent.getTeam()==3: return False
+		elif action == 1:#除去の場合、パネルがあるかどうか、パネル除去してる人がいないかどうか
+			if (CurrentPosition[0] == actionPosition[0]) and (CurrentPosition[1] == actionPosition[1]): return False
+		return True
+
 	def canAction(self, Intention, AgentNum):#アクション可能か判定
 		Agent = self.Agents4[AgentNum]
-		CurrentPosition = np.append(Agent.getPoint(), 0)
+		CurrentPosition = Agent.getPoint()
 		action = Intention[AgentNum][2]
-		actionPosition = CurrentPosition + Intention[AgentNum]
+		actionPosition = CurrentPosition + np.array([Intention[AgentNum][1],Intention[AgentNum][0]])
 
 		#map内かどうかを確認
 		py = actionPosition[0]
@@ -222,13 +244,16 @@ class Game:
 
 		def clearOverlap(PlayerIntentions):#action先の重複をなくす
 			CurrentPositions = [self._1PAgents[0]._point, self._1PAgents[1]._point, self._2PAgents[0]._point, self._2PAgents[1]._point]
-			
+			for i, Position in enumerate(CurrentPositions):
+				Position=np.array([Position[1], Position[0]])
+				CurrentPositions[i]=Position
+
 			#action先の座標を出す
 			actionPositions = []
 			for i in range(4):
 				actionPositions.append([])
 				for j in range(2):
-					actionPositions[i].append(CurrentPositions[i][j] + PlayerIntentions[i][j])
+					actionPositions[i].append(CurrentPositions[i][j] + Intentions[i][j])
 			
 			Overlap = False
 			for i in range(3): #移動後のAgent同士の座標被りを調べる
@@ -243,8 +268,11 @@ class Game:
 		Intentions = clearOverlap(Intentions)
 
 		#移動またはパネルを返す
-		
+
 		CurrentPositions = [self._1PAgents[0]._point, self._1PAgents[1]._point, self._2PAgents[0]._point, self._2PAgents[1]._point]
+		for i, Position in enumerate(CurrentPositions):
+			Position=np.array([Position[1], Position[0]])
+			CurrentPositions[i] = Position
 		Agents = [self._1PAgents[0], self._1PAgents[1], self._2PAgents[0], self._2PAgents[1]]
 
 		#action先の座標を出す
@@ -255,7 +283,7 @@ class Game:
 				actionPositions[i].append(CurrentPositions[i][j] + Intentions[i][j])
 
 		for i in range(4):
-			OperatedPanel = self._Panels[actionPositions[i][0]][actionPositions[i][1]]
+			OperatedPanel = self._Panels[actionPositions[i][1]][actionPositions[i][0]]
 			if Intentions[i][2] == 0:#移動
 				OperatedPanel.mkcard(Agents[i].getTeam())
 				Agents[i].move([Intentions[i][0],Intentions[i][1]])
@@ -323,7 +351,10 @@ class Game:
 			try:
 				print(str(turncount)+"ターン目")
 				print("Game")
-				print(bin)
+				for i in range(len(bin.getPanels())):
+					for j in range(len(bin.getPanels()[0])):
+						print(bin.getPanels()[i][j].getState()," ",end="")#Stateだけ表示
+					print()
 				bin = pickle.load(logfile)
 				print("Intentions")
 				print(bin)

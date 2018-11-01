@@ -1,6 +1,7 @@
 import wx
 import sys
 from .Game import Game
+from .QR import QR
 from .Panel import Panel
 from .GUI.ControllerWindow import ControllerFrame
 from .Engine.Random import randomAI
@@ -74,9 +75,13 @@ class WindowFrame(wx.Frame):
 			return (PanelPos[0] - 5, PanelPos[1] - 5)
 
 		def Update(self, Agents:list, Panels:list):
+			print(Agents[0].getPoint())
+			print(Agents[1].getPoint())
+			print(Agents[2].getPoint())
+			print(Agents[3].getPoint())
 			#現在位置を示す枠パネルの更新
 			for ip in range(NumPlayers):
-				Point = Agents[ip]._point
+				Point = Agents[ip].getPoint()
 				self.listPanelPosition[ip].SetPosition(self.PanelPosition(Point[1], Point[0]))
 
 			#ステージのパネルの更新
@@ -135,13 +140,21 @@ class WindowFrame(wx.Frame):
 
 	def __init__(self):
 		super().__init__(None, wx.ID_ANY, "Procon", pos=(100, 50))
+		
+		self.__QR = QR()
+
 		#ステージのインスタンス生成
-		self.__Game = Game()
+		if(self.__QR.existQR):
+			self.__Game = Game(qr=self.__QR)
+		else:
+			self.__Game = Game()
 		gamePanels = self.__Game.getPanels()
+		self.__AI1=kerasDQNPlayer(1)
+		self.__AI2=randomAI()
 
 		#コントローラのインスタンス生成
-		self.__Human1 = ControllerFrame(PlayerInfo("1P-1", "#ed1c24", "#f78e94"), PlayerInfo("1P-2", "#ff7f27", "#ffbe93"), kerasDQNPlayer(1))
-		self.__Human2 = ControllerFrame(PlayerInfo("2P-1", "#22b14c", "#82e8a0"), PlayerInfo("2P-2", "#00a2e8", "#75d6ff"), randomAI())
+		self.__Human1 = ControllerFrame(PlayerInfo("1P-1", "#ed1c24", "#f78e94"), PlayerInfo("1P-2", "#ff7f27", "#ffbe93"), randomAI())
+		self.__Human2 = ControllerFrame(PlayerInfo("2P-1", "#22b14c", "#82e8a0"), PlayerInfo("2P-2", "#00a2e8", "#75d6ff"), kerasDQNPlayer(2))
 
 		self.__RootPanel = wx.Panel(self, wx.ID_ANY)
 		self.__RootPanel.SetBackgroundColour("#1f1f1f")
